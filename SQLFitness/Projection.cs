@@ -8,7 +8,7 @@ namespace SQLFitness
     {
         public Projection()
         {
-            //Has a selection
+            //Has a value for select
         }
     }
 }

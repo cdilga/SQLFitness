@@ -6,7 +6,7 @@ namespace SQLFitness
 {
     public class Population
     {
-        private _individuals List<Individual>;
+        private List<Individual> _individuals;
         public Population(int n)
         {
             //Generate a population of indivuduals of size n
