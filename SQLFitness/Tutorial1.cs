@@ -48,8 +48,6 @@ namespace SQLFitness
         {
             try
             {
-                
-
                 var sql = "SELECT name, headofstate FROM country WHERE continent='North America'";
                 var cmd = new MySqlCommand(sql, conn);
                 var reader = cmd.ExecuteReader();

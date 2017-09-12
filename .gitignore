@@ -265,3 +265,9 @@ __pycache__/
 data/
 /data
 /data/entomology-data.csv
+
+SQLFitness/catenated-source\.txt
+
+*.sql
+
+*.dump
