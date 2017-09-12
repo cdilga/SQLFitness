@@ -8,36 +8,57 @@ namespace SQLFitness
 {
     public class Projection : IChromosome
     {
-        private string _column { get; }
-
+        private string _column { get; set; }
+        private MySqlConnection _conn { get; }
 
         /// <summary>
         /// Takes a database table in to initialise to one of the valid values
+        /// This is currently not able to deal with DBMS other than MySql as it's types are 
+        /// dependent on MySql.Data.MySqlClient
         /// </summary>
         public Projection(MySqlConnection conn)
+        {
+            this._conn = conn;
+            Mutate(conn);
+        }
+
+        public void Mutate()
+        {
+            Mutate(this._conn);
+        }
+
+        public void Mutate(MySqlConnection conn)
         {
             //Has a value for select
             //Get a database table - pull all possible values in (columns)
             //Initialise the projection to a random one of these 
 
-            //Get out the first row
-            var command = new MySqlCommand("SELECT * FROM country WHERE 1 = 0", conn);
-            conn.Open();
-
-            //Iterate through all of the rows and pick a row number and a type
-            IDataReader reader = command.ExecuteReader(CommandBehavior.SchemaOnly);
-            DataTable schema = reader.GetSchemaTable();
-            for (var i = 0; i < reader.FieldCount; i++)
+            try
             {
-                Console.Write(schema.ToString());
+                Console.WriteLine("Connecting");
+                conn.Open();
+                var sql = "SELECT * FROM country";
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = cmd.ExecuteReader();
+
+                //Get a random column name
+                var random = new Random();
+                _column = reader.GetName(random.Next(0, reader.FieldCount));
+
+                //var testProjection = new Projection(reader);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
 
             conn.Close();
+            Console.WriteLine("Done.");
+            
         }
 
-        public void Mutate()
-        {
+        public string ToSql() => this._column;
 
-        }
     }
 }
