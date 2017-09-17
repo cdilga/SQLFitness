@@ -11,7 +11,8 @@ namespace SQLFitness
         {
             //connect to a mysqldb and execute an example query
 
-            var connStr = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
+            
+            const string connStr = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
             var conn = new MySqlConnection(connStr);
             try
             {
