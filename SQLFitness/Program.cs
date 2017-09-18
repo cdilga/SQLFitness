@@ -46,6 +46,9 @@ namespace SQLFitness
                 var testInterpreter = new Interpreter("country");
                 Console.WriteLine(testInterpreter.Parse(new Individual(data, dataGetter)));
             }
+
+            var db = new DBAccess();
+            db.ValidColumnGetter();
             Console.ReadLine();
         }
     }
