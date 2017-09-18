@@ -7,33 +7,60 @@ namespace SQLFitness
 {
     class Interpreter
     {
-        private readonly Individual _sqlIndividual;
+        private Individual _sqlIndividual;
         private readonly string _tableName;
 
         //This object is required to communicate with the DBAccess to get a subset of the data back
         //This object will know about SQL Syntax. An interpreter is essentially a kind of parser, so It'll be passed in an individual which it will then convert into something usable
-        public Interpreter(Individual sqlIndividual, string tableName)
+        public Interpreter( string tableName)
         {
-            _sqlIndividual = sqlIndividual;
+            
             _tableName = tableName;
         }
 
-        private string _generateSql(Projection chromosome)
+        public string Parse(Individual sqlIndividual)
         {
-            
+            _sqlIndividual = sqlIndividual;
+            return _generateSql(sqlIndividual.Genome);
         }
 
+        private string _concatenate(List<IChromosome> chromosomes)
+        {
+            return String.Join(" ", chromosomes);
+        }
+
+        private List<IChromosome> selectType(List<IChromosome> chromosomes, Type type)
+        {
+            var returnList = new List<IChromosome>();
+            foreach (var chromosome in chromosomes)
+            {
+                if (chromosome.GetType() == type)
+                {
+                    returnList.Add(chromosome);
+                }
+            }
+            return returnList;
+        }
         private string _generateSql(List<IChromosome> chromosomes)
         {
-            foreach (IChromosome chromosome in chromosomes)
-            {
-                //basically, if it's projection we are going to add it in after SELECT and before anything else FROM tableName
-                //or if it's a projection we're going to have to 
-            }
-            List<IChromosome> _projections = chromosomes.Where(chromosome => chromosome.GetType() == typeof(Projection)).ToList<IChromosome>();
+            List<IChromosome> _projections = selectType(chromosomes, typeof(Projection));
+            List<IChromosome> _selections = selectType(chromosomes, typeof(Selection));
 
             var catenatedProjections = String.Join(" ", _projections);
-            return $"SELECT { catenatedProjections } FROM { _tableName }";
+            var selectComponent = catenatedProjections.Any() ? catenatedProjections : "*";
+            var query = $"SELECT { selectComponent } FROM { _tableName }";
+
+            var catenatedSelections = String.Join(" AND ", _selections);
+            if (catenatedSelections.Any())
+            {
+                query += $" WHERE {catenatedSelections}";
+            }
+            //var catenatedGrouping = String.Join(" ", _groups);
+            // if (catenatedSelections.Any())
+            //{
+            //    query += $"GROUP BY {catenatedGrouping}";
+            //}
+            return query;
         }
     }
 }

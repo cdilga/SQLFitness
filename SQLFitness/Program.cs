@@ -36,8 +36,17 @@ namespace SQLFitness
 
             conn.Close();
             Console.WriteLine("Done.");
-            Console.ReadLine();
+            
+            Func<string, List<object>> dataGetter = x => new List<object> { "Data 1", "Data 2", "Data 3" };
+            List<string> data = new List<string> { "Column 1", "Column 2", "Column 3", "Column 4" };
+            
 
+            for (var i = 0; i < 30; i++)
+            {
+                var testInterpreter = new Interpreter("country");
+                Console.WriteLine(testInterpreter.Parse(new Individual(data, dataGetter)));
+            }
+            Console.ReadLine();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace SQLFitness
             _population = new Population();
         }
 
-        private void _selection(Func<Individual, float> fitness)
+        private void _selection(Func<Individual, double> fitness)
         {
             //Assigns a fitness to each individual
             //Orders by the fitness
@@ -36,7 +36,7 @@ namespace SQLFitness
 
         public void Evolve()
         {
-            _selection();
+            _selection(x => 3.1415);
             _crossover();
             _mutate();
         }

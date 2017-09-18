@@ -32,5 +32,7 @@ namespace SQLFitness
         //This assumes that the same data that was valid at object creation time is still valid when a new object is instantiated.
         //This is done to reduce coupling though could be implemented via a getter as the second paramter is if this ever were to change.
         public IChromosome Mutate() => new Selection(_validData, _validDataGetter);
+
+        public override string ToString() => $"{this.Field} {this.Operator} {this.Condition}";
     }
 }

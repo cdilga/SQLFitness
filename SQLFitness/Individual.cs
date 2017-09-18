@@ -12,7 +12,7 @@ namespace SQLFitness
 
         public Individual(List<String> validColumns, Func<string, List<object>> validDataGetter)
         {
-            const int length = 50;
+            const int length = 5;
             for (var i = 0; i < length; i++)
             {
                 this.Genome.Add(_generateRandomChromosome(validColumns, validDataGetter));
