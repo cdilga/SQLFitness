@@ -31,6 +31,7 @@ namespace SQLFitness
 
         private List<IChromosome> selectType(List<IChromosome> chromosomes, Type type)
         {
+            //TODO Think about how I can use overloading to fix this
             var returnList = new List<IChromosome>();
             foreach (var chromosome in chromosomes)
             {
