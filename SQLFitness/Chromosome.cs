@@ -4,10 +4,16 @@ using System.Text;
 
 namespace SQLFitness
 {
-    public interface IChromosome
+    public abstract class Chromosome
     {
-        IChromosome Mutate();
-        string Field { get; }
+
+        public abstract Chromosome Mutate();
+        protected string _field;
+        virtual public string Field { get => _field; }
+        
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() => this.Field;
 
         //A property must exist that is then used by the other classes to generate MySQL queries, perferably 
         //non stringy so that it can be easily swapped out with another language

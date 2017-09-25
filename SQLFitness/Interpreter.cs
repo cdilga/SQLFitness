@@ -24,14 +24,14 @@ namespace SQLFitness
             return _generateSql(sqlIndividual.Genome);
         }
 
-        private string _concatenate(List<IChromosome> chromosomes)
+        private string _concatenate(List<Chromosome> chromosomes)
         {
             return String.Join(" ", chromosomes);
         }
 
-        private List<IChromosome> selectType(List<IChromosome> chromosomes, Type type)
+        private List<Chromosome> selectType(List<Chromosome> chromosomes, Type type)
         {
-            var returnList = new List<IChromosome>();
+            var returnList = new List<Chromosome>();
             foreach (var chromosome in chromosomes)
             {
                 if (chromosome.GetType() == type)
@@ -41,10 +41,10 @@ namespace SQLFitness
             }
             return returnList;
         }
-        private string _generateSql(List<IChromosome> chromosomes)
+        private string _generateSql(List<Chromosome> chromosomes)
         {
-            List<IChromosome> _projections = selectType(chromosomes, typeof(Projection));
-            List<IChromosome> _selections = selectType(chromosomes, typeof(Selection));
+            List<Chromosome> _projections = selectType(chromosomes, typeof(Projection));
+            List<Chromosome> _selections = selectType(chromosomes, typeof(Selection));
 
             var catenatedProjections = String.Join(" ", _projections);
             var selectComponent = catenatedProjections.Any() ? catenatedProjections : "*";

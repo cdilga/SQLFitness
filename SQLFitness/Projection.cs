@@ -6,9 +6,8 @@ using MySql.Data.MySqlClient;
 
 namespace SQLFitness
 {
-    public class Projection : IChromosome
+    public class Projection : Chromosome
     {
-        public string Field { get; }
         private readonly List<string> _validFields;
 
         /// <summary>
@@ -20,13 +19,10 @@ namespace SQLFitness
         {
             _validFields = validFields;
             var index = Utility.GetRandomNum(validFields.Count);
-            this.Field = validFields[index];
+            //Unsure about OOP design principles here. I've got an abstract class but have to assign values to this in the constructor of the base classes
+            _field = validFields[index];
         }
 
-        public IChromosome Mutate() => new Projection(_validFields);
-
-        /// <summary>Returns a string that represents the current object.</summary>
-        /// <returns>A string that represents the current object.</returns>
-        public override string ToString() => this.Field;
+        public override Chromosome Mutate() => new Projection(_validFields);
     }
 }

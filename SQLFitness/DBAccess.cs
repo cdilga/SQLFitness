@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SQLFitness
 {
-    class DBAccess
+    public class DBAccess
     {
         private readonly string _tableName;
         const string connStr = Utility.ConnString;
