@@ -11,6 +11,6 @@ namespace SQLFitness
         {
             _db = db;
         }
-        public double evaluate(Individual individual) => throw new NotImplementedException();
+        public double Evaluate(Individual individual) => throw new NotImplementedException();
     }
 }
