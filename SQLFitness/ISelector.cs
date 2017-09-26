@@ -6,6 +6,6 @@ namespace SQLFitness
 {
     interface ISelector
     {
-        double evaluate(Individual individual);
+        double Evaluate(Individual individual);
     }
 }

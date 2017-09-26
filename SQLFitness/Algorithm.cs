@@ -23,8 +23,17 @@ namespace SQLFitness
         private void _selection(ISelector selector)
         {
             //Assigns a fitness to each individual
+            
+            foreach (var individual in _population)
+            {
+                individual.Fitness = selector.Evaluate(individual);
+            }
+
             //Orders by the fitness
+
+            _population.Sort();
             //Create a mating pool from the best
+
             //Some mechanism needs to assign a fitness to each one
             //Something needs to sort it
         }
