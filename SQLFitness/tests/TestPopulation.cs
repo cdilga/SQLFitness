@@ -32,7 +32,7 @@ namespace SQLFitness
         public void TestSort()
         {
             // TODO: Add your test code here
-            Assert.Pass("Your first passing test");
+            Assert.Fail("Not Implemented");
         }
     }
 }

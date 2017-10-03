@@ -10,9 +10,14 @@ namespace SQLFitness
         public double Fitness { get; set; }
         public List<Chromosome> Genome { get; set; } = new List<Chromosome>();
         //Make this a private constructor so that only an individual can care about how long new individual is 
+        private List<String> _validColumns;
+        private Func<string, List<object>> _validDataGetter;
 
         public Individual(List<String> validColumns, Func<string, List<object>> validDataGetter)
         {
+            _validColumns = validColumns;
+            _validDataGetter = validDataGetter;
+
             const int length = 5;
             for (var i = 0; i < length; i++)
             {
@@ -53,6 +58,24 @@ namespace SQLFitness
             //The .Invoke is used as an alternative to putting GetRandomValue()(validColumns, validDataGetter);
             //Initialise it
             //return the new instance
+        }
+
+        public Individual Cross(Individual spouse)
+        {
+            //There are several cases here - we have two children, or we have one starting with this's genome, or we have one ending with this's genome
+            var newIndividual = new Individual(_validColumns, _validDataGetter);
+            //Cut at random point along this
+            
+            for (var i = 0; i < Utility.GetRandomNum(this.Genome.Count); i++)
+            {
+                newIndividual.Genome.Add(this.Genome[i]);
+            }
+            for (var i = Utility.GetRandomNum(spouse.Genome.Count); i < spouse.Genome.Count; i++)
+            {
+                newIndividual.Genome.Add(spouse.Genome[i]);
+            }
+            //Cut at random point along them
+            return newIndividual;
         }
     }
 }

@@ -4,7 +4,10 @@ using System.Text;
 
 namespace SQLFitness
 {
-    interface ISelector
+    /// <summary>
+    /// Implement a fitness function to be performed on an individual
+    /// </summary>
+    interface IFitness
     {
         double Evaluate(Individual individual);
     }

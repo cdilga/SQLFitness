@@ -52,7 +52,7 @@
     <Compile Include="DBSelector.cs" />
     <Compile Include="Individual.cs" />
     <Compile Include="Interpreter.cs" />
-    <Compile Include="ISelector.cs" />
+    <Compile Include="IFitness.cs" />
     <Compile Include="Population.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projection.cs" />
@@ -63,7 +63,12 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".dockerignore">
+      <DependentUpon>Dockerfile</DependentUpon>
+    </None>
     <None Include="app.config" />
+    <None Include="docker-compose.yml" />
+    <None Include="Dockerfile" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

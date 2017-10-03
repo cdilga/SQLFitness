@@ -49,6 +49,7 @@ namespace SQLFitness
             return dataSet;
         }
 
+        //This needs to be moved to an IFitness
         public double evaluateFitness(string sql)
         {
             var fieldDist = 0;
