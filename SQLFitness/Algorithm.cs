@@ -51,9 +51,10 @@ namespace SQLFitness
             {
                 //Pick two random individuals
 
-                var i1 = Utility.GetRandomValue(_matingPool);
-                var i2 = Utility.GetRandomValue(_matingPool);
+                var i1 = _matingPool.GetRandomValue();
+                var i2 = _matingPool.GetRandomValue();
                 _matingPool.Add(i1.Cross(i2));
+                _matingPool.Add(i2.Cross(i1));
             }
         }
 
