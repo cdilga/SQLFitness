@@ -7,7 +7,7 @@ namespace SQLFitness
     class Algorithm
     {
         double _matingProp = 0.5;
-
+        IFitness _selector;
         private Population _population;
         private Population _matingPool;
 
@@ -16,22 +16,18 @@ namespace SQLFitness
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
         /// <param name="db">Database which the algorithm is going to be run on</param>
-        public Algorithm(DBAccess db)
+        public Algorithm(DBAccess db, IFitness selector)
         {
             //Create a population
-            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter);
-            _matingPool = new Population() { };
+            _selector = selector;
+            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, selector);
+            _matingPool = new Population(_selector);
             _db = db;
         }
 
-        private void _selection(IFitness selector)
+        private void _selection()
         {
             //Assigns a fitness to each individual
-            foreach (var individual in _population)
-            {
-                individual.Fitness = selector.Evaluate(individual);
-            }
-
             //Orders by the fitness
             //Something needs to sort it
             _population.Sort();
@@ -45,6 +41,8 @@ namespace SQLFitness
 
         private void _crossover()
         {
+            //clear out the population
+            _population = new Population(_selector);
             //Cross one with the other and add the result to to pool, untill the last size of the mating pool is reached.
 
             while (_matingPool.Count < _population.Count)
@@ -53,8 +51,8 @@ namespace SQLFitness
 
                 var i1 = _matingPool.GetRandomValue();
                 var i2 = _matingPool.GetRandomValue();
-                _matingPool.Add(i1.Cross(i2));
-                _matingPool.Add(i2.Cross(i1));
+                _population.Add(i1.Cross(i2));
+                _population.Add(i2.Cross(i1));
             }
         }
 
@@ -66,7 +64,7 @@ namespace SQLFitness
         //Talk through this design
         public void Evolve()
         {
-            _selection(new DBSelector(_db));
+            _selection();
             _crossover();
             //_mutate();
             _population = _matingPool;

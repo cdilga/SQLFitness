@@ -7,7 +7,7 @@ namespace SQLFitness
 {
     public class Individual
     {
-        public double Fitness { get; set; }
+        public Fitness Fitness { get; set; }
         public List<Chromosome> Genome { get; set; } = new List<Chromosome>();
         //Make this a private constructor so that only an individual can care about how long new individual is 
         private List<String> _validColumns;
@@ -30,10 +30,10 @@ namespace SQLFitness
         //Setup a static constructor that is run only once whenever the first individual is initialised
         static Individual()
         {
-            InitialiseChromosomeFactory();
+            _initialiseChromosomeFactory();
         }
 
-        private static void InitialiseChromosomeFactory()
+        private static void _initialiseChromosomeFactory()
         {
             //This is a lis of all of the possible functions that can be run, which will take in a list and return a function, which will then take a string and return a list from that string
             //The end result is that the ChromosomeFactories allows a list and a function that can be run once a given item in the list has been chosen by the Chromosome
