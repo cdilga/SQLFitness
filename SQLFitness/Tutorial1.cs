@@ -5,6 +5,9 @@ using System.Text;
 
 namespace SQLFitness
 {
+    /// <summary>
+    /// Dead code
+    /// </summary>
     class Tutorial1
     {
         public Tutorial1()

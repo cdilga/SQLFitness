@@ -16,11 +16,11 @@ namespace SQLFitness
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
         /// <param name="db">Database which the algorithm is going to be run on</param>
-        public Algorithm(DBAccess db, IFitness selector)
+        public Algorithm(DBAccess db)
         {
-            //Create a population
-            _selector = selector;
-            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, selector);
+            //Setup params for most of the class here:
+            _selector = new DBSelector(db, new Interpreter(db.TableName));
+            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector);
             _matingPool = new Population(_selector);
             _db = db;
         }

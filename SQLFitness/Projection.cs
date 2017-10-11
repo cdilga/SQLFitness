@@ -16,11 +16,12 @@ namespace SQLFitness
         public Projection(List<string> validFields)
         {
             _validFields = validFields;
-            var index = Utility.GetRandomNum(validFields.Count);
             //Unsure about OOP design principles here. I've got an abstract class but have to assign values to this in the constructor of the base classes
-            _field = validFields[index];
+
+            _field = validFields.GetRandomValue();
         }
 
+        //TODO fix this unimplemented thing
         public override Chromosome Mutate() => new Projection(_validFields);
     }
 }

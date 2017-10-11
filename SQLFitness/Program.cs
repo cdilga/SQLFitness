@@ -9,9 +9,20 @@ namespace SQLFitness
     {
         static void Main(string[] args)
         {
-            //connect to a mysqldb and execute an example query
 
-            
+            //Create a dbaccess
+            var db = new DBAccess();
+            var basicGA = new Algorithm(db);
+            for (var i = 0; i < 10000; i++)
+            {
+                basicGA.Evolve();
+            }
+            db.Close();
+            Console.WriteLine("Done");
+        }
+
+        private static void Extra()
+        {
             const string connStr = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
             var conn = new MySqlConnection(connStr);
             try
@@ -22,7 +33,8 @@ namespace SQLFitness
                 var cmd = new MySqlCommand(sql, conn);
                 var reader = cmd.ExecuteReader();
                 var columns = new List<string>();
-                for (var i = 0; i < reader.FieldCount; i++) {
+                for (var i = 0; i < reader.FieldCount; i++)
+                {
                     columns.Add(reader.GetName(i));
                     Console.WriteLine(reader.GetName(i));
                 }
@@ -36,10 +48,10 @@ namespace SQLFitness
 
             conn.Close();
             Console.WriteLine("Done.");
-            
+
             Func<string, List<object>> dataGetter = x => new List<object> { "Data 1", "Data 2", "Data 3" };
             List<string> data = new List<string> { "Column 1", "Column 2", "Column 3", "Column 4" };
-            
+
 
             for (var i = 0; i < 30; i++)
             {

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SQLFitness
 {
-    class Interpreter
+    public class Interpreter
     {
         private Individual _sqlIndividual;
         private readonly string _tableName;
@@ -45,7 +45,7 @@ namespace SQLFitness
             List<Chromosome> _projections = selectType(chromosomes, typeof(Projection));
             List<Chromosome> _selections = selectType(chromosomes, typeof(Selection));
 
-            var catenatedProjections = String.Join(" ", _projections);
+            var catenatedProjections = String.Join(",", _projections.Select(x => $"`{x.ToString()}`"));
             var selectComponent = catenatedProjections.Any() ? catenatedProjections : "*";
             var query = $"SELECT { selectComponent } FROM { _tableName }";
 
@@ -54,6 +54,7 @@ namespace SQLFitness
             {
                 query += $" WHERE {catenatedSelections}";
             }
+
             //var catenatedGrouping = String.Join(" ", _groups);
             // if (catenatedSelections.Any())
             //{

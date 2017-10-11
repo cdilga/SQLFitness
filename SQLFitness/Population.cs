@@ -34,7 +34,7 @@ namespace SQLFitness
 
         new public void Sort()
         {
-            Sort((Individual x, Individual y) => (int)((x.Fitness - y.Fitness) / Math.Pow(x.Fitness - y.Fitness, 2)));
+            Sort((Individual x, Individual y) => x.Fitness.Value.CompareTo(y.Fitness.Value));
         }
     }
 }
