@@ -13,7 +13,7 @@ namespace SQLFitness
         private DBAccess _db;
         private Interpreter _interpreter;
         const string connStr = Utility.ConnString;
-        private MySqlConnection conn = new MySqlConnection(connStr);
+        //private MySqlConnection conn = new MySqlConnection(connStr);
 
         public DBSelector(DBAccess db, Interpreter interpreter)
         {
@@ -23,11 +23,14 @@ namespace SQLFitness
 
         public double Evaluate(Individual individual)
         {
+            Console.WriteLine(_interpreter.Parse(individual));
+            return 1;
             var fieldDist = 0;
             var rowDist = 0;
             var numRowDist = 0;
             try
             {
+                _db.Conn.Open();
                 //Console.WriteLine("Connecting");
                 var cmd = new MySqlCommand(_interpreter.Parse(individual), _db.Conn);
                 Console.WriteLine(cmd.CommandText);
@@ -57,6 +60,11 @@ namespace SQLFitness
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                //TODO fix this 
+                _db.Conn.Close();
             }
             return fieldDist + rowDist + numRowDist;
         }

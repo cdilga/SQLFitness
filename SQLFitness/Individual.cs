@@ -9,7 +9,6 @@ namespace SQLFitness
     {
         public Fitness Fitness { get; set; }
         public List<Chromosome> Genome { get; set; } = new List<Chromosome>();
-        //Make this a private constructor so that only an individual can care about how long new individual is 
         private List<String> _validColumns;
         private Func<string, List<object>> _validDataGetter;
 
@@ -39,7 +38,7 @@ namespace SQLFitness
             //The end result is that the ChromosomeFactories allows a list and a function that can be run once a given item in the list has been chosen by the Chromosome
             //Here we use expression lambdas: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/lambda-expressions
             //which allow us to specify some input parameters for the function. Even if they're not used obviously they are being passed into each lambda expression and thus must still be defined
-            ChromosomeFactories = new List<Func<List<string>, Func<string, List<object>>, Chromosome>> {
+            _chromosomeFactories = new List<Func<List<string>, Func<string, List<object>>, Chromosome>> {
                 (validColumns, validDataGetter) => new Projection(validColumns),
                 (validColumns, validDataGetter) => new Selection(validColumns, validDataGetter)
                 //(validColumns, validDataGetter) => new GroupBy(validDataGetter);
@@ -47,14 +46,15 @@ namespace SQLFitness
             };
         }
 
-        private static List<Func<List<String>, Func<string, List<object>>, Chromosome>> ChromosomeFactories;
+        private static List<Func<List<String>, Func<string, List<object>>, Chromosome>> _chromosomeFactories;
 
         //Only instances of individuals can access this
         private static Chromosome _generateRandomChromosome(List<String> validColumns, Func<string, List<object>> validDataGetter)
         {
             //https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
             //This is useful because we're essentially - in our utility class - extending the IEnumerable types but without having to inherit a base class
-            return ChromosomeFactories.GetRandomValue().Invoke(validColumns, validDataGetter);
+            var random = Utility.GetRandomNum();
+            return _chromosomeFactories[random<=50? 0: 1 ].Invoke(validColumns, validDataGetter);
             //The .Invoke is used as an alternative to putting GetRandomValue()(validColumns, validDataGetter);
             //Initialise it
             //return the new instance

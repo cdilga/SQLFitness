@@ -1,0 +1,552 @@
+############################################
+## Check out the source on GitHub:        ##
+## https://github.com/cdilga/SQLFitness   ##
+############################################
+
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SQLFitness
+{
+    class Algorithm
+    {
+        private Population _population { get; set; }
+        /// <summary>
+        /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
+        /// </summary>
+        public Algorithm()
+        {
+            //Create a population
+            _population = new Population();
+        }
+
+        private void _selection(Func<Individual, double> fitness)
+        {
+            //Assigns a fitness to each individual
+            //Orders by the fitness
+            //Throws out some number of individuals from the population
+            //Create a new population from
+        }
+
+        private void _crossover()
+        {
+
+        }
+
+        private void _mutate()
+        {
+
+        }
+
+        public void Evolve()
+        {
+            _selection(x => 3.1415);
+            _crossover();
+            _mutate();
+        }
+    }
+}
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Text;
+
+namespace SQLFitness
+{
+    class DBAccess
+    {
+        private readonly string _tableName;
+        const string connStr = Utility.ConnString;
+        private MySqlConnection conn = new MySqlConnection(connStr);
+
+        public DBAccess(string tableName)
+        {
+            _tableName = tableName;
+
+        }
+
+        public DBAccess() : this(Utility.TableName)
+        {
+        }
+
+        //This could also be implemented via IValidColumns or something similar
+        public List<object> ValidDataGetter(string column)
+        {
+            var dataSet = new List<object>();
+            try
+            {
+                Console.WriteLine("Connecting");
+                conn.Open();
+                var sql = $"SELECT {column} FROM {_tableName}";
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    dataSet.Add(reader[0]);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            conn.Close();
+            return dataSet;
+        }
+
+        public double evaluateFitness(string sql)
+        {
+            var fieldDist = 0;
+            var rowDist = 0;
+            var numRowDist = 0;
+            try
+            {
+                Console.WriteLine("Connecting");
+                conn.Open();
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = cmd.ExecuteReader();
+                var dataList = new List<List<object>>();
+
+                numRowDist = Math.Abs(reader.FieldCount - 1);
+                //Get the column name of the first column (the only one that is going to matter here)
+                reader.Read();
+                //Do a new query for the schema, and find the distance to the name
+                fieldDist = ValidColumnGetter().IndexOf(reader[0].ToString());
+                do
+                {
+                    //TODO find where else this is to prevent having huge rows without resetting
+                    var rowList = new List<object>();
+                    for (var i = 0; i < reader.FieldCount; i++)
+                    {
+                        rowList.Add(reader[i]);
+                    }
+                    dataList.Add(rowList);
+                } while (reader.Read());
+                reader.Close();
+
+                //Couldn't be bothered writing this for specific rows - too hard
+                rowDist = Math.Abs(10 - dataList.Count);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+
+            return fieldDist + rowDist + numRowDist;
+        }
+
+        public List<string> ValidColumnGetter()
+        {
+
+
+            //Has a value for select
+            //Get a database table - pull all possible values in (columns)
+            //Initialise the projection to a random one of these
+
+            //Get out the first row
+            var columnList = new List<string>();
+            try
+            {
+                conn.Open();
+
+                var command = new MySqlCommand($"SELECT * FROM {_tableName} WHERE 1 = 0" , conn);
+                //Iterate through all of the rows and pick a row number and a type
+                var reader = command.ExecuteReader();
+
+                for (var i = 0; i < reader.FieldCount; i++)
+                {
+                    columnList.Add(reader.GetName(i));
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            conn.Close();
+            return columnList;
+
+        }
+    }
+}
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SQLFitness
+{
+    public interface IChromosome
+    {
+        IChromosome Mutate();
+        string Field { get; }
+
+        //A property must exist that is then used by the other classes to generate MySQL queries, perferably
+        //non stringy so that it can be easily swapped out with another language
+        //TODO Investigate expression trees as per https://stackoverflow.com/questions/9505189/dynamically-generate-linq-queries
+
+        string ToSql();
+    }
+}
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Reflection;
+
+namespace SQLFitness
+{
+    public class Individual
+    {
+        public List<IChromosome> Genome { get; set; } = new List<IChromosome>();
+        //Make this a private constructor so that only an individual can care about how long new individual is
+
+        public Individual(List<String> validColumns, Func<string, List<object>> validDataGetter)
+        {
+            const int length = 5;
+            for (var i = 0; i < length; i++)
+            {
+                this.Genome.Add(_generateRandomChromosome(validColumns, validDataGetter));
+                //From a list of IChromosomes that we can initialise
+                //Plus something
+            }
+        }
+
+        //Setup a static constructor that is run only once whenever the first individual is initialised
+        static Individual()
+        {
+            InitialiseIChromosomeFactory();
+        }
+        private static void InitialiseIChromosomeFactory()
+        {
+            //This is a lis of all of the possible functions that can be run, which will take in a list and return a function, which will then take a string and return a list from that string
+            //The end result is that the IChromosomeFactories allows a list and a function that can be run once a given item in the list has been chosen by the IChromosome
+            //Here we use expression lambdas: https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/lambda-expressions
+            //which allow us to specify some input parameters for the function. Even if they're not used obviously they are being passed into each lambda expression and thus must still be defined
+            IChromosomeFactories = new List<Func<List<string>, Func<string, List<object>>, IChromosome>> {
+                (validColumns, validDataGetter) => new Projection(validColumns),
+                (validColumns, validDataGetter) => new Selection(validColumns, validDataGetter)
+                //(validColumns, validDataGetter) => new GroupBy(validDataGetter);
+                //add the other types here
+            };
+        }
+
+        private static List<Func<List<String>, Func<string, List<object>>, IChromosome>> IChromosomeFactories;
+
+        //Only instances of individuals can access this
+        private static IChromosome _generateRandomChromosome(List<String> validColumns, Func<string, List<object>> validDataGetter)
+        {
+            //https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
+            //This is useful because we're essentially - in our utility class - extending the IEnumerable types but without having to inherit a base class
+            return IChromosomeFactories.GetRandomValue().Invoke(validColumns, validDataGetter);
+            //The .Invoke is used as an alternative to putting GetRandomValue()(validColumns, validDataGetter);
+            //Initialise it
+            //return the new instance
+        }
+    }
+}
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Linq;
+
+namespace SQLFitness
+{
+    class Interpreter
+    {
+        private Individual _sqlIndividual;
+        private readonly string _tableName;
+
+        //This object is required to communicate with the DBAccess to get a subset of the data back
+        //This object will know about SQL Syntax. An interpreter is essentially a kind of parser, so It'll be passed in an individual which it will then convert into something usable
+        public Interpreter( string tableName)
+        {
+
+            _tableName = tableName;
+        }
+
+        public string Parse(Individual sqlIndividual)
+        {
+            _sqlIndividual = sqlIndividual;
+            return _generateSql(sqlIndividual.Genome);
+        }
+
+        private string _concatenate(List<IChromosome> chromosomes)
+        {
+            return String.Join(" ", chromosomes);
+        }
+
+        private List<IChromosome> selectType(List<IChromosome> chromosomes, Type type)
+        {
+            //TODO Think about how I can use overloading to fix this
+            var returnList = new List<IChromosome>();
+            foreach (var chromosome in chromosomes)
+            {
+                if (chromosome.GetType() == type)
+                {
+                    returnList.Add(chromosome);
+                }
+            }
+            return returnList;
+        }
+        private string _generateSql(List<IChromosome> chromosomes)
+        {
+            List<IChromosome> _projections = selectType(chromosomes, typeof(Projection));
+            List<IChromosome> _selections = selectType(chromosomes, typeof(Selection));
+
+            var catenatedProjections = String.Join(" ", _projections);
+            var selectComponent = catenatedProjections.Any() ? catenatedProjections : "*";
+            var query = $"SELECT { selectComponent } FROM { _tableName }";
+
+            var catenatedSelections = String.Join(" AND ", _selections);
+            if (catenatedSelections.Any())
+            {
+                query += $" WHERE {catenatedSelections}";
+            }
+            //var catenatedGrouping = String.Join(" ", _groups);
+            // if (catenatedSelections.Any())
+            //{
+            //    query += $"GROUP BY {catenatedGrouping}";
+            //}
+            return query;
+        }
+    }
+}
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SQLFitness
+{
+    public class Population
+    {
+        //Fix this so that population has behaviour and attributes that make sense for a population
+
+        //A population needs to be able to be added to another existing population in place
+        public List<Individual> _individuals;
+        public Population(int n)
+        {
+            //Generate a population of indivuduals of size n
+
+        }
+
+        public Population() : this(100)
+        {
+
+        }
+    }
+}
+﻿using System;
+using System.Data;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+
+namespace SQLFitness
+{
+    static class Program
+    {
+        static void Main(string[] args)
+        {
+            //connect to a mysqldb and execute an example query
+
+
+            const string connStr = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
+            var conn = new MySqlConnection(connStr);
+            try
+            {
+                Console.WriteLine("Connecting");
+                conn.Open();
+                var sql = "SELECT * FROM country";
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = cmd.ExecuteReader();
+                var columns = new List<string>();
+                for (var i = 0; i < reader.FieldCount; i++) {
+                    columns.Add(reader.GetName(i));
+                    Console.WriteLine(reader.GetName(i));
+                }
+                //var testProjection = new Projection(reader);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            conn.Close();
+            Console.WriteLine("Done.");
+
+            Func<string, List<object>> dataGetter = x => new List<object> { "Data 1", "Data 2", "Data 3" };
+            List<string> data = new List<string> { "Column 1", "Column 2", "Column 3", "Column 4" };
+
+
+            for (var i = 0; i < 30; i++)
+            {
+                var testInterpreter = new Interpreter("country");
+                Console.WriteLine(testInterpreter.Parse(new Individual(data, dataGetter)));
+            }
+
+            var db = new DBAccess();
+            db.ValidColumnGetter();
+            Console.ReadLine();
+        }
+    }
+}﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data;
+using MySql.Data.MySqlClient;
+
+namespace SQLFitness
+{
+    public class Projection : IChromosome
+    {
+        public string Field { get; }
+        private readonly List<string> _validFields;
+
+        /// <summary>
+        /// Takes a database table in to initialise to one of the valid values
+        /// These will be immutable
+        /// </summary>
+        /// <param name="validFields">List of valid options to choose from</param>
+        public Projection(List<string> validFields)
+        {
+            _validFields = validFields;
+            var index = Utility.GetRandomNum(validFields.Count);
+            this.Field = validFields[index];
+        }
+
+        public IChromosome Mutate() => new Projection(_validFields);
+
+        /// <summary>Returns a string that represents the current object.</summary>
+        /// <returns>A string that represents the current object.</returns>
+        public override string ToString() => this.Field;
+    }
+}
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SQLFitness
+{
+    public class Selection : IChromosome
+    {
+        //private enum Operator { equal, notEqual, greaterThan, lessThan, greaterThanEqual, lessThanEqual }
+        public string Field { get; }
+        public string Operator { get; }
+        public string Condition { get; }
+
+        private readonly Func<string, List<object>> _validDataGetter;
+        private readonly List<string> _validData;
+
+        public Selection (List<string> validData, Func<string, List<object>>validDataGetter)
+        {
+            //Has an operator
+            //Has a condition (might be a numerical value or something) - sourced from the database
+            //Has a value (i.e. attribute name)
+            _validData = validData;
+            _validDataGetter = validDataGetter;
+            this.Operator = new List<string> { "<", ">", "=", "<>", ">=", "<=" }.GetRandomValue();
+            this.Field = validData.GetRandomValue();
+
+            //TODO Generics warning - this is a point at which the object values are converted into stringy representations
+            //Could need to be different in future, unsure of how this will play out
+            this.Condition = validDataGetter(this.Field).GetRandomValue().ToString();
+        }
+
+        //This assumes that the same data that was valid at object creation time is still valid when a new object is instantiated.
+        //This is done to reduce coupling though could be implemented via a getter as the second paramter is if this ever were to change.
+        public IChromosome Mutate() => new Selection(_validData, _validDataGetter);
+
+        public override string ToString() => $"{this.Field} {this.Operator} {this.Condition}";
+    }
+}
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Data;
+using MySql.Data;
+using MySql.Data.MySqlClient;
+
+namespace SQLFitness
+{
+    class Tutorial1
+    {
+        public Tutorial1()
+        {
+            //For some reason the DotNetCore implementation of the ADO SQL adapter? does not support SSL at this stage...
+            var connStr = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
+            var conn = new MySqlConnection(connStr);
+            try
+            {
+                Console.WriteLine("Connecting");
+                conn.Open();
+                _listPeople(conn);
+                //_insertCountry(conn);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            conn.Close();
+            Console.WriteLine("Done.");
+        }
+
+        private void _insertCountry(MySqlConnection conn)
+        {
+            var sql = "INSERT INTO country (name, headofstate, continent) VALUES ('Disneyland', 'Mickey Mouse', 'North America')";
+            var cmd = new MySqlCommand(sql, conn);
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        private void _listPeople(MySqlConnection conn)
+        {
+            try
+            {
+                var sql = "SELECT name, headofstate FROM country WHERE continent='North America'";
+                var cmd = new MySqlCommand(sql, conn);
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Console.WriteLine(reader[0] + " -- " + reader[1]);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+    }
+}
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SQLFitness
+{
+    static class Utility
+    {
+        private static Random _randomGenerator = new Random();
+
+        public static int GetRandomNum(int min, int max) => _randomGenerator.Next(min, max);
+        public static int GetRandomNum(int max = 100) => _randomGenerator.Next(max);
+        public static T GetRandomValue<T>(this List<T> list) => list[GetRandomNum(list.Count)];
+
+        //Note that const fields are always static
+        public const string ConnString = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
+        public const string TableName = "country";
+    }
+}

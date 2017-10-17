@@ -13,15 +13,17 @@ namespace SQLFitness
             //Create a dbaccess
             var db = new DBAccess();
             var basicGA = new Algorithm(db);
-            for (var i = 0; i < 10000; i++)
+            for (var i = 0; i < 100; i++)
             {
                 basicGA.Evolve();
+                Console.WriteLine($"===========\nIteration: {i}");
             }
             db.Close();
             Console.WriteLine("Done");
+            Console.ReadLine();
         }
 
-        private static void Extra()
+        private static void Legacy()
         {
             const string connStr = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
             var conn = new MySqlConnection(connStr);

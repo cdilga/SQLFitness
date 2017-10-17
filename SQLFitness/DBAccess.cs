@@ -12,13 +12,14 @@ namespace SQLFitness
         public string TableName { get => _tableName; }
         const string connStr = Utility.ConnString;
         public MySqlConnection Conn { get; }
+        private List<string> _columnList;
 
         public DBAccess(string tableName)
         {
             _tableName = tableName;
             Console.WriteLine("Connecting");
             this.Conn = new MySqlConnection(connStr);
-            Conn.Open();
+            
         }
 
         public DBAccess() : this(Utility.TableName) { }
@@ -29,8 +30,8 @@ namespace SQLFitness
             var dataSet = new List<object>();
             try
             {
-                
-                var sql = $"SELECT {column} FROM {_tableName}";
+                Conn.Open();
+                var sql = $"SELECT `{column}` FROM {_tableName}";
                 var cmd = new MySqlCommand(sql, Conn);
                 var reader = cmd.ExecuteReader();
                 
@@ -43,6 +44,10 @@ namespace SQLFitness
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                Conn.Close();
             }
 
             
@@ -61,27 +66,49 @@ namespace SQLFitness
             //Initialise the projection to a random one of these 
 
             //Get out the first row
-            var columnList = new List<string>();
-            try
+            if (_columnList == null)
             {
-                Conn.Open();
 
-                var command = new MySqlCommand($"SELECT * FROM {_tableName} WHERE 1 = 0" , Conn);
-                //Iterate through all of the rows and pick a row number and a type
-                var reader = command.ExecuteReader();
-
-                for (var i = 0; i < reader.FieldCount; i++)
+                _columnList = new List<string>();
+                try
                 {
-                    columnList.Add(reader.GetName(i));
+                    //Do this once and keep a list of all of the column names
+                    try
+                    {
+                        Conn.Open();
+                
+
+                        var command = new MySqlCommand($"SELECT * FROM {_tableName} WHERE 1 = 0" , Conn);
+                        //Iterate through all of the rows and pick a row number and a type
+                        MySqlDataReader reader = command.ExecuteReader();
+
+                        for (var i = 0; i < reader.FieldCount; i++)
+                        {
+                            _columnList.Add(reader.GetName(i));
+                        }
+                        reader.Close();
+                    }
+                    catch
+                    {
+
+                    }
+                    finally
+                    {
+                        Conn.Close();
+
+                    }
                 }
-                reader.Close();
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                finally
+                {
+                
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-            Conn.Close();
-            return columnList;
+
+            return _columnList;
 
         }
     }

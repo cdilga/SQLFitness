@@ -45,14 +45,16 @@ namespace SQLFitness
             _population = new Population(_selector);
             //Cross one with the other and add the result to to pool, untill the last size of the mating pool is reached.
 
-            while (_matingPool.Count < _population.Count)
+            while (_population.Count < _matingPool.Count)
             {
                 //Pick two random individuals
 
                 var i1 = _matingPool.GetRandomValue();
                 var i2 = _matingPool.GetRandomValue();
-                _population.Add(i1.Cross(i2));
-                _population.Add(i2.Cross(i1));
+                var tempChild1 = i1.Cross(i2);
+                var tempChild2 = i2.Cross(i1);
+                _population.Add(tempChild1);
+                _population.Add(tempChild2);
             }
         }
 
