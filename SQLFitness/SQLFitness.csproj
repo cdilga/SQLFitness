@@ -59,6 +59,7 @@
     <Compile Include="Projection.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TerminalFitness.cs" />
     <Compile Include="tests\TestTemplate.cs" />
     <Compile Include="tests\TestChromosome.cs" />
     <Compile Include="tests\TestPopulation.cs" />

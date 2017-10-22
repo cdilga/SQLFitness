@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SQLFitness
 {
     class Algorithm
     {
-        double _matingProp = 0.5;
         IFitness _selector;
         private Population _population;
         private Population _matingPool;
@@ -32,8 +33,8 @@ namespace SQLFitness
             //Something needs to sort it
             _population.Sort();
             //Create a mating pool from the best n proportion
-            double _matingProp = 0.5;
-            for (var i = 0; i < _population.Count * _matingProp; i++)
+            
+            for (var i = 0; i < _population.Count * Utility.MatingProportion; i++)
             {
                 _matingPool.Add(_population[i]);
             }
@@ -45,7 +46,9 @@ namespace SQLFitness
             _population = new Population(_selector);
             //Cross one with the other and add the result to to pool, untill the last size of the mating pool is reached.
 
-            while (_population.Count < _matingPool.Count)
+            //keeps the best parents
+            _population.AddRange(_matingPool);
+            while (_matingPool.Count / Utility.MatingProportion < _population.Count)
             {
                 //Pick two random individuals
 
@@ -58,9 +61,22 @@ namespace SQLFitness
             }
         }
 
-        private void _mutate(Population mutatablePopulation)
+        private void _evaluation()
         {
+            Parallel.ForEach(_population, (x) =>
+            {
+                if (x.Fitness == null)
+                {
+                    //This is a good example of using OO to prevent things from happening by using objects and our custom type
+                    //Example of encapsulation - information hiding
+                    x.Fitness = new Fitness(_population.Evaluate(x));
+                }
+            });
+        }
 
+        private void _mutate()
+        {
+            _population.GetRandomValue().Genome.GetRandomValue().Mutate();
         }
 
         //Talk through this design
@@ -68,7 +84,8 @@ namespace SQLFitness
         {
             _selection();
             _crossover();
-            //_mutate();
+            _mutate();
+            _evaluation();
             _population = _matingPool;
         }
     }
