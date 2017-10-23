@@ -20,7 +20,7 @@ namespace SQLFitness
         public Algorithm(DBAccess db)
         {
             //Setup params for most of the class here:
-            _selector = new DBSelector(db, new Interpreter(db.TableName));
+            _selector = new TerminalFitness();
             _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector);
             _matingPool = new Population(_selector);
             _db = db;
@@ -33,8 +33,8 @@ namespace SQLFitness
             //Something needs to sort it
             _population.Sort();
             //Create a mating pool from the best n proportion
-            
-            for (var i = 0; i < _population.Count * Utility.MatingProportion; i++)
+            var max = _population.Count * Utility.MatingProportion;
+            for (var i = 0; i < max - max%2; i++)
             {
                 _matingPool.Add(_population[i]);
             }
@@ -48,10 +48,10 @@ namespace SQLFitness
 
             //keeps the best parents
             _population.AddRange(_matingPool);
-            while (_matingPool.Count / Utility.MatingProportion < _population.Count)
+            var max = _matingPool.Count / Utility.MatingProportion;
+            while (_population.Count < max)
             {
                 //Pick two random individuals
-
                 var i1 = _matingPool.GetRandomValue();
                 var i2 = _matingPool.GetRandomValue();
                 var tempChild1 = i1.Cross(i2);
@@ -59,6 +59,8 @@ namespace SQLFitness
                 _population.Add(tempChild1);
                 _population.Add(tempChild2);
             }
+            _matingPool = new Population(_selector);
+            if (_matingPool.Count != 0) { throw new IndexOutOfRangeException(nameof(_matingPool) + " not zero"); }
         }
 
         private void _evaluation()
@@ -82,10 +84,14 @@ namespace SQLFitness
         //Talk through this design
         public void Evolve()
         {
-            _selection();
-            _crossover();
-            _mutate();
+            Console.WriteLine(nameof(_evaluation));
             _evaluation();
+            Console.WriteLine(nameof(_selection));
+            _selection();
+            Console.WriteLine(nameof(_crossover));
+            _crossover();
+            Console.WriteLine(nameof(_mutate));
+            _mutate();
             _population = _matingPool;
         }
     }
