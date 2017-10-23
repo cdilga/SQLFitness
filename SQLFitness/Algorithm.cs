@@ -78,7 +78,11 @@ namespace SQLFitness
 
         private void _mutate()
         {
-            _population.GetRandomValue().Genome.GetRandomValue().Mutate();
+            //Not a very good mutate function
+            Individual randomIndividual = _population.GetRandomValue();
+            Chromosome randomChromosome = randomIndividual.Genome.GetRandomValue();
+            //Update the random individual to have the new mutated chromosome, (note, it's necessarily of the same type...)
+            randomChromosome = randomChromosome.Mutate();
         }
 
         //Talk through this design
@@ -92,7 +96,6 @@ namespace SQLFitness
             _crossover();
             Console.WriteLine(nameof(_mutate));
             _mutate();
-            _population = _matingPool;
         }
     }
 }
