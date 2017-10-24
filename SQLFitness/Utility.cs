@@ -24,7 +24,7 @@ namespace SQLFitness
         public const double MatingProportion = 0.5;
 
         //Fitness server settings
-        public const string FitnessServerAddress = "localhost";
+        public const string FitnessServerAddress = "127.0.0.1";
         public const int FitnessServerPort = 44404;
     }
 }

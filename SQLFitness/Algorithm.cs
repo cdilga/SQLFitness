@@ -20,7 +20,7 @@ namespace SQLFitness
         public Algorithm(DBAccess db)
         {
             //Setup params for most of the class here:
-            _selector = new DBSelector(db, new Interpreter());
+            _selector = new TerminalFitness();
             _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector);
             _matingPool = new Population(_selector);
             _db = db;
