@@ -14,11 +14,12 @@ namespace SQLFitness
         {
             var tcpClient = new TcpClient();
             tcpClient.Connect(Utility.FitnessServerAddress, Utility.FitnessServerPort);
-
+            var interpreter = new Interpreter();
+            String sql = interpreter.Parse(individual);
             NetworkStream serverStream = tcpClient.GetStream();
-            byte[] bytesToSend = UnicodeEncoding.UTF8.GetBytes(new Interpreter().Parse(individual));
+            byte[] bytesToSend = UnicodeEncoding.UTF8.GetBytes(sql);
 
-            Console.WriteLine("Sending : " + bytesToSend);
+            Console.WriteLine("Sending : " + sql);
             serverStream.Write(bytesToSend, 0, bytesToSend.Length);
             byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
             int bytesRead = serverStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
