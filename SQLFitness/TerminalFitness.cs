@@ -17,13 +17,13 @@ namespace SQLFitness
             var interpreter = new Interpreter();
             String sql = interpreter.Parse(individual);
             NetworkStream serverStream = tcpClient.GetStream();
-            byte[] bytesToSend = UnicodeEncoding.UTF8.GetBytes(sql);
+            byte[] bytesToSend = Encoding.UTF8.GetBytes(sql);
 
             Console.WriteLine("Sending : " + sql);
             serverStream.Write(bytesToSend, 0, bytesToSend.Length);
             byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
             int bytesRead = serverStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
-            var result = UnicodeEncoding.UTF8.GetString(bytesToRead, 0, bytesRead);
+            var result = Encoding.UTF8.GetString(bytesToRead, 0, bytesRead);
             Console.WriteLine("Received : " + result);
             tcpClient.Close();
             //Console.WriteLine(individual.Genome.Count);

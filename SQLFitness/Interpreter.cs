@@ -64,7 +64,7 @@ namespace SQLFitness
             //{
             //    query += $"GROUP BY {catenatedGrouping}";
             //}
-            return query;
+            return query + ";\n";
         }
     }
 }
