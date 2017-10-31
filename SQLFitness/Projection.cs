@@ -23,5 +23,7 @@ namespace SQLFitness
 
         //TODO fix this unimplemented thing
         public override Chromosome Mutate() => new Projection(_validFields);
+
+        public override string ToString() => this._field;
     }
 }

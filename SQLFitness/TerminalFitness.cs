@@ -13,7 +13,20 @@ namespace SQLFitness
         public double Evaluate(Individual individual)
         {
             var tcpClient = new TcpClient();
-            tcpClient.Connect(Utility.FitnessServerAddress, Utility.FitnessServerPort);
+            while (!tcpClient.Connected)
+            {
+                try
+                {
+                    tcpClient.Connect(Utility.FitnessServerAddress, Utility.FitnessServerPort);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    Console.WriteLine("Connecting failed. Try again?");
+                    Console.ReadLine();
+                }
+            }
+            
             var interpreter = new Interpreter();
             String sql = interpreter.Parse(individual);
 

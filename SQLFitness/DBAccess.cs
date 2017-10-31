@@ -59,44 +59,34 @@ namespace SQLFitness
         }
         public List<string> ValidColumnGetter()
         {
-            
+
 
             //Has a value for select
             //Get a database table - pull all possible values in (columns)
             //Initialise the projection to a random one of these 
 
             //Get out the first row
-            if (_columnList == null)
+            _columnList = new List<string>();
+
+            while (_columnList.Count == 0)
             {
 
-                _columnList = new List<string>();
+
+                //Do this once and keep a list of all of the column names
                 try
                 {
-                    //Do this once and keep a list of all of the column names
-                    try
-                    {
-                        Conn.Open();
+                    Conn.Open();
                 
 
-                        var command = new MySqlCommand($"SELECT * FROM {_tableName} WHERE 1 = 0" , Conn);
-                        //Iterate through all of the rows and pick a row number and a type
-                        MySqlDataReader reader = command.ExecuteReader();
+                    var command = new MySqlCommand($"SELECT * FROM {_tableName} WHERE 1 = 0" , Conn);
+                    //Iterate through all of the rows and pick a row number and a type
+                    MySqlDataReader reader = command.ExecuteReader();
 
-                        for (var i = 0; i < reader.FieldCount; i++)
-                        {
-                            _columnList.Add(reader.GetName(i));
-                        }
-                        reader.Close();
-                    }
-                    catch
+                    for (var i = 0; i < reader.FieldCount; i++)
                     {
-
+                        _columnList.Add(reader.GetName(i));
                     }
-                    finally
-                    {
-                        Conn.Close();
-
-                    }
+                    reader.Close();
                 }
                 catch (Exception ex)
                 {
@@ -104,7 +94,9 @@ namespace SQLFitness
                 }
                 finally
                 {
-                
+                    Conn.Close();
+                    Console.WriteLine("Press enter to continue trying:");
+                    Console.ReadLine();
                 }
             }
 
