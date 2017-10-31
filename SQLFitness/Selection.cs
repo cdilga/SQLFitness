@@ -32,6 +32,6 @@ namespace SQLFitness
         //This is done to reduce coupling though could be implemented via a getter as the second paramter is if this ever were to change.
         public override Chromosome Mutate() => new Selection(_validData, _validDataGetter);
 
-        public override string ToString() => $"{this.Field} {this.Operator} {this.Condition}";
+        public override string ToString() => $"\"{this.Field}\" {this.Operator} \"{this.Condition}\"";
     }
 }

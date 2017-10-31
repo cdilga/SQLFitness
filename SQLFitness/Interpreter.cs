@@ -48,8 +48,13 @@ namespace SQLFitness
         {
             List<Chromosome> _projections = selectType(chromosomes, typeof(Projection));
             List<Chromosome> _selections = selectType(chromosomes, typeof(Selection));
+            var tempSelections = new List<string>();
+            //foreach (var selection in _selections)
+            //{
+            //    tempSelections.Add($"\"{selection}\"");
+            //}
 
-            var catenatedProjections = String.Join(",", _projections.Select(x => $"`{x.ToString()}`"));
+            var catenatedProjections = String.Join(", ", _projections.Select(x => $"`{x.ToString()}`"));
             var selectComponent = catenatedProjections.Any() ? catenatedProjections : "*";
             var query = $"SELECT { selectComponent } FROM { _tableName }";
 

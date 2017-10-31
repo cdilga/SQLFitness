@@ -16,6 +16,7 @@ namespace SQLFitness
             tcpClient.Connect(Utility.FitnessServerAddress, Utility.FitnessServerPort);
             var interpreter = new Interpreter();
             String sql = interpreter.Parse(individual);
+
             NetworkStream serverStream = tcpClient.GetStream();
             byte[] bytesToSend = Encoding.UTF8.GetBytes(sql);
 
@@ -23,22 +24,10 @@ namespace SQLFitness
             serverStream.Write(bytesToSend, 0, bytesToSend.Length);
             byte[] bytesToRead = new byte[tcpClient.ReceiveBufferSize];
             int bytesRead = serverStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
-            var result = Encoding.UTF8.GetString(bytesToRead, 0, bytesRead);
-            Console.WriteLine("Received : " + result);
+            var result = Encoding.UTF8.GetString(bytesToRead, 0, bytesRead).Substring(2);
+
             tcpClient.Close();
-            //Console.WriteLine(individual.Genome.Count);
-            //Process p = new Process();
-            //p.StartInfo.UseShellExecute = false;
-            //p.StartInfo.RedirectStandardOutput = true;
-            //p.StartInfo.FileName = "cmd.exe";
-            //p.StartInfo.Arguments = "/C help";
-            //p.Start();
-
-
-
-            //// To avoid deadlocks, always read the output stream first and then wait.
-            //string output = p.StandardOutput.ReadToEnd();
-            //p.WaitForExit();
+            Console.WriteLine("Received : " + result);
             return Convert.ToDouble(result);
         }
 
