@@ -91,12 +91,12 @@ namespace SQLFitness
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
+                    Console.WriteLine("Press enter to continue trying:");
+                    Console.ReadLine();
                 }
                 finally
                 {
                     Conn.Close();
-                    Console.WriteLine("Press enter to continue trying:");
-                    Console.ReadLine();
                 }
             }
 
