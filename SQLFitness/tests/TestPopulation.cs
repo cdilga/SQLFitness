@@ -14,16 +14,16 @@ namespace SQLFitness
         private static int index = 0;
         private class fit: IFitness
         {
-            public double Evaluate(Individual individual)
+            public double Evaluate(StubIndividual individual)
             {
                 index++;
                 return _fitness[index];
             }
         }
 
-        private static Individual individualFactory(double fitness, List<string> validColumns, Func<string, List<object>> validDataGetter)
+        private static StubIndividual individualFactory(double fitness, List<string> validColumns, Func<string, List<object>> validDataGetter)
         {
-            var individual1 = new Individual(validColumns, validDataGetter);
+            var individual1 = new FlatIndividual(validColumns, validDataGetter);
             individual1.Fitness = new Fitness(fitness);
             return individual1;
         }
@@ -36,17 +36,33 @@ namespace SQLFitness
             _population = new Population(new fit());
             foreach (var x in _fitness)
             {
-                _population.Add(new Individual(validColumns, validDataGetter));
+                _population.Add(new FlatIndividual(validColumns, validDataGetter));
             }
         }
         [Test]
         public void TestSort()
         {
             // TODO: Add your test code here
-            Assert.Fail("Not Implemented");
+            _population = new Population(new fit());
+            var individual1 = new TestIndividual(10.0);
+            var individual2 = new TestIndividual(4.1);
+            var individual3 = new TestIndividual(4.2);
+            _population.Add(individual3);
+            _population.Add(individual2);
+            _population.Add(individual1);
+            _population.Sort();
+            Assert.AreEqual(individual1, _population[0]);
+            Assert.AreEqual(individual3, _population[1]);
+            Assert.AreEqual(individual2, _population[2]);
+
         }
 
-        //Test that a fitness function is called
-
+        private class TestIndividual : FlatIndividual
+        {
+            public TestIndividual(double fitness) : base(new List<string> { "" }, (x) => new List<object> { "" })
+            {
+                this.Fitness = new Fitness(fitness);
+            }
+        }
     }
 }

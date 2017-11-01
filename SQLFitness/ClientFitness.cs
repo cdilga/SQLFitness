@@ -8,9 +8,9 @@ using System.Net.Sockets;
 
 namespace SQLFitness
 {
-    public class TerminalFitness : IFitness
+    public class ClientFitness : IFitness
     {
-        public double Evaluate(Individual individual)
+        public double Evaluate(StubIndividual individual)
         {
             var tcpClient = new TcpClient();
             while (!tcpClient.Connected)
@@ -44,7 +44,7 @@ namespace SQLFitness
             return Convert.ToDouble(result);
         }
 
-        public TerminalFitness()
+        public ClientFitness()
         {
 
         }

@@ -58,7 +58,7 @@ namespace SQLFitness
             for (var i = 0; i < 30; i++)
             {
                 var testInterpreter = new Interpreter("country");
-                Console.WriteLine(testInterpreter.Parse(new Individual(data, dataGetter)));
+                Console.WriteLine(testInterpreter.Parse(new FlatIndividual(data, dataGetter)));
             }
 
             var db = new DBAccess();

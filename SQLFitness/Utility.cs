@@ -8,10 +8,22 @@ namespace SQLFitness
     {
         private static Random _randomGenerator = new Random();
 
+        /// <summary>
+        /// Gets a random number between <paramref name="min"/> and <paramref name="max"/>
+        /// </summary>
+        /// <param name="min">The minimum number INCLUSIVE</param>
+        /// <param name="max">The maximum number EXCLUSIVE</param>
+        /// <returns>A random number</returns>
         public static int GetRandomNum(int min, int max) => _randomGenerator.Next(min, max);
+        /// <summary>
+        /// Gets a random number between 0 and <paramref name="max"/>
+        /// </summary>
+        /// <param name="max">The maximum number EXCLUSIVE</param>
+        /// <returns>A random number</returns>
         public static int GetRandomNum(int max = 100) => _randomGenerator.Next(max);
         //So cool when someone told me to look this up:
-        public static T GetRandomValue<T>(this List<T> list) => list[GetRandomNum(list.Count - 1)];
+        public static T GetRandomValue<T>(this List<T> list) => list[GetRandomNum(list.Count)];
+        public static T GetRandomValue<T>(this T[] list) => list[GetRandomNum(list.Length)];
 
         //Note that const fields are always static
         public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3306;sslmode=none";

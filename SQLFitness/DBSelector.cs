@@ -21,7 +21,7 @@ namespace SQLFitness
             _db = db;
         }
 
-        public double Evaluate(Individual individual)
+        public double Evaluate(StubIndividual individual)
         {
             Console.WriteLine(_interpreter.Parse(individual));
             return 1;

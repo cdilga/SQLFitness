@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace SQLFitness
         private Population _matingPool;
 
         private DBAccess _db;
+        private Population _bestIndividuals;
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
@@ -20,7 +22,8 @@ namespace SQLFitness
         public Algorithm(DBAccess db)
         {
             //Setup params for most of the class here:
-            _selector = new TerminalFitness();
+            _bestIndividuals = new Population(_selector);
+            _selector = new ClientFitness();
             _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector);
             _matingPool = new Population(_selector);
             _db = db;
@@ -76,20 +79,15 @@ namespace SQLFitness
             });
         }
 
-        private void _mutate()
-        {
-            //Not a very good mutate function
-            Individual randomIndividual = _population.GetRandomValue();
-            Chromosome randomChromosome = randomIndividual.Genome.GetRandomValue();
-            //Update the random individual to have the new mutated chromosome, (note, it's necessarily of the same type...)
-            randomChromosome = randomChromosome.Mutate();
-        }
+        private void _mutate() => _population.GetRandomValue().Mutate();
 
         //Talk through this design
         public void Evolve()
         {
             Console.WriteLine(nameof(_evaluation));
             _evaluation();
+            //_bestIndividuals.Add(_population.Max());
+            Console.WriteLine(_bestIndividuals);
             Console.WriteLine(nameof(_selection));
             _selection();
             Console.WriteLine(nameof(_crossover));

@@ -4,27 +4,27 @@ using System.Text;
 
 namespace SQLFitness
 {
-    public class Population : List<Individual>
+    public class Population : List<StubIndividual>
     {
         //Forming consistent abstractions here
         //This one fitness must be thread safe
         private IFitness _fitness;
         //A population needs to be able to be added to another existing population in place
-        public Population(List<string> validColumnData, Func<string, List<object>> validRowDataGetter, IFitness fitnessFunc, int n = 50) : base()
+        public Population(List<string> validColumnData, Func<string, List<object>> validRowDataGetter, IFitness fitnessFunc, int n = 10) : base()
         {
             _fitness = fitnessFunc;
             //Generate a population of indivuduals of size n
             for (var i = 0; i < n; i++)
             {
-                this.Add(new Individual(validColumnData, validRowDataGetter));
+                this.Add(new FlatIndividual(validColumnData, validRowDataGetter));
             }
         }
         //TODO remember to assign a new fitness on mutation
 
-        public Population(IEnumerable<Individual> basePopulation, IFitness fitnessFunc) : base(basePopulation) { _fitness = fitnessFunc; }
+        public Population(IEnumerable<StubIndividual> basePopulation, IFitness fitnessFunc) : base(basePopulation) { _fitness = fitnessFunc; }
         public Population(IFitness fitnessFunc) : base() { _fitness = fitnessFunc; }
 
-        public double Evaluate(Individual item)
+        public double Evaluate(StubIndividual item)
         {
             Console.WriteLine(item.ToString());
             return _fitness.Evaluate(item);
@@ -32,7 +32,7 @@ namespace SQLFitness
 
         new public void Sort()
         {
-            Sort((Individual x, Individual y) => x.Fitness.Value.CompareTo(y.Fitness.Value));
+            Sort((StubIndividual x, StubIndividual y) => y.Fitness.Value.CompareTo(x.Fitness.Value));
         }
     }
 }
