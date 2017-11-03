@@ -61,9 +61,12 @@
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientFitness.cs" />
+    <Compile Include="TreeGenome\BinaryNode.cs" />
+    <Compile Include="TreeGenome\Node.cs" />
     <Compile Include="tests\TestTemplate.cs" />
     <Compile Include="tests\TestChromosome.cs" />
     <Compile Include="tests\TestPopulation.cs" />
+    <Compile Include="TreeGenome\PredicateNode.cs" />
     <Compile Include="Tutorial1.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>

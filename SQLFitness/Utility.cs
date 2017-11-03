@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SQLFitness
 {
-    static class Utility
+    static partial class Utility
     {
         private static Random _randomGenerator = new Random();
 
@@ -15,6 +15,7 @@ namespace SQLFitness
         /// <param name="max">The maximum number EXCLUSIVE</param>
         /// <returns>A random number</returns>
         public static int GetRandomNum(int min, int max) => _randomGenerator.Next(min, max);
+
         /// <summary>
         /// Gets a random number between 0 and <paramref name="max"/>
         /// </summary>
@@ -24,6 +25,26 @@ namespace SQLFitness
         //So cool when someone told me to look this up:
         public static T GetRandomValue<T>(this List<T> list) => list[GetRandomNum(list.Count)];
         public static T GetRandomValue<T>(this T[] list) => list[GetRandomNum(list.Length)];
+        public static string ToSQL(this PredicateType condition)
+        {
+            switch (condition)
+            {
+                case PredicateType.LessThan:
+                    return "<";
+                case PredicateType.GreaterThan:
+                    return ">";
+                case PredicateType.Equal:
+                    return "=";
+                case PredicateType.NotEqual:
+                    break;
+                case PredicateType.GreaterThanEqual:
+                    break;
+                case PredicateType.LessThanEqual:
+                    break;
+                default:
+                    break;
+            }
+        }
 
         //Note that const fields are always static
         public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3306;sslmode=none";

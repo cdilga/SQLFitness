@@ -6,8 +6,9 @@ namespace SQLFitness
 {
     public class Selection : Chromosome
     {
-        //private enum Operator { equal, notEqual, greaterThan, lessThan, greaterThanEqual, lessThanEqual }
-        public string Operator { get; }
+        private static string[] operators = { "<", ">", "=", "<>", ">=", "<=" };
+    //private enum Operator { equal, notEqual, greaterThan, lessThan, greaterThanEqual, lessThanEqual }
+    public string Operator { get; }
         public string Condition { get; }
 
         private readonly Func<string, List<object>> _validDataGetter;
@@ -20,7 +21,7 @@ namespace SQLFitness
             //Has a value (i.e. attribute name)
             _validData = validData;
             _validDataGetter = validDataGetter;
-            this.Operator = new List<string> { "<", ">", "=", "<>", ">=", "<=" }.GetRandomValue();
+            this.Operator = operators.GetRandomValue();
             _field = validData.GetRandomValue();
 
             //TODO Generics warning - this is a point at which the object values are converted into stringy representations

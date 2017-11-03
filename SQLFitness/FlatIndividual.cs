@@ -68,7 +68,7 @@ namespace SQLFitness
             //    tempSelections.Add($"\"{selection}\"");
             //}
 
-            var catenatedProjections = String.Join(", ", _projections.Select(x => $"`{x.ToString()}`"));
+            var catenatedProjections = String.Join(", ", _projections.Select(x => $"`{x}`"));
             var selectComponent = catenatedProjections.Any() ? catenatedProjections : "*";
             var query = $"SELECT { selectComponent } FROM { Utility.TableName }";
 
