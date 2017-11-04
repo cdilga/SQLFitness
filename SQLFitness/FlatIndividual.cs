@@ -76,7 +76,7 @@ namespace SQLFitness
             if (catenatedSelections.Any())
             {
                 query += $" WHERE {catenatedSelections}";
-            }
+            } 
 
             //var catenatedGrouping = String.Join(" ", _groups);
             // if (catenatedSelections.Any())

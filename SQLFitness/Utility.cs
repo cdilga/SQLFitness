@@ -4,9 +4,9 @@ using System.Text;
 
 namespace SQLFitness
 {
-    static partial class Utility
+    public static class Utility
     {
-        private static Random _randomGenerator = new Random();
+        private static Random _randomGenerator = new Random(4); //4 is guarenteed to be random - picked from random.org
 
         /// <summary>
         /// Gets a random number between <paramref name="min"/> and <paramref name="max"/>
@@ -29,20 +29,23 @@ namespace SQLFitness
         {
             switch (condition)
             {
-                case PredicateType.LessThan:
-                    return "<";
-                case PredicateType.GreaterThan:
-                    return ">";
-                case PredicateType.Equal:
-                    return "=";
-                case PredicateType.NotEqual:
-                    break;
-                case PredicateType.GreaterThanEqual:
-                    break;
-                case PredicateType.LessThanEqual:
-                    break;
-                default:
-                    break;
+                case PredicateType.LessThan: return "<";
+                case PredicateType.GreaterThan: return ">";
+                case PredicateType.Equal: return "=";
+                case PredicateType.NotEqual: return "<>";
+                case PredicateType.GreaterThanEqual: return ">=";
+                case PredicateType.LessThanEqual: return "<=";
+                default: throw new ArgumentException(nameof(condition));
+            }
+        }
+
+        public static string ToSql(this BinaryNodeType nodeType)
+        {
+            switch (nodeType)
+            {
+                case BinaryNodeType.AND: return "AND";
+                case BinaryNodeType.OR: return "OR";
+                default: throw new ArgumentException(nameof(nodeType));
             }
         }
 

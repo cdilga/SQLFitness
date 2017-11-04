@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SQLFitness.TreeGenome
 {
-    abstract class Visitor
+    public abstract class Visitor
     {
         public Visitor()
         {

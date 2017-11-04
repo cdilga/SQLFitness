@@ -50,6 +50,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FlatGenome\TestChromosome.cs" />
+    <Compile Include="FlatGenome\TestPopulation.cs" />
+    <Compile Include="FlatGenome\TestTemplate.cs" />
+    <Compile Include="TreeGenome\InterpretWalkerTests.cs" />
     <Compile Include="TreeGenome\PredicateNodeTests.cs" />
   </ItemGroup>
   <ItemGroup>

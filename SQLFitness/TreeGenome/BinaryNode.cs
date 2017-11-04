@@ -6,14 +6,18 @@ using System.Threading.Tasks;
 
 namespace SQLFitness.TreeGenome
 {
-    class BinaryNode : Node
+    public class BinaryNode : Node
     {
-        public enum BinaryNodeType { AND, OR }
         public Node Left { get; }
         public Node Right { get; }
         public BinaryNodeType NodeType { get; }
         public override int BranchSize { get; }
         private static readonly BinaryNodeType[] _binaryNodeTypes = (BinaryNodeType[])Enum.GetValues(typeof(BinaryNodeType));
+
+        public BinaryNode(Node left, Node right, BinaryNodeType nodeType) : this(left, right)
+        {
+            this.NodeType = nodeType;
+        }
 
         public BinaryNode(Node left, Node right)
         {

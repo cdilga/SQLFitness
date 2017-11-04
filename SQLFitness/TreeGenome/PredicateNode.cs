@@ -13,9 +13,10 @@ namespace SQLFitness.TreeGenome
         private Func<string, List<object>> ValidDataGetter { get; }
         public PredicateType Condition { get; }
         private static readonly PredicateType[] _predicateTypes = (PredicateType[])Enum.GetValues(typeof(PredicateType));
+
         public string Left { get; }
         public object Right { get; }
-        public enum PredicateType { LessThan, GreaterThan, Equal, NotEqual, GreaterThanEqual, LessThanEqual }
+        
         public PredicateNode (List<string> validData, Func<string, List<object>> validDataGetter)
         {
             this.ValidData = validData ?? throw new ArgumentNullException(nameof(validData));
@@ -27,7 +28,11 @@ namespace SQLFitness.TreeGenome
             this.Condition = _predicateTypes.GetRandomValue();
         }
 
+        public PredicateNode(List<string> validData, Func<string, List<object>> validDataGetter, PredicateType condition) : this (validData, validDataGetter)
+        {
+            this.Condition = condition;
+        }
+
         public PredicateNode Mutate => new PredicateNode(ValidData, ValidDataGetter);
-        //mutate
     }
 }

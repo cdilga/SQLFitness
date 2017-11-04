@@ -51,6 +51,7 @@
     <Compile Include="DBAccess.cs" />
     <Compile Include="DBSelector.cs" />
     <Compile Include="Fitness.cs" />
+    <Compile Include="PredicateType.cs" />
     <Compile Include="StubIndividual.cs" />
     <Compile Include="FlatIndividual.cs" />
     <Compile Include="Interpreter.cs" />
@@ -61,12 +62,14 @@
     <Compile Include="Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClientFitness.cs" />
+    <Compile Include="TreeGenome\AddBranchBuilder.cs" />
     <Compile Include="TreeGenome\BinaryNode.cs" />
+    <Compile Include="BinaryNodeType.cs" />
+    <Compile Include="TreeGenome\CrossWalker.cs" />
+    <Compile Include="TreeGenome\InterpretWalker.cs" />
     <Compile Include="TreeGenome\Node.cs" />
-    <Compile Include="tests\TestTemplate.cs" />
-    <Compile Include="tests\TestChromosome.cs" />
-    <Compile Include="tests\TestPopulation.cs" />
     <Compile Include="TreeGenome\PredicateNode.cs" />
+    <Compile Include="TreeGenome\Visitor.cs" />
     <Compile Include="Tutorial1.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>

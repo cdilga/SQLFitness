@@ -68,7 +68,7 @@ namespace SQLFitness
 
         private void _evaluation()
         {
-            Parallel.ForEach(_population, new ParallelOptions { MaxDegreeOfParallelism = 1 }, (x) =>
+            Parallel.ForEach(_population, new ParallelOptions { MaxDegreeOfParallelism = 10 }, (x) =>
             {
                 if (x.Fitness == null)
                 {
