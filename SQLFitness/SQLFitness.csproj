@@ -69,6 +69,7 @@
     <Compile Include="TreeGenome\InterpretWalker.cs" />
     <Compile Include="TreeGenome\Node.cs" />
     <Compile Include="TreeGenome\PredicateNode.cs" />
+    <Compile Include="TreeGenome\RandomBuilder.cs" />
     <Compile Include="TreeGenome\Visitor.cs" />
     <Compile Include="Tutorial1.cs" />
     <Compile Include="Utility.cs" />
