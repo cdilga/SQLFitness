@@ -57,7 +57,7 @@ namespace SQLFitness
         //    return returnList;
         //}
 
-        public override string GenerateSql()
+        public override string ToSql()
         {
             var chromosomes = this.Genome;
             var _projections = chromosomes.OfType<Projection>();

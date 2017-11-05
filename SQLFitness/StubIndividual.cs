@@ -45,7 +45,7 @@ namespace SQLFitness
         }
 
         public abstract void Mutate();
-        public abstract string GenerateSql();
+        public abstract string ToSql();
 
 
     }

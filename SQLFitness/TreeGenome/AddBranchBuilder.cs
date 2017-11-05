@@ -46,6 +46,7 @@ namespace SQLFitness.TreeGenome
             if (_position == _cutPoint)
             {
                 _cutNode = visitedNode;
+                _done = true;
             }
             else
             {
@@ -85,7 +86,9 @@ namespace SQLFitness.TreeGenome
             //Now what happens when we reach the top?
             //When we have reached the top we will have the condition that a node has been replaced at least once on the left or right (considering this is already a BinaryNode)
             //So, the last iteration, and only the last iteration will need to set the _tree to the new node. This can be done each time
-            _tree = _replaceWithNode;
+            //May be a case here where we can get an access before the end of the copying. Even if this is not the case,
+            //we could do without the _tree, and just return the replacedwith node.
+            _tree = _replaceWithNode != null ? _replaceWithNode: _tree;
         }
 
         public override void Visit(PredicateNode visitedNode)
@@ -94,6 +97,7 @@ namespace SQLFitness.TreeGenome
             if (_position == _cutPoint)
             {
                 _cutNode = visitedNode;
+                _done = true;
             }
         }
 

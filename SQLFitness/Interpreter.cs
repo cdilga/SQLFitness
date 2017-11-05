@@ -24,7 +24,7 @@ namespace SQLFitness
         public string Parse(StubIndividual sqlIndividual)
         {
             _sqlIndividual = sqlIndividual;
-            return sqlIndividual.GenerateSql();
+            return sqlIndividual.ToSql();
         }
     }
 }
