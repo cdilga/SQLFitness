@@ -8,12 +8,6 @@ namespace SQLFitness.TreeGenome
 {
     public abstract class Visitor
     {
-        public Visitor()
-        {
-
-        }
-
-
         virtual public void Visit(BinaryNode visitedNode)
         {
             Visit(visitedNode.Left);
