@@ -49,6 +49,11 @@ namespace SQLFitness
             }
         }
 
+        /// <summary>
+        /// File which the best individuals fitness is written to at each iteration.
+        /// </summary>
+        public const string FitnessFile = "FitnessValues.csv";
+
         //Note that const fields are always static
         public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3306;sslmode=none";
         public const string TableName = "insectdiscoveries";
@@ -57,7 +62,8 @@ namespace SQLFitness
         //public const string TableName = "country";
 
         //Mating pools
-        public const double MatingProportion = 0.5;
+        public const double MatingProportion = 0.7;
+        public const int PopulationSize = 50;
 
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";

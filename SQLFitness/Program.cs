@@ -13,7 +13,7 @@ namespace SQLFitness
             //Create a dbaccess
             var db = new DBAccess();
             var basicGA = new Algorithm(db);
-            for (var i = 0; i < 1000; i++)
+            for (var i = 0; i < 10000; i++)
             {
                 basicGA.Evolve();
                 Console.WriteLine($"===========\nIteration: {i}");

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SQLFitness
 {
@@ -10,7 +9,7 @@ namespace SQLFitness
         //This one fitness must be thread safe
         private IFitness _fitness;
         //A population needs to be able to be added to another existing population in place
-        public Population(List<string> validColumnData, Func<string, List<object>> validRowDataGetter, IFitness fitnessFunc, int n = 10) : base()
+        public Population(List<string> validColumnData, Func<string, List<object>> validRowDataGetter, IFitness fitnessFunc, int n = Utility.PopulationSize) : base()
         {
             _fitness = fitnessFunc;
             //Generate a population of indivuduals of size n
@@ -22,7 +21,8 @@ namespace SQLFitness
         //TODO remember to assign a new fitness on mutation
 
         public Population(IEnumerable<StubIndividual> basePopulation, IFitness fitnessFunc) : base(basePopulation) { _fitness = fitnessFunc; }
-        public Population(IFitness fitnessFunc) : base() { _fitness = fitnessFunc; }
+        public Population(IFitness fitnessFunc) { _fitness = fitnessFunc; }
+        public Population() : base() { }
 
         public double Evaluate(StubIndividual item)
         {
