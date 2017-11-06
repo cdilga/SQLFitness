@@ -53,6 +53,8 @@ namespace SQLFitness
         /// File which the best individuals fitness is written to at each iteration.
         /// </summary>
         public const string FitnessFile = "FitnessValues.csv";
+        public const string IndividualFile = "BestIndividuals.csv";
+
 
         //Note that const fields are always static
         public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3306;sslmode=none";

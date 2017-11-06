@@ -16,7 +16,7 @@ namespace SQLFitness
         public int Generation { get; private set; }
         
         private readonly StreamWriter _file;
-
+        private readonly StreamWriter _bestIndividuals;
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
@@ -30,7 +30,11 @@ namespace SQLFitness
             {
                 AutoFlush = true
             };
-            
+            _bestIndividuals = new StreamWriter(Utility.IndividualFile)
+            {
+                AutoFlush = true
+            };
+
             this.Generation = 1;
         }
 
@@ -51,8 +55,8 @@ namespace SQLFitness
             var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
             _file.WriteLine($"{this.Generation},{line}");
             
-            Console.WriteLine($"Best Individuals: {String.Join(", ", this.BestIndividuals)}");
-
+            Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
+            _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
             Console.WriteLine(nameof(_crossover));
             _crossover();
             Console.WriteLine(nameof(_mutate));
