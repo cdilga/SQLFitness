@@ -12,7 +12,7 @@ namespace SQLFitness
 
             //Create a dbaccess
             var db = new DBAccess();
-            var basicGA = new Algorithm(db);
+            var basicGA = new TreeSelectionAlgorithm(db, new ClientFitness());
             for (var i = 0; i < 10000; i++)
             {
                 basicGA.Evolve();

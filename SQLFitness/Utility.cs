@@ -65,6 +65,12 @@ namespace SQLFitness
         public const double MatingProportion = 0.7;
         public const int PopulationSize = 50;
 
+        //ChromosomeSettings
+
+        public const int FlatChromosomeLength = 5;
+        public const int TreeChromosomeBranchSize = 5;
+        public const int TreeChromosomePredicateSize = 5;
+
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";
         public const int FitnessServerPort = 1506;

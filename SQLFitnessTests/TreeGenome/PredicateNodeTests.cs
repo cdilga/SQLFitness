@@ -15,19 +15,16 @@ namespace SQLFitness.TreeGenome.Tests
         [SetUp]
         public void SetupPredicate()
         {
-
-        }
-
-        [Test()]
-        public void PredicateNodeTest()
-        {
-            _predicate = new PredicateNode(new List<string> { "Col1", "Col2" }, str => new List<object> { "Cell1", "Cell2" });
+            _predicate = new PredicateNode(new List<string> { "Col1" }, str => new List<object> { "Cell1" });
         }
 
         [Test]
         public void PredicateMutate()
         {
-            Assert.Fail();
+            Assert.AreEqual(_predicate.Left, _predicate.Mutate().Left);
+            Assert.AreEqual(_predicate.Right, _predicate.Mutate().Right);
+            Assert.AreNotEqual(_predicate, _predicate.Mutate());
+            Assert.AreNotEqual(_predicate, _predicate.Mutate(new List<string> { "Not" }, x => new List<object> { "As before" }));
         }
     }
 }

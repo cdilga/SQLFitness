@@ -4,34 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SQLFitness.TreeGenome
+namespace SQLFitness
 {
-    public class AddBranchBuilder : Visitor
+    public class MutateWalker : Visitor
     {
-        private readonly int _cutPoint;
+        private readonly int _mutatePoint;
         private int _position = 0;
         private Node _addTree;
         private Node _tree;
-        private Node _cutNode;
+        private Node _mutateNode;
         private bool _done = false;
-        private BinaryNode _replaceMeNode;
-        private BinaryNode _replaceWithNode;
+        private Node _replaceMeNode;
+        private Node _replaceWithNode;
+        private bool _random;
 
         /// <summary>
-        /// Will create a new tree from the visited nodes, with <paramref name="subtree"/>
-        /// being added at the <paramref name="cutPoint"/>.
+        /// Will create a new tree mutating at point <paramref name="mutatePoint"/>.
         /// </summary>
-        /// <param name="cutPoint">Point at which the <paramref name="subtree"/> is added</param>
-        /// <param name="subtree">Tree added to the walked tree with <see cref="Visit(BinaryNode)"/></param>
-        public AddBranchBuilder(int cutPoint, Node subtree)
+        /// <param name="mutatePoint">Point at which the visited node tree is mutated</param>
+        public MutateWalker(int mutatePoint)
         {
-            _cutPoint = cutPoint;
-            _addTree = subtree ?? throw new ArgumentNullException(nameof(subtree));
-            if (_cutPoint == 1)
-            {
-                _done = true;
-                _tree = _addTree;
-            }
+            _mutatePoint = mutatePoint;
         }
 
         private BinaryNode _nodeDuplicator(BinaryNode oldNode) => new BinaryNode(oldNode.Left, oldNode.Right, oldNode.NodeType);
@@ -40,40 +33,41 @@ namespace SQLFitness.TreeGenome
 
         public override void Visit(BinaryNode visitedNode)
         {
+            if (_mutatePoint <= 1)
+            {
+                _done = true;
+                _tree = visitedNode;
+                return;
+            }
             _position++;
 
             //If it hits the cut point...
-            if (_position == _cutPoint)
+            if (_position == _mutatePoint)
             {
-                _cutNode = visitedNode;
+                _mutateNode = visitedNode;
+                _replaceMeNode = visitedNode;
+                _replaceWithNode = new BinaryNode(
+                    visitedNode.Left,
+                    visitedNode.Right,
+                    visitedNode.NodeType == BinaryNodeType.AND ? BinaryNodeType.OR : BinaryNodeType.AND
+                    );
                 _done = true;
             }
             else
             {
-                if (_cutNode == null)
+                if (_mutateNode == null)
                 {
                     Visit(visitedNode.Left);
                 }
-                if (_cutNode == null)
+                if (_mutateNode == null)
                 {
                     Visit(visitedNode.Right);
                 }
             }
 
-            //If the child of the node happens to be the _cutNode node...
-            //Then you will create a new node here, with the existing opposite chain.
-            //BinaryNode node;
-            if (visitedNode.Left == _cutNode)
-            {
-                _replaceMeNode = visitedNode;
-                _replaceWithNode = new BinaryNode(_addTree, visitedNode.Right, visitedNode.NodeType);
-            }
-            else if (visitedNode.Right == _cutNode)
-            {
-                _replaceMeNode = visitedNode;
-                _replaceWithNode = new BinaryNode(visitedNode.Left, _addTree, visitedNode.NodeType);
-            }
-            else if (visitedNode.Left == _replaceMeNode)
+            //If the child of the node happens to be the node we need to now replace,
+            //we should then replace it
+            if (visitedNode.Left == _replaceMeNode)
             {
                 _replaceMeNode = visitedNode;
                 _replaceWithNode = new BinaryNode(_replaceWithNode, visitedNode.Right, visitedNode.NodeType);
@@ -88,15 +82,22 @@ namespace SQLFitness.TreeGenome
             //So, the last iteration, and only the last iteration will need to set the _tree to the new node. This can be done each time
             //May be a case here where we can get an access before the end of the copying. Even if this is not the case,
             //we could do without the _tree, and just return the replacedwith node.
-            _tree = _replaceWithNode != null ? _replaceWithNode: _tree;
+            _tree = _replaceWithNode ?? _tree;
         }
 
         public override void Visit(PredicateNode visitedNode)
         {
-            _position++;
-            if (_position == _cutPoint)
+            if (_mutatePoint <= 1)
             {
-                _cutNode = visitedNode;
+                _done = true;
+                _tree = visitedNode;
+                return;
+            }
+            _position++;
+            if (_position == _mutatePoint)
+            {
+                _replaceMeNode = visitedNode;
+                _replaceWithNode = visitedNode.Mutate();
                 _done = true;
             }
         }

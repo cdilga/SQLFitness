@@ -54,6 +54,7 @@
     <Compile Include="FlatGenome\TestPopulation.cs" />
     <Compile Include="TreeGenome\AddBranchBuilderTests.cs" />
     <Compile Include="TreeGenome\InterpretWalkerTests.cs" />
+    <Compile Include="TreeGenome\MutateWalkerTests.cs" />
     <Compile Include="TreeGenome\PredicateNodeTests.cs" />
     <Compile Include="TreeGenome\RandomBuilderTests.cs" />
   </ItemGroup>

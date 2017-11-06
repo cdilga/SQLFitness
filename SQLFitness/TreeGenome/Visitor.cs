@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SQLFitness.TreeGenome
+namespace SQLFitness
 {
     public abstract class Visitor
     {

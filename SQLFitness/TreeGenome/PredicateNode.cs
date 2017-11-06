@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SQLFitness.TreeGenome
+namespace SQLFitness
 {
     public class PredicateNode: Node
     {
@@ -33,6 +33,8 @@ namespace SQLFitness.TreeGenome
             this.Condition = condition;
         }
 
-        public PredicateNode Mutate => new PredicateNode(ValidData, ValidDataGetter);
+        public PredicateNode Mutate() => new PredicateNode(ValidData, ValidDataGetter);
+
+        public PredicateNode Mutate(List<string> validData, Func<string, List<object>>validDataGetter) => new PredicateNode(validData, validDataGetter);
     }
 }

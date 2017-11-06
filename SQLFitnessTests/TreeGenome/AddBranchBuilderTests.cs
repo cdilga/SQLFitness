@@ -34,7 +34,7 @@ namespace SQLFitness.TreeGenome.Tests
         {
             var predicateNode = predicateBuilder("ReplacedMeNode", "ReplaceMeCell");
             var replacementNode = predicateBuilder("Replaced", "ReplacedCell");
-            var branchAdder = new AddBranchBuilder(1, replacementNode);
+            var branchAdder = new AddBranchWalker(1, replacementNode);
             branchAdder.Visit(predicateNode);
             Assert.AreEqual(replacementNode, branchAdder.GetTree());
         }
@@ -50,14 +50,14 @@ namespace SQLFitness.TreeGenome.Tests
 
             var replacementNode = predicateBuilder("Replaced", "ReplacedColumn");
 
-            var branchAdder = new AddBranchBuilder(1, replacementNode);
+            var branchAdder = new AddBranchWalker(1, replacementNode);
             branchAdder.Visit(binaryNode2);
             Assert.AreEqual(replacementNode, branchAdder.GetTree());
         }
 
         [Test]
         public void AddBranchBuilderPosition2() {
-            var branchAdder = new AddBranchBuilder(2, _replacementNode);
+            var branchAdder = new AddBranchWalker(2, _replacementNode);
             branchAdder.Visit(_baseNode);
 
             var resultNode = branchAdder.GetTree();
@@ -69,7 +69,7 @@ namespace SQLFitness.TreeGenome.Tests
         [Test]
         public void AddBranchBuilderAtLeaf()
         {
-            var branchAdder = new AddBranchBuilder(3, _replacementNode);
+            var branchAdder = new AddBranchWalker(3, _replacementNode);
             branchAdder.Visit(_baseNode);
 
             var resultNode = branchAdder.GetTree();
@@ -82,7 +82,7 @@ namespace SQLFitness.TreeGenome.Tests
         [Test]
         public void AddBranchBuilderFullTreeLast()
         {
-            var branchAdder = new AddBranchBuilder(_baseNode.BranchSize, _replaceBinaryNode);
+            var branchAdder = new AddBranchWalker(_baseNode.BranchSize, _replaceBinaryNode);
             branchAdder.Visit(_baseNode);
 
             var resultNode = branchAdder.GetTree();
@@ -90,30 +90,5 @@ namespace SQLFitness.TreeGenome.Tests
             Assert.AreEqual(_baseNode.NodeType, ((BinaryNode)resultNode).NodeType);
             Assert.AreEqual(_baseNode.Left, ((BinaryNode)resultNode).Left);
         }
-
-        /*
-        [Test()]
-        public void AddBranchBuilderTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void VisitTest()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void VisitTest1()
-        {
-            Assert.Fail();
-        }
-
-        [Test()]
-        public void GetTreeTest()
-        {
-            Assert.Fail();
-        }*/
     }
 }

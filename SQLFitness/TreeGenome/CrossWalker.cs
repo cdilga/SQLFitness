@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SQLFitness.TreeGenome
+namespace SQLFitness
 {
     public class CrossWalker : Visitor
     {
@@ -15,10 +15,21 @@ namespace SQLFitness.TreeGenome
         public CrossWalker(int cutPoint)
         {
             _cutPoint = cutPoint;
+            
         }
 
         public override void Visit(BinaryNode visitedNode)
         {
+            if (visitedNode == null)
+            {
+                throw new ArgumentNullException(nameof(visitedNode));
+            }
+
+            if (_cutPoint == 0)
+            {
+                _crossNode = visitedNode;
+                return;
+            }
             _position += 1;
 
             //If it hits the cut point...
@@ -42,6 +53,15 @@ namespace SQLFitness.TreeGenome
 
         public override void Visit(PredicateNode visitedNode)
         {
+            if (visitedNode == null)
+            {
+                throw new ArgumentNullException(nameof(visitedNode));
+            }
+            if (_cutPoint == 0)
+            {
+                _crossNode = visitedNode;
+                return;
+            }
             _position += 1;
             if (_position == _cutPoint)
             {

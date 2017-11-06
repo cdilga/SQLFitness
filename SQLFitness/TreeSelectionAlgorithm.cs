@@ -8,36 +8,32 @@ using System.IO;
 
 namespace SQLFitness
 {
-    class Algorithm
+    public class TreeSelectionAlgorithm : LoggingAlgorithm
     {
-        IFitness _selector;
-        private Population _population;
         private Population _matingPool;
 
         private DBAccess _db;
 
-        public Population BestIndividuals { get; set; }
         private StreamWriter _file;
         private int _generation;
+        private readonly IFitness _selector;
 
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
         /// <param name="db">Database which the algorithm is going to be run on</param>
-        public Algorithm(DBAccess db)
+        /// <param name="selector"></param>
+        public TreeSelectionAlgorithm(DBAccess db, IFitness selector) : base()
         {
             //Setup params for most of the class here:
-            BestIndividuals = new Population(_selector);
-            _selector = new ClientFitness();
-            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector);
+            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector, (validCols, validData) => new TreeIndividual(validCols, validData));
             _matingPool = new Population(_selector);
             _db = db;
-            _file = new StreamWriter(Utility.FitnessFile);
-            _file.AutoFlush = true;
             _generation = 1;
+            _selector = selector ?? throw new ArgumentNullException(nameof(selector));
         }
 
-        private void _selection()
+        protected override void _selection()
         {
             //Assigns a fitness to each individual
             //Orders by the fitness
@@ -51,7 +47,7 @@ namespace SQLFitness
             }
         }
 
-        private void _crossover()
+        protected override void _crossover()
         {
             //clear out the population
             //Cross one with the other and add the result to to pool, untill the last size of the mating pool is reached.
@@ -76,9 +72,9 @@ namespace SQLFitness
             if (_matingPool.Count != 0) { throw new IndexOutOfRangeException(nameof(_matingPool) + " not zero"); }
         }
 
-        private void _evaluation()
+        protected override void _evaluation()
         {
-            Parallel.ForEach(_population, new ParallelOptions { MaxDegreeOfParallelism = 1 }, (x) =>
+            Parallel.ForEach(_population, new ParallelOptions { MaxDegreeOfParallelism = 8 }, (x) =>
             {
                 if (x.Fitness == null)
                 {
@@ -94,28 +90,7 @@ namespace SQLFitness
             });
         }
 
-        private void _mutate() => _population.GetRandomValue().Mutate();
+        protected override void _mutate() => _population.GetRandomValue().Mutate();
 
-        //Talk through this design
-        public void Evolve()
-        {
-            
-            Console.WriteLine(nameof(_evaluation));
-            _evaluation();
-            Console.WriteLine(nameof(_selection));
-            _selection();
-
-            this.BestIndividuals.Add(_population[0]);
-            var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
-            _file.WriteLine($"{_generation},{line}");
-            
-            Console.WriteLine(BestIndividuals);
-
-            Console.WriteLine(nameof(_crossover));
-            _crossover();
-            Console.WriteLine(nameof(_mutate));
-            _mutate();
-            _generation++;
-        }
     }
 }

@@ -10,9 +10,8 @@ namespace SQLFitness
     {
         private Chromosome[] Genome { get; }
         public FlatIndividual(List<String> validColumns, Func<string, List<object>> validDataGetter)
-            : this(Enumerable.Range(0, 5).Select(i => _generateRandomChromosome(validColumns, validDataGetter)))
-        {
-        }
+            : this(Enumerable.Range(0, Utility.FlatChromosomeLength).Select(i => _generateRandomChromosome(validColumns, validDataGetter)))
+        {}
 
         private FlatIndividual(IEnumerable<Chromosome> genome)
         {
@@ -34,8 +33,9 @@ namespace SQLFitness
             {
                 newChromosome.Add(flatSpouse.Genome[i]);
             }
+            var distinct = newChromosome.GroupBy(x => x).Where(y => y.Count() == 1).Select(z => z.Key);
             //Cut at random point along them
-            return new FlatIndividual(newChromosome);
+            return new FlatIndividual(distinct);
         }
 
         public override void Mutate()
@@ -78,11 +78,6 @@ namespace SQLFitness
                 query += $" WHERE {catenatedSelections}";
             } 
 
-            //var catenatedGrouping = String.Join(" ", _groups);
-            // if (catenatedSelections.Any())
-            //{
-            //    query += $"GROUP BY {catenatedGrouping}";
-            //}
             return query + ";\n";
         }
 

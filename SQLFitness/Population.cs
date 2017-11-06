@@ -18,6 +18,16 @@ namespace SQLFitness
                 this.Add(new FlatIndividual(validColumnData, validRowDataGetter));
             }
         }
+
+        public Population(List<string> validColumnData, Func<string, List<object>> validRowDataGetter, IFitness fitnessFunc, Func<List<string>, Func<string, List<object>>, StubIndividual> constructor, int n = Utility.PopulationSize)
+        {
+            _fitness = fitnessFunc;
+            //Generate a population of indivuduals of size n
+            for (var i = 0; i < n; i++)
+            {
+                this.Add(constructor(validColumnData, validRowDataGetter));
+            }
+        }
         //TODO remember to assign a new fitness on mutation
 
         public Population(IEnumerable<StubIndividual> basePopulation, IFitness fitnessFunc) : base(basePopulation) { _fitness = fitnessFunc; }
