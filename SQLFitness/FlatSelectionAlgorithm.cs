@@ -17,7 +17,7 @@ namespace SQLFitness
         private StreamWriter _file;
         private int _generation;
         private readonly IFitness _selector;
-
+        private Func<List<string>, Func<string, List<object>>, FlatIndividual> _flatFactory;
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
@@ -26,11 +26,12 @@ namespace SQLFitness
         public FlatSelectionAlgorithm(DBAccess db, IFitness selector) : base()
         {
             //Setup params for most of the class here:
-            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector);
+            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector, _flatFactory);
             _matingPool = new Population(_selector);
             _db = db;
             _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
+            _flatFactory = (validColumn, validData) => new FlatIndividual(db.ValidColumnGetter(), db.ValidDataGetter);
         }
 
         protected override void _selection()
@@ -67,7 +68,7 @@ namespace SQLFitness
             }
             //keeps the best parents
             _population.AddRange(_matingPool);
-            _population.AddRange(new Population(_db.ValidColumnGetter(), _db.ValidDataGetter, _selector, Utility.PopulationSize - _population.Count));
+            _population.AddRange(new Population(_db.ValidColumnGetter(), _db.ValidDataGetter, _selector, _flatFactory, Utility.PopulationSize - _population.Count));
             _matingPool = new Population(_selector);
             if (_matingPool.Count != 0) { throw new IndexOutOfRangeException(nameof(_matingPool) + " not zero"); }
         }

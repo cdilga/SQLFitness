@@ -17,7 +17,7 @@ namespace SQLFitness
         private StreamWriter _file;
         private int _generation;
         private readonly IFitness _selector;
-
+        private Func<List<string>, Func<string, List<object>>, TreeIndividual> _treeFactory;
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
@@ -31,6 +31,7 @@ namespace SQLFitness
             _db = db;
             _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
+            _treeFactory = (validColumn, validData) => new TreeIndividual(db.ValidColumnGetter(), db.ValidDataGetter);
         }
 
         protected override void _selection()
@@ -67,7 +68,7 @@ namespace SQLFitness
             }
             //keeps the best parents
             _population.AddRange(_matingPool);
-            _population.AddRange(new Population(_db.ValidColumnGetter(), _db.ValidDataGetter, _selector, Utility.PopulationSize - _population.Count));
+            _population.AddRange(new Population(_db.ValidColumnGetter(), _db.ValidDataGetter, _selector, _treeFactory, Utility.PopulationSize - _population.Count));
             _matingPool = new Population(_selector);
             if (_matingPool.Count != 0) { throw new IndexOutOfRangeException(nameof(_matingPool) + " not zero"); }
         }

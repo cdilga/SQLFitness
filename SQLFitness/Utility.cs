@@ -64,8 +64,9 @@ namespace SQLFitness
         //public const string TableName = "country";
 
         //Mating pools
-        public const double MatingProportion = 0.7;
-        public const int PopulationSize = 50;
+        //Probably shouldn't be above 0.5
+        public const double MatingProportion = 0.4;
+        public const int PopulationSize = 20;
 
         //ChromosomeSettings
 
