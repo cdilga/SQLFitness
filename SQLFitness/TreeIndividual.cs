@@ -84,9 +84,8 @@ namespace SQLFitness
             {
                 newChromosome.Add(tempSpouse._projectionGenome[i]);
             }
-            var distinct = newChromosome.GroupBy(x => x).Where(y => y.Count() == 1).Select(z => z.Key);
-
-            return new TreeIndividual(_validColumns, _validDataGetter, addBranchAt.GetTree(), distinct.ToArray());
+            var distinct = newChromosome.Distinct().ToArray();
+            return new TreeIndividual(_validColumns, _validDataGetter, addBranchAt.GetTree(), distinct);
         }
     }
 }

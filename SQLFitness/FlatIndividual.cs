@@ -25,6 +25,7 @@ namespace SQLFitness
             //Cut at random point along this
 
             var newChromosome = new List<Chromosome>();
+            //Cut at random point along them
             for (var i = 0; i < Utility.GetRandomNum(this.Genome.Length); i++)
             {
                 newChromosome.Add(this.Genome[i]);
@@ -33,8 +34,7 @@ namespace SQLFitness
             {
                 newChromosome.Add(flatSpouse.Genome[i]);
             }
-            var distinct = newChromosome.GroupBy(x => x).Where(y => y.Count() == 1).Select(z => z.Key);
-            //Cut at random point along them
+            var distinct = newChromosome.Distinct().ToArray();
             return new FlatIndividual(distinct);
         }
 
