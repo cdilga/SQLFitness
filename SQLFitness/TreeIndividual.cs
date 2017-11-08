@@ -49,7 +49,7 @@ namespace SQLFitness
             }
             else
             {
-                _projectionGenome[Utility.GetRandomNum(_projectionGenome.Length)] = new Projection(_validColumns); 
+                _projectionGenome[Utility.GetRandomNum(_projectionGenome.Length)] = new Projection(_validColumns.Distinct().ToList()); 
             }
         }
         public override string ToSql()
@@ -62,7 +62,7 @@ namespace SQLFitness
             var _projections = _projectionGenome;
             var catenatedProjections = String.Join(", ", _projections.Select(x => $"`{x}`"));
             var selectComponent = catenatedProjections.Any() ? catenatedProjections : "*";
-            var query = $"SELECT { selectComponent } FROM { Utility.TableName } {sqlGenerator.GetSQL()}";
+            var query = $"SELECT { selectComponent } FROM { Utility.TableName } {sqlGenerator.GetWhereClause()}";
             return query + ";\n";
         }
 

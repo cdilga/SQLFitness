@@ -10,13 +10,11 @@ namespace SQLFitness
     {
         private readonly int _mutatePoint;
         private int _position = 0;
-        private Node _addTree;
         private Node _tree;
         private Node _mutateNode;
         private bool _done = false;
         private Node _replaceMeNode;
         private Node _replaceWithNode;
-        private bool _random;
 
         /// <summary>
         /// Will create a new tree mutating at point <paramref name="mutatePoint"/>.

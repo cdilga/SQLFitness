@@ -41,7 +41,7 @@ namespace SQLFitness
         abstract protected void _selection();
         abstract protected void _crossover();
         abstract protected void _evaluation();
-        abstract protected void _mutate();
+        abstract protected void _mutation();
 
         //Talk through this design
         public void Evolve()
@@ -59,8 +59,8 @@ namespace SQLFitness
             _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
             Console.WriteLine(nameof(_crossover));
             _crossover();
-            Console.WriteLine(nameof(_mutate));
-            _mutate();
+            Console.WriteLine(nameof(_mutation));
+            _mutation();
             this.Generation++;
         }
     }

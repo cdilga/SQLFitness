@@ -91,7 +91,13 @@ namespace SQLFitness
             });
         }
 
-        protected override void _mutate() => _population.GetRandomValue().Mutate();
+        protected override void _mutation()
+        {
+            for (var i = 0; i < _population.Count * Utility.MutationProportion; i++)
+            {
+                _population.GetRandomValue().Mutate();
+            }
+        }
 
     }
 }

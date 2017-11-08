@@ -18,6 +18,7 @@ namespace SQLFitness
         private int _generation;
         private readonly IFitness _selector;
         private Func<List<string>, Func<string, List<object>>, TreeIndividual> _treeFactory;
+
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
@@ -91,7 +92,13 @@ namespace SQLFitness
             });
         }
 
-        protected override void _mutate() => _population.GetRandomValue().Mutate();
+        protected override void _mutation()
+        {
+            for (var i = 0; i < _population.Count * Utility.MutationProportion; i++)
+            {
+                _population.GetRandomValue().Mutate();
+            }
+        }
 
     }
 }

@@ -67,7 +67,7 @@
     <Compile Include="TreeGenome\MutateWalker.cs" />
     <Compile Include="TreeGenome\AddBranchWalker.cs" />
     <Compile Include="TreeGenome\BinaryNode.cs" />
-    <Compile Include="BinaryNodeType.cs" />
+    <Compile Include="TreeGenome\BinaryNodeType.cs" />
     <Compile Include="TreeGenome\CrossWalker.cs" />
     <Compile Include="TreeGenome\InterpretWalker.cs" />
     <Compile Include="TreeGenome\Node.cs" />

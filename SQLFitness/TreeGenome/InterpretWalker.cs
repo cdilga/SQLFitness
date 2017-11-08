@@ -35,6 +35,6 @@ namespace SQLFitness
             _sqlBuilder.Append(")");
         }
 
-        public string GetSQL() => _sqlBuilder?.ToString() ?? throw new InvalidOperationException("Have not visited a node yet");
+        public string GetWhereClause() => _sqlBuilder?.ToString() ?? throw new InvalidOperationException("Have not visited a node yet");
     }
 }

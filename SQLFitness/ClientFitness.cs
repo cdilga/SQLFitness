@@ -36,6 +36,7 @@ namespace SQLFitness
             Console.WriteLine("Sending : " + sql);
             serverStream.Write(bytesToSend, 0, bytesToSend.Length);
             var bytesToRead = new byte[tcpClient.ReceiveBufferSize];
+
             int bytesRead = serverStream.Read(bytesToRead, 0, tcpClient.ReceiveBufferSize);
             var result = Encoding.UTF8.GetString(bytesToRead, 0, bytesRead).Substring(2);
 

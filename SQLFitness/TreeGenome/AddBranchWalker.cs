@@ -37,7 +37,6 @@ namespace SQLFitness
         private BinaryNode _nodeDuplicator(BinaryNode oldNode) => new BinaryNode(oldNode.Left, oldNode.Right, oldNode.NodeType);
         private PredicateNode _nodeDuplicator(PredicateNode oldNode) => new PredicateNode(new List<string> { oldNode.Left }, x => new List<object> { oldNode.Right }, oldNode.Condition);
 
-
         public override void Visit(BinaryNode visitedNode)
         {
             _position++;

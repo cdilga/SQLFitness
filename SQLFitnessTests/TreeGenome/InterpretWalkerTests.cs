@@ -28,7 +28,7 @@ namespace SQLFitness.TreeGenome.Tests
 
             var node1 = new BinaryNode(_node2, _node3, BinaryNodeType.AND);
             _interpreterWalker.Visit(node1);
-            var sql = _interpreterWalker.GetSQL();
+            var sql = _interpreterWalker.GetWhereClause();
             Assert.AreEqual("WHERE (\"Column2\" <= \"Cell2\") AND (\"Column3\" = \"Cell3\")", sql);
         }
 
@@ -38,7 +38,7 @@ namespace SQLFitness.TreeGenome.Tests
             var node1 = new BinaryNode(_node2, _node3, BinaryNodeType.AND);
             var node0 = new BinaryNode(node1, node1, BinaryNodeType.OR);
             _interpreterWalker.Visit(node0);
-            var sql = _interpreterWalker.GetSQL();
+            var sql = _interpreterWalker.GetWhereClause();
             Assert.AreEqual("WHERE ( (\"Column2\" <= \"Cell2\") AND (\"Column3\" = \"Cell3\")) OR ( (\"Column2\" <= \"Cell2\") AND (\"Column3\" = \"Cell3\"))", sql);
         }
     }
