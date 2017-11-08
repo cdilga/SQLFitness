@@ -271,3 +271,5 @@ SQLFitness/catenated-source\.txt
 *.sql
 
 *.dump
+
+*.xlsx
