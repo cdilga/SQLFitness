@@ -65,14 +65,15 @@ namespace SQLFitness
 
         //Mating pools
         //Probably shouldn't be above 0.5
-        public const double MatingProportion = 0.4;
-        public const int PopulationSize = 100;
+        public const double MatingProportion = 0.5;
+        public const double MutationProportion = 0.4;
+        public const int PopulationSize = 50;
 
         //ChromosomeSettings
 
         public const int FlatChromosomeLength = 5;
-        public const int TreeChromosomeBranchSize = 5;
-        public const int TreeChromosomePredicateSize = 5;
+        public const int TreeChromosomeBranchSize = 15;
+        public const int TreeChromosomePredicateSize = 3;
 
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";
