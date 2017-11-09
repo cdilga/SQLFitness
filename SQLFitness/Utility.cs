@@ -57,7 +57,7 @@ namespace SQLFitness
 
 
         //Note that const fields are always static
-        public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3306;sslmode=none";
+        public const string ConnString = "server=localhost;user=root;password=farhad;database=species;port=3306;sslmode=none";
         public const string TableName = "insectdiscoveries";
 
         //public const string ConnString = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
@@ -65,15 +65,15 @@ namespace SQLFitness
 
         //Mating pools
         //Probably shouldn't be above 0.5
-        public const double MatingProportion = 0.5;
-        public const double MutationProportion = 0.4;
+        public const double MatingProportion = 0.4;
+        public const double MutationProportion = 0.1;
         public const int PopulationSize = 50;
 
         //ChromosomeSettings
 
         public const int FlatChromosomeLength = 5;
-        public const int TreeChromosomeBranchSize = 15;
-        public const int TreeChromosomePredicateSize = 3;
+        public const int TreeChromosomeBranchSize = 5;
+        public const int TreeChromosomePredicateSize = 5;
 
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";
