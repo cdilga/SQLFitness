@@ -52,7 +52,7 @@ namespace SQLFitness
         /// <summary>
         /// File which the best individuals fitness is written to at each iteration.
         /// </summary>
-        public const string FitnessFile = "FitnessValues.csv";
+        public const string FitnessFile = "../../FitnessValues.csv";
         public const string IndividualFile = "BestIndividuals.csv";
 
 
@@ -71,7 +71,7 @@ namespace SQLFitness
 
         //ChromosomeSettings
 
-        public const int FlatChromosomeLength = 5;
+        public const int FlatChromosomeLength = 10;
         public const int TreeChromosomeBranchSize = 5;
         public const int TreeChromosomePredicateSize = 5;
 
