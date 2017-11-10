@@ -8,11 +8,9 @@ using System.IO;
 
 namespace SQLFitness
 {
-    class FlatSelectionAlgorithm : LoggingAlgorithm
+    class FlatTestAlgorithm : LoggingAlgorithm
     {
         private Population _matingPool;
-
-        private DBAccess _db;
 
         private StreamWriter _file;
         private int _generation;
@@ -23,15 +21,14 @@ namespace SQLFitness
         /// </summary>
         /// <param name="db">Database which the algorithm is going to be run on</param>
         /// <param name="selector"></param>
-        public FlatSelectionAlgorithm(DBAccess db, IFitness selector) : base()
+        public FlatTestAlgorithm(IFitness selector) : base()
         {
             //Setup params for most of the class here:
             _matingPool = new Population(_selector);
-            _db = db;
             _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
-            _flatFactory = (validColumn, validData) => new FlatIndividual(db.ValidColumnGetter(), db.ValidDataGetter);
-            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector, _flatFactory);
+            _flatFactory = (validColumn, validData) => new FlatIndividual(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter);
+            _population = new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, _flatFactory);
         }
 
         protected override void _selection()
@@ -68,7 +65,7 @@ namespace SQLFitness
             }
             //keeps the best parents
             _population.AddRange(_matingPool);
-            _population.AddRange(new Population(_db.ValidColumnGetter(), _db.ValidDataGetter, _selector, _flatFactory, Utility.PopulationSize - _population.Count));
+            _population.AddRange(new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, _flatFactory, Utility.PopulationSize - _population.Count));
             _matingPool = new Population(_selector);
             if (_matingPool.Count != 0) { throw new IndexOutOfRangeException(nameof(_matingPool) + " not zero"); }
         }

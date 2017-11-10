@@ -8,30 +8,25 @@ using System.IO;
 
 namespace SQLFitness
 {
-    class FlatSelectionAlgorithm : LoggingAlgorithm
+    public class TreeTestAlgorithm : LoggingAlgorithm
     {
         private Population _matingPool;
-
-        private DBAccess _db;
-
-        private StreamWriter _file;
         private int _generation;
         private readonly IFitness _selector;
-        private Func<List<string>, Func<string, List<object>>, FlatIndividual> _flatFactory;
+        private Func<List<string>, Func<string, List<object>>, TreeIndividual> _treeFactory;
+
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
-        /// <param name="db">Database which the algorithm is going to be run on</param>
         /// <param name="selector"></param>
-        public FlatSelectionAlgorithm(DBAccess db, IFitness selector) : base()
+        public TreeTestAlgorithm(IFitness selector) : base()
         {
             //Setup params for most of the class here:
+            _population = new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, (validCols, validData) => new TreeIndividual(validCols, validData));
             _matingPool = new Population(_selector);
-            _db = db;
             _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
-            _flatFactory = (validColumn, validData) => new FlatIndividual(db.ValidColumnGetter(), db.ValidDataGetter);
-            _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector, _flatFactory);
+            _treeFactory = (validColumn, validData) => new TreeIndividual(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter);
         }
 
         protected override void _selection()
@@ -68,14 +63,14 @@ namespace SQLFitness
             }
             //keeps the best parents
             _population.AddRange(_matingPool);
-            _population.AddRange(new Population(_db.ValidColumnGetter(), _db.ValidDataGetter, _selector, _flatFactory, Utility.PopulationSize - _population.Count));
+            _population.AddRange(new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, _treeFactory, Utility.PopulationSize - _population.Count));
             _matingPool = new Population(_selector);
             if (_matingPool.Count != 0) { throw new IndexOutOfRangeException(nameof(_matingPool) + " not zero"); }
         }
 
         protected override void _evaluation()
         {
-            Parallel.ForEach(_population, new ParallelOptions { MaxDegreeOfParallelism = 1 }, (x) =>
+            Parallel.ForEach(_population, new ParallelOptions { MaxDegreeOfParallelism = 8 }, (x) =>
             {
                 if (x.Fitness == null)
                 {

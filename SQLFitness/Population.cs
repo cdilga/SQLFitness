@@ -19,8 +19,17 @@ namespace SQLFitness
             }
         }*/
 
-        public Population(List<string> validColumnData, Func<string, List<object>> validRowDataGetter, IFitness fitnessFunc, Func<List<string>, Func<string, List<object>>, StubIndividual> constructor, int n = Utility.PopulationSize)
+        public Population(
+            List<string> validColumnData,
+            Func<string, List<object>> validRowDataGetter, 
+            IFitness fitnessFunc, 
+            Func<List<string>, Func<string, List<object>>, StubIndividual> constructor,
+            int n = Utility.PopulationSize
+            )
         {
+            if (constructor == null)
+                throw new ArgumentNullException(nameof(constructor));
+
             _fitness = fitnessFunc;
             //Generate a population of indivuduals of size n
             for (var i = 0; i < n; i++)

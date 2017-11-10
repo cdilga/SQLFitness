@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using System.Diagnostics;
 
 namespace SQLFitness
 {
@@ -36,6 +37,7 @@ namespace SQLFitness
             };
 
             this.Generation = 1;
+            _file.WriteLine($"Generation, Evolve Time, Evaluation Time, Selection Time, Crossover Time, Mutation Time, Individuals");
         }
 
         abstract protected void _selection();
@@ -46,22 +48,39 @@ namespace SQLFitness
         //Talk through this design
         public void Evolve()
         {
+            var evolveStopWatch = new Stopwatch();
+            evolveStopWatch.Start();
+            var evaluationStopWatch = new Stopwatch();
+            var selectionStopWatch = new Stopwatch();
+            var crossoverStopWatch = new Stopwatch();
+            var mutationStopWatch = new Stopwatch();
+
+            evaluationStopWatch.Start();
             Console.WriteLine(nameof(_evaluation));
             _evaluation();
+            evaluationStopWatch.Stop();
+            selectionStopWatch.Start();
             Console.WriteLine(nameof(_selection));
             _selection();
+            selectionStopWatch.Stop();
 
             this.BestIndividuals.Add(_population[0]);
             var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
-            _file.WriteLine($"{this.Generation},{line}");
+            
             
             Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
             _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
+            crossoverStopWatch.Start();
             Console.WriteLine(nameof(_crossover));
             _crossover();
+            crossoverStopWatch.Stop();
+            mutationStopWatch.Start();
             Console.WriteLine(nameof(_mutation));
             _mutation();
+            mutationStopWatch.Stop();
             this.Generation++;
+            evolveStopWatch.Stop();
+            _file.WriteLine($"{this.Generation}, {evolveStopWatch.Elapsed}, {evaluationStopWatch.Elapsed}, {selectionStopWatch.Elapsed}, {crossoverStopWatch.Elapsed}, {mutationStopWatch.Elapsed}, {line}");
         }
     }
 }
