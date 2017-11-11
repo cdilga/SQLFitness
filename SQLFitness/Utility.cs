@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SQLFitness
@@ -25,6 +26,11 @@ namespace SQLFitness
         //So cool when someone told me to look this up:
         public static T GetRandomValue<T>(this List<T> list) => list[GetRandomNum(list.Count)];
         public static T GetRandomValue<T>(this T[] list) => list[GetRandomNum(list.Length)];
+        public static List<Chromosome> DistinctChromosomes(this List<Chromosome> list) => list.GroupBy(o => o.Field).Select(c => c.First()).ToList();
+        public static List<Selection> DistinctChromosomes(this List<Selection> list) => list.GroupBy(o => o.Field).Select(c => c.First()).ToList();
+        public static Projection[] DistinctChromosomes(this Projection[] list) => list.ToList().GroupBy(o => o.Field).Select(c => c.First()).ToArray();
+        public static List<Projection> DistinctChromosomes(this List<Projection> list) => list.GroupBy(o => o.Field).Select(c => c.First()).ToList();
+
         public static string ToSQL(this PredicateType condition)
         {
             switch (condition)
@@ -67,16 +73,32 @@ namespace SQLFitness
         //Probably shouldn't be above 0.5
         public const double MatingProportion = 0.4;
         public const double MutationProportion = 0.1;
-        public const int PopulationSize = 50;
+        public const int PopulationSize = 200;
 
         //ChromosomeSettings
 
-        public const int FlatChromosomeLength = 5;
-        public const int TreeChromosomeBranchSize = 5;
+        public const int FlatChromosomeLength = 100;
+        public const int TreeChromosomeBranchSize = 11;
         public const int TreeChromosomePredicateSize = 5;
 
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";
         public const int FitnessServerPort = 1506;
+
+        public static void TestDuplicates(List<Projection> list)
+        {
+            foreach (var item in list)
+            {
+                var sublist = new List<Projection>(list);
+                sublist.Remove(item);
+                Projection predicateItem = (Projection)item;
+                foreach (var matchItem in sublist)
+                {
+                    Projection matchPredicate = (Projection)matchItem;
+                    if (predicateItem.Field == matchPredicate.Field) throw new ArgumentException("Invalid field, is duplicate");
+                    if (predicateItem.ToString() == matchPredicate.ToString()) throw new ArgumentException("Invalid field, is duplicate by string");
+                }
+            }
+        }
     }
 }

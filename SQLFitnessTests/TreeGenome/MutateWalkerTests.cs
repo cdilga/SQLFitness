@@ -66,7 +66,7 @@ namespace SQLFitness.TreeGenome.Tests
             var base3Node = new BinaryNode(leftPredicate, rightPredicate, initialType);
             var mutator = new MutateWalker(1);
             mutator.Visit(base3Node);
-            Assert.AreNotEqual(initialType, ((BinaryNode)mutator.GetTree()).NodeType);
+            Assert.AreEqual(initialType, ((BinaryNode)mutator.GetTree()).NodeType);
         }
     }
 }

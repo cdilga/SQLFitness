@@ -56,11 +56,11 @@ namespace SQLFitness
             var mutationStopWatch = new Stopwatch();
 
             evaluationStopWatch.Start();
-            Console.WriteLine(nameof(_evaluation));
+            //Console.WriteLine(nameof(_evaluation));
             _evaluation();
             evaluationStopWatch.Stop();
             selectionStopWatch.Start();
-            Console.WriteLine(nameof(_selection));
+            //Console.WriteLine(nameof(_selection));
             _selection();
             selectionStopWatch.Stop();
 
@@ -68,14 +68,14 @@ namespace SQLFitness
             var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
             
             
-            Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
+            //Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
             _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
             crossoverStopWatch.Start();
-            Console.WriteLine(nameof(_crossover));
+            //Console.WriteLine(nameof(_crossover));
             _crossover();
             crossoverStopWatch.Stop();
             mutationStopWatch.Start();
-            Console.WriteLine(nameof(_mutation));
+            //Console.WriteLine(nameof(_mutation));
             _mutation();
             mutationStopWatch.Stop();
             this.Generation++;

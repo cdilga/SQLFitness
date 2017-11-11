@@ -9,14 +9,13 @@ namespace SQLFitness
     {
         static void Main(string[] args)
         {
-
             //Create a dbaccess
             var db = new DBAccess();
-            var basicGA = new FlatSelectionAlgorithm(db, new ClientFitness());
+            var basicGA = new TreeSelectionAlgorithm(db, new ClientFitness());
             for (var i = 0; i < 15000; i++)
             {
                 basicGA.Evolve();
-                Console.WriteLine($"===========\nIteration: {i}");
+                Console.WriteLine($"{i}");
             }
             db.Close();
             Console.WriteLine("Done");

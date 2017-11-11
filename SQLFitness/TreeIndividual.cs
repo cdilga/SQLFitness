@@ -16,19 +16,36 @@ namespace SQLFitness
 
         public TreeIndividual(List<String> validColumns, Func<string, List<object>> validDataGetter)
         {
+            
             _projectionGenome = new Projection[Utility.TreeChromosomeBranchSize];
             //Create new tree
             var treeBuilder = new RandomBuilder(validColumns, validDataGetter, Utility.TreeChromosomeBranchSize);
             _selectionTree = treeBuilder.Build();
-                       
+
             //Create new predicates
             for (var i = 0; i < _projectionGenome.Length; i++)
             {
-                _projectionGenome[i] = new Projection(validColumns);
+                //Generate a new projection
+                Projection temp;
+                temp = new Projection(validColumns);
+                for (var j = 0; j < _projectionGenome.Length; j++)
+                {
+                    if (temp.Field == _projectionGenome[j]?.Field && _projectionGenome[j] != null)
+                    {
+                        //If it's present in the existing array, generate a new one
+                        temp = new Projection(validColumns);
+                        //And start iterating again from scratch
+                        j = 0;
+                    }
+                    
+                }
+                //When we have one that isn't in the array add it to the projectiongenome and continue iterating
+                _projectionGenome[i] = temp;
             }
 
             _validColumns = validColumns ?? throw new ArgumentNullException(nameof(validColumns));
             _validDataGetter = validDataGetter ?? throw new ArgumentNullException(nameof(validDataGetter));
+            //Utility.TestDuplicates(_projectionGenome.ToList());
         }
 
         private TreeIndividual(List<String> validColumns, Func<string, List<object>> validDataGetter, Node selectionTree, Projection[] projectionGenome)
@@ -37,6 +54,7 @@ namespace SQLFitness
             _validDataGetter = validDataGetter ?? throw new ArgumentNullException(nameof(validDataGetter));
             _selectionTree = selectionTree ?? throw new ArgumentNullException(nameof(selectionTree));
             _projectionGenome = projectionGenome ?? throw new ArgumentNullException(nameof(projectionGenome));
+            //Utility.TestDuplicates(_projectionGenome.ToList());
         }
 
         public override void Mutate()
@@ -51,6 +69,8 @@ namespace SQLFitness
             {
                 _projectionGenome[Utility.GetRandomNum(_projectionGenome.Length)] = new Projection(_validColumns.Distinct().ToList()); 
             }
+            this.Fitness = null;
+            _projectionGenome = _projectionGenome.DistinctChromosomes();
         }
         public override string ToSql()
         {
@@ -84,7 +104,7 @@ namespace SQLFitness
             {
                 newChromosome.Add(tempSpouse._projectionGenome[i]);
             }
-            var distinct = newChromosome.Distinct().ToArray();
+            var distinct = newChromosome.DistinctChromosomes().ToArray();
             return new TreeIndividual(_validColumns, _validDataGetter, addBranchAt.GetTree(), distinct);
         }
     }

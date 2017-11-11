@@ -50,6 +50,7 @@
     <Compile Include="PerformanceTester.cs" />
     <Compile Include="PerformanceTestFitness.cs" />
     <Compile Include="TreeTestAlgorithm.cs" />
+    <Compile Include="Flat2TestAlgorithm.cs" />
     <Compile Include="TreeSelectionAlgorithm.cs" />
     <Compile Include="LoggingAlgorithm.cs" />
     <Compile Include="FlatSelectionAlgorithm.cs" />

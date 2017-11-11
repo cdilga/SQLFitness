@@ -49,6 +49,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Flat2TestAlgorithmTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FlatGenome\TestFlatIndividual.cs" />
     <Compile Include="FlatGenome\TestPopulation.cs" />

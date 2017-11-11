@@ -8,27 +8,25 @@ using System.IO;
 
 namespace SQLFitness
 {
-    class FlatTestAlgorithm : LoggingAlgorithm
+    public class Flat2TestAlgorithm : LoggingAlgorithm
     {
         private Population _matingPool;
-
-        private StreamWriter _file;
         private int _generation;
         private readonly IFitness _selector;
-        private Func<List<string>, Func<string, List<object>>, FlatIndividual> _flatFactory;
+        private Func<List<string>, Func<string, List<object>>, FlatIndividual> _treeFactory;
+
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
-        /// <param name="db">Database which the algorithm is going to be run on</param>
         /// <param name="selector"></param>
-        public FlatTestAlgorithm(IFitness selector) : base()
+        public Flat2TestAlgorithm(IFitness selector) : base()
         {
             //Setup params for most of the class here:
+            _population = new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, (validCols, validData) => new FlatIndividual(validCols, validData));
             _matingPool = new Population(_selector);
             _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
-            _flatFactory = (validColumn, validData) => new FlatIndividual(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter);
-            _population = new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, _flatFactory);
+            _treeFactory = (validColumn, validData) => new FlatIndividual(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter);
         }
 
         protected override void _selection()
@@ -65,7 +63,7 @@ namespace SQLFitness
             }
             //keeps the best parents
             _population.AddRange(_matingPool);
-            _population.AddRange(new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, _flatFactory, Utility.PopulationSize - _population.Count));
+            _population.AddRange(new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, _treeFactory, Utility.PopulationSize - _population.Count));
             _matingPool = new Population(_selector);
             if (_matingPool.Count != 0) { throw new IndexOutOfRangeException(nameof(_matingPool) + " not zero"); }
         }
@@ -79,11 +77,11 @@ namespace SQLFitness
                     //This is a good example of using OO to prevent things from happening by using objects and our custom type
                     //Example of encapsulation - information hiding
                     x.Fitness = new Fitness(((IFitness)Activator.CreateInstance(_selector.GetType())).Evaluate(x));
-                    Console.WriteLine("Processing {0} on thread {1}", x.Fitness.Value, Thread.CurrentThread.ManagedThreadId);
+                    //Console.WriteLine("Processing {0} on thread {1}", x.Fitness.Value, Thread.CurrentThread.ManagedThreadId);
                 }
                 else
                 {
-                    Console.WriteLine("Already Set!");
+                    //Console.WriteLine("Already Set!");
                 }
             });
         }

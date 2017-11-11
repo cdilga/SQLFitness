@@ -34,28 +34,18 @@ namespace SQLFitness
             {
                 newChromosome.Add(flatSpouse.Genome[i]);
             }
-            var distinct = newChromosome.Distinct().ToArray();
-            return new FlatIndividual(distinct);
+            
+            return new FlatIndividual(newChromosome.DistinctChromosomes());
         }
 
         public override void Mutate()
         {
             this.Fitness = null;
             this.Genome.GetRandomValue().Mutate();
+            //TODO fix duplicates
         }
 
         private IEnumerable<Chromosome> _selectType(IEnumerable<Chromosome> chromosomes, Type type) => chromosomes.Where(c => c.GetType() == type);
-        //{
-        //    var returnList = new List<Chromosome>();
-        //    foreach (var chromosome in chromosomes)
-        //    {
-        //        if (chromosome.GetType() == type)
-        //        {
-        //            returnList.Add(chromosome);
-        //        }
-        //    }
-        //    return returnList;
-        //}
 
         public override string ToSql()
         {
@@ -63,10 +53,6 @@ namespace SQLFitness
             var _projections = chromosomes.OfType<Projection>();
             var _selections = chromosomes.OfType<Selection>();
             var tempSelections = new List<string>();
-            //foreach (var selection in _selections)
-            //{
-            //    tempSelections.Add($"\"{selection}\"");
-            //}
 
             var catenatedProjections = String.Join(", ", _projections.Select(x => $"`{x}`"));
             var selectComponent = catenatedProjections.Any() ? catenatedProjections : "*";

@@ -21,9 +21,9 @@ namespace SQLFitness
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
-                    Console.WriteLine("Connecting failed. Try again?");
-                    Console.ReadLine();
+                    Debug.WriteLine(ex);
+                    Console.WriteLine("Connecting failed. Trying again");
+                    System.Threading.Thread.Sleep(500);
                 }
             }
             
@@ -33,7 +33,7 @@ namespace SQLFitness
             NetworkStream serverStream = tcpClient.GetStream();
             byte[] bytesToSend = Encoding.UTF8.GetBytes(sql);
 
-            Console.WriteLine("Sending : " + sql);
+            Debug.WriteLine("Sending : " + sql);
             serverStream.Write(bytesToSend, 0, bytesToSend.Length);
             var bytesToRead = new byte[tcpClient.ReceiveBufferSize];
 
@@ -41,7 +41,7 @@ namespace SQLFitness
             var result = Encoding.UTF8.GetString(bytesToRead, 0, bytesRead).Substring(2);
 
             tcpClient.Close();
-            Console.WriteLine("Received : " + result);
+            Debug.WriteLine("Received : " + result);
             return Convert.ToDouble(result);
         }
     }
