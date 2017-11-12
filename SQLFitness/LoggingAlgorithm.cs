@@ -15,7 +15,7 @@ namespace SQLFitness
 
         public Population BestIndividuals { get; set; }
         public int Generation { get; private set; }
-        
+
         private readonly StreamWriter _file;
         private readonly StreamWriter _bestIndividuals;
         /// <summary>
@@ -64,12 +64,7 @@ namespace SQLFitness
             _selection();
             selectionStopWatch.Stop();
 
-            this.BestIndividuals.Add(_population[0]);
-            var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
-            
-            
-            //Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
-            _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
+
             crossoverStopWatch.Start();
             //Console.WriteLine(nameof(_crossover));
             _crossover();
@@ -80,7 +75,16 @@ namespace SQLFitness
             mutationStopWatch.Stop();
             this.Generation++;
             evolveStopWatch.Stop();
-            _file.WriteLine($"{this.Generation}, {evolveStopWatch.Elapsed}, {evaluationStopWatch.Elapsed}, {selectionStopWatch.Elapsed}, {crossoverStopWatch.Elapsed}, {mutationStopWatch.Elapsed}, {line}");
+
+            if (this.BestIndividuals.Count > 0 && this.BestIndividuals.Last() != _population[0])
+            {
+                this.BestIndividuals.Add(_population[0]);
+                //Code Super unoptimised, slows entire program
+                var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
+                //Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
+                //_bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
+                _file.WriteLine($"{this.Generation}, {evolveStopWatch.Elapsed}, {evaluationStopWatch.Elapsed}, {selectionStopWatch.Elapsed}, {crossoverStopWatch.Elapsed}, {mutationStopWatch.Elapsed}, {line}");
+            }
         }
     }
 }
