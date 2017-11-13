@@ -8,14 +8,14 @@ namespace SQLFitness
 {
     public class FlatIndividual : StubIndividual
     {
-        private Chromosome[] Genome { get; }
+        private Chromosome[] _genome { get; }
         public FlatIndividual(List<String> validColumns, Func<string, List<object>> validDataGetter)
             : this(Enumerable.Range(0, Utility.FlatChromosomeLength).Select(i => _generateRandomChromosome(validColumns, validDataGetter)))
         {}
 
         private FlatIndividual(IEnumerable<Chromosome> genome)
         {
-            Genome = genome.ToArray();
+            this._genome = genome.ToArray();
         }
 
         protected override StubIndividual CrossWithSpouse(StubIndividual spouse)
@@ -26,13 +26,13 @@ namespace SQLFitness
 
             var newChromosome = new List<Chromosome>();
             //Cut at random point along them
-            for (var i = 0; i < Utility.GetRandomNum(this.Genome.Length); i++)
+            for (var i = 0; i < Utility.GetRandomNum(this._genome.Length); i++)
             {
-                newChromosome.Add(this.Genome[i]);
+                newChromosome.Add(this._genome[i]);
             }
-            for (var i = Utility.GetRandomNum(flatSpouse.Genome.Length); i < flatSpouse.Genome.Length; i++)
+            for (var i = Utility.GetRandomNum(flatSpouse._genome.Length); i < flatSpouse._genome.Length; i++)
             {
-                newChromosome.Add(flatSpouse.Genome[i]);
+                newChromosome.Add(flatSpouse._genome[i]);
             }
             
             return new FlatIndividual(newChromosome.DistinctChromosomes());
@@ -41,7 +41,7 @@ namespace SQLFitness
         public override void Mutate()
         {
             this.Fitness = null;
-            this.Genome.GetRandomValue().Mutate();
+            this._genome.GetRandomValue().Mutate();
             //TODO fix duplicates
         }
 
@@ -49,7 +49,7 @@ namespace SQLFitness
 
         public override string ToSql()
         {
-            var chromosomes = this.Genome;
+            var chromosomes = this._genome;
             var _projections = chromosomes.OfType<Projection>();
             var _selections = chromosomes.OfType<Selection>();
             var tempSelections = new List<string>();

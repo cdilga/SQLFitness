@@ -28,8 +28,8 @@ namespace SQLFitness
         public static T GetRandomValue<T>(this T[] list) => list[GetRandomNum(list.Length)];
         public static List<Chromosome> DistinctChromosomes(this List<Chromosome> list) => list.GroupBy(o => o.Field).Select(c => c.First()).ToList();
         public static List<Selection> DistinctChromosomes(this List<Selection> list) => list.GroupBy(o => o.Field).Select(c => c.First()).ToList();
-        public static Projection[] DistinctChromosomes(this Projection[] list) => list.ToList().GroupBy(o => o.Field).Select(c => c.First()).ToArray();
         public static List<Projection> DistinctChromosomes(this List<Projection> list) => list.GroupBy(o => o.Field).Select(c => c.First()).ToList();
+        public static Projection[] DistinctChromosomes(this Projection[] list) => list.ToList().GroupBy(o => o.Field).Select(c => c.First()).ToArray();
 
         public static string ToSQL(this PredicateType condition)
         {
@@ -73,13 +73,13 @@ namespace SQLFitness
         //Probably shouldn't be above 0.5
         public const double MatingProportion = 0.4;
         public const double MutationProportion = 0.1;
-        public const int PopulationSize = 200;
+        public const int PopulationSize = 100;
 
         //ChromosomeSettings
 
-        public const int FlatChromosomeLength = 100;
-        public const int TreeChromosomeBranchSize = 11;
-        public const int TreeChromosomePredicateSize = 5;
+        public const int FlatChromosomeLength = 10;
+        public const int TreeChromosomeBranchSize = 5;
+        public const int MaxTreeChromosomeProjectionSize = 5;
 
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";

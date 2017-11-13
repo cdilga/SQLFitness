@@ -47,10 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Profiling\FlatTestAlgorithm.cs" />
-    <Compile Include="PerformanceTester.cs" />
-    <Compile Include="PerformanceTestFitness.cs" />
+    <Compile Include="Profiling\PerformanceTester.cs" />
+    <Compile Include="Profiling\PerformanceTestFitness.cs" />
     <Compile Include="Profiling\TreeTestAlgorithm.cs" />
-    <Compile Include="TreeTestAlgorithm.cs" />
     <Compile Include="Flat2TestAlgorithm.cs" />
     <Compile Include="TreeSelectionAlgorithm.cs" />
     <Compile Include="LoggingAlgorithm.cs" />

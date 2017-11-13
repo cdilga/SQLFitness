@@ -18,7 +18,7 @@ namespace SQLFitness.Tests
             var first = projectionFactory();
             var newChromosome = new List<Projection>() { first, projectionFactory(), projectionFactory(), projectionFactory() };
             var distinct = newChromosome.DistinctChromosomes();
-            Assert.AreEqual(new List<Projection>() { first}, distinct);
+            Assert.AreEqual(new List<Projection>() { first }, distinct);
         }
     }
 }
