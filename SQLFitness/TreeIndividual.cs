@@ -17,7 +17,7 @@ namespace SQLFitness
         public TreeIndividual(List<String> validColumns, Func<string, List<object>> validDataGetter)
         {
             
-            _projectionGenome = new Projection[Utility.TreeChromosomeBranchSize];
+            _projectionGenome = new Projection[Math.Min(Utility.MaxTreeChromosomeProjectionSize, validColumns.Count)];
             //Create new tree
             var treeBuilder = new RandomBuilder(validColumns, validDataGetter, Utility.TreeChromosomeBranchSize);
             _selectionTree = treeBuilder.Build();
@@ -25,27 +25,20 @@ namespace SQLFitness
             //Create new predicates
             for (var i = 0; i < _projectionGenome.Length; i++)
             {
-                //Generate a new projection
                 Projection temp;
-                temp = new Projection(validColumns);
-                for (var j = 0; j < _projectionGenome.Length; j++)
+                do
                 {
-                    if (temp.Field == _projectionGenome[j]?.Field && _projectionGenome[j] != null)
-                    {
-                        //If it's present in the existing array, generate a new one
-                        temp = new Projection(validColumns);
-                        //And start iterating again from scratch
-                        j = 0;
-                    }
-                    
-                }
+                    temp = new Projection(validColumns);
+                } while (_projectionGenome.Any(x => x?.Field == temp.Field && x != null));
                 //When we have one that isn't in the array add it to the projectiongenome and continue iterating
                 _projectionGenome[i] = temp;
             }
 
             _validColumns = validColumns ?? throw new ArgumentNullException(nameof(validColumns));
             _validDataGetter = validDataGetter ?? throw new ArgumentNullException(nameof(validDataGetter));
-            //Utility.TestDuplicates(_projectionGenome.ToList());
+#if DEBUG
+            Utility.TestDuplicates(_projectionGenome.ToList());
+#endif
         }
 
         private TreeIndividual(List<String> validColumns, Func<string, List<object>> validDataGetter, Node selectionTree, Projection[] projectionGenome)
@@ -54,7 +47,9 @@ namespace SQLFitness
             _validDataGetter = validDataGetter ?? throw new ArgumentNullException(nameof(validDataGetter));
             _selectionTree = selectionTree ?? throw new ArgumentNullException(nameof(selectionTree));
             _projectionGenome = projectionGenome ?? throw new ArgumentNullException(nameof(projectionGenome));
-            //Utility.TestDuplicates(_projectionGenome.ToList());
+#if DEBUG
+            Utility.TestDuplicates(_projectionGenome.ToList());
+#endif
         }
 
         public override void Mutate()

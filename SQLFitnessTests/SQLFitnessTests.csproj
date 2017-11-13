@@ -49,7 +49,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Flat2TestAlgorithmTests.cs" />
+    <Compile Include="DistinctTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FlatGenome\TestFlatIndividual.cs" />
     <Compile Include="FlatGenome\TestPopulation.cs" />
@@ -58,6 +58,7 @@
     <Compile Include="TreeGenome\MutateWalkerTests.cs" />
     <Compile Include="TreeGenome\PredicateNodeTests.cs" />
     <Compile Include="TreeGenome\RandomBuilderTests.cs" />
+    <Compile Include="UtilityTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
