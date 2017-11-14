@@ -24,7 +24,7 @@ namespace SQLFitness
         private static StubIndividual individualFactory(double fitness, List<string> validColumns, Func<string, List<object>> validDataGetter)
         {
             var individual1 = new FlatIndividual(validColumns, validDataGetter);
-            individual1.Fitness = new Fitness(fitness);
+            individual1.Fitness = fitness;
             return individual1;
         }
         private Population _population;
@@ -61,7 +61,7 @@ namespace SQLFitness
         {
             public TestIndividual(double fitness) : base(new List<string> { "" }, (x) => new List<object> { "" })
             {
-                this.Fitness = new Fitness(fitness);
+                this.Fitness = fitness;
             }
         }
     }

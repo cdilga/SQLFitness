@@ -56,7 +56,6 @@
     <Compile Include="Chromosome.cs" />
     <Compile Include="DBAccess.cs" />
     <Compile Include="Fitness\DBSelector.cs" />
-    <Compile Include="Fitness\Fitness.cs" />
     <Compile Include="TreeGenome\PredicateType.cs" />
     <Compile Include="StubIndividual.cs" />
     <Compile Include="FlatIndividual.cs" />

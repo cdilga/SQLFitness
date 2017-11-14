@@ -81,6 +81,8 @@ namespace SQLFitness
         public const int TreeChromosomeBranchSize = 5;
         public const int MaxTreeChromosomeProjectionSize = 5;
 
+        public const int Parallelism = 8;
+
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";
         public const int FitnessServerPort = 1506;
