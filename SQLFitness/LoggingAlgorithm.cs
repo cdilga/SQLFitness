@@ -76,7 +76,8 @@ namespace SQLFitness
                 //Code Super unoptimised, slows entire program
 
                 //Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
-                _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
+                String temp = "\"" + this.BestIndividuals.Last().ToSql().Replace("\"", "\'").Replace("\n","") + "\"" + "," + "\"" + this.BestIndividuals.Last().Fitness.Value + "\"";
+                _bestIndividuals.WriteLine(temp);
             }
             _file.WriteLine($"{this.Generation}, {evolveStopWatch.Elapsed}, {evaluationStopWatch.Elapsed}, {selectionStopWatch.Elapsed}, {crossoverStopWatch.Elapsed}, {mutationStopWatch.Elapsed}, {line}");
 
