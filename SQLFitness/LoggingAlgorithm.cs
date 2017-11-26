@@ -21,8 +21,6 @@ namespace SQLFitness
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
-        /// <param name="db">Database which the algorithm is going to be run on</param>
-        /// <param name="selector"></param>
         protected LoggingAlgorithm()
         {
             //Setup params for most of the class here:
