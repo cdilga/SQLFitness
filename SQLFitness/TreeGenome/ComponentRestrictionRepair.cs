@@ -17,6 +17,7 @@ namespace SQLFitness
         private Node _replaceWithNode;
         private PredicateNode[] _nodeList;
 
+        private Boolean _isLeft = true;
         private Boolean _first = true;
 
         private Node _deleteMeNode;
@@ -41,6 +42,9 @@ namespace SQLFitness
 
         public override void Visit(BinaryNode visitedNode)
         {
+            Node left = visitedNode.Left;
+            Node right = visitedNode.Right;
+
             if (_first)
             {
                 //Almost like a construction step
@@ -48,16 +52,21 @@ namespace SQLFitness
                 _nodeList = new PredicateNode[visitedNode.BranchSize];
                 _tree = visitedNode;
             }
+            _position++;
 
-            //Visit left
             Visit(visitedNode.Left);
             if (visitedNode.Left == _deleteMeNode)
             {
                 _replaceMeNode = visitedNode;
                 _replaceWithNode = visitedNode.Right;
             }
+            else if (visitedNode.Left == _replaceMeNode)
+            {
+                _replaceMeNode = visitedNode;
+                //_replaceWithNode = new BinaryNode(_replaceWithNode, visitedNode.Right, visitedNode.NodeType);
+                left = _replaceWithNode;
+            }
 
-            //Visit right
             Visit(visitedNode.Right);
             if (visitedNode.Right == _deleteMeNode)
             {
@@ -65,8 +74,15 @@ namespace SQLFitness
                 //Could be a problem if the left node is being deleted as well....
                 _replaceWithNode = visitedNode.Left;
             }
+            else if (visitedNode.Right == _replaceMeNode)
+            {
+                _replaceMeNode = visitedNode;
+                //_replaceWithNode = new BinaryNode(visitedNode.Left, _replaceWithNode, visitedNode.NodeType);
+                right = _replaceWithNode;
+            }
+            _replaceWithNode = new BinaryNode(left, right, visitedNode.NodeType);
 
-            _position++;
+            _tree = _replaceWithNode != null ? _replaceWithNode : _tree;
         }
 
         private int _countOccurrences(PredicateNode p1, PredicateNode[] nodelist)
@@ -74,6 +90,7 @@ namespace SQLFitness
             var count = 0;
             foreach (var node in nodelist)
             {
+                //The left of the predicate node is the column
                 if (node.Left == p1.Left)
                 {
                     count++;

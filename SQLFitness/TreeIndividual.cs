@@ -20,7 +20,9 @@ namespace SQLFitness
             _projectionGenome = new Projection[Math.Min(Utility.MaxTreeChromosomeProjectionSize, validColumns.Count)];
             //Create new tree
             var treeBuilder = new RandomBuilder(validColumns, validDataGetter, Utility.TreeChromosomeBranchSize);
-            _selectionTree = treeBuilder.Build();
+            var thing = new ComponentRestrictionRepair(3);
+            thing.Visit(treeBuilder.Build());
+            _selectionTree = thing.GetTree();
 
             //Create new predicates
             for (var i = 0; i < _projectionGenome.Length; i++)
@@ -66,6 +68,9 @@ namespace SQLFitness
             }
             this.Fitness = null;
             _projectionGenome = _projectionGenome.DistinctChromosomes();
+            var thing = new ComponentRestrictionRepair(3);
+            thing.Visit(_selectionTree);
+            _selectionTree = thing.GetTree();
         }
         public override string ToSql()
         {
@@ -100,7 +105,9 @@ namespace SQLFitness
                 newChromosome.Add(tempSpouse._projectionGenome[i]);
             }
             var distinct = newChromosome.DistinctChromosomes().ToArray();
-            return new TreeIndividual(_validColumns, _validDataGetter, addBranchAt.GetTree(), distinct);
+            var thing = new ComponentRestrictionRepair(3);
+            thing.Visit(addBranchAt.GetTree());
+            return new TreeIndividual(_validColumns, _validDataGetter, thing.GetTree(), distinct);
         }
     }
 }
