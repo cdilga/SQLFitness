@@ -43,7 +43,7 @@ namespace SQLFitness
         public Population(IFitness fitnessFunc) { _fitness = fitnessFunc; }
         public Population() : base() { }
 
-        public double Evaluate(StubIndividual item)
+        public double[] Evaluate(StubIndividual item)
         {
             Console.WriteLine(item.ToString());
             return _fitness.Evaluate(item);

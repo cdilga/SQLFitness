@@ -9,6 +9,6 @@ namespace SQLFitness
     /// </summary>
     public interface IFitness
     {
-        double Evaluate(StubIndividual individual);
+        double[] Evaluate(StubIndividual individual);
     }
 }

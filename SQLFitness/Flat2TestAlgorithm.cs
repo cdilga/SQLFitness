@@ -76,7 +76,7 @@ namespace SQLFitness
                 {
                     //This is a good example of using OO to prevent things from happening by using objects and our custom type
                     //Example of encapsulation - information hiding
-                    x.Fitness = new Fitness(((IFitness)Activator.CreateInstance(_selector.GetType())).Evaluate(x));
+                    x.Fitness = new Fitness(((IFitness)Activator.CreateInstance(_selector.GetType())).Evaluate(x)[0]);
                     //Console.WriteLine("Processing {0} on thread {1}", x.Fitness.Value, Thread.CurrentThread.ManagedThreadId);
                 }
                 else

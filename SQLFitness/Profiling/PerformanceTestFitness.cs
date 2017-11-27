@@ -10,6 +10,12 @@ namespace SQLFitness
 {
     public class PerformanceTestFitness : IFitness
     {
-        public double Evaluate(StubIndividual individual) => 0;
+        public double[] Evaluate(StubIndividual individual)
+        {
+            double[] output = new double[2];
+            output[0] = 0.0;
+            output[1] = 0.0;
+            return output;
+        }
     }
 }
