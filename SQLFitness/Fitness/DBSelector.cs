@@ -21,10 +21,12 @@ namespace SQLFitness
             _db = db;
         }
 
-        public double Evaluate(StubIndividual individual)
+        public double[] Evaluate(StubIndividual individual)
         {
             Console.WriteLine(_interpreter.Parse(individual));
-            return 1;
+            double[] output = new double[2];
+            output[0] = 1.0;
+            return output;
             var fieldDist = 0;
             var rowDist = 0;
             var numRowDist = 0;
@@ -66,7 +68,8 @@ namespace SQLFitness
                 //TODO fix this 
                 _db.Conn.Close();
             }
-            return fieldDist + rowDist + numRowDist;
+            output[0] = fieldDist + rowDist + numRowDist;
+            return output;
         }
     }
 }

@@ -10,8 +10,9 @@ namespace SQLFitness
 {
     public class ClientFitness : IFitness
     {
-        public double Evaluate(StubIndividual individual)
+        public double[] Evaluate(StubIndividual individual)
         {
+            double[] output = new double[2];
             var tcpClient = new TcpClient();
             while (!tcpClient.Connected)
             {
@@ -42,7 +43,10 @@ namespace SQLFitness
 
             tcpClient.Close();
             Debug.WriteLine("Received : " + result);
-            return Convert.ToDouble(result);
+            //Console.WriteLine(result.Split('\n')[0]);
+            output[0] = Convert.ToDouble(result.Split('\n')[0]);
+            output[1] = Convert.ToDouble(result.Split('\n')[1]);
+            return output;
         }
     }
 }

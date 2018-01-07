@@ -63,7 +63,7 @@ namespace SQLFitness
 
 
         //Note that const fields are always static
-        public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3306;sslmode=none";
+        public const string ConnString = "server=localhost;user=root;password=farhad;database=species;port=3306;sslmode=none";
         public const string TableName = "insectdiscoveries";
 
         //public const string ConnString = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
