@@ -65,19 +65,27 @@ namespace SQLFitness
             selectionStopWatch.Stop();
             var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
 
-            if (this.BestIndividuals.Count == 0)
-            {
-                this.BestIndividuals.Add(_population[0]);
-            }
+            
 
-            if (this.BestIndividuals.Count > 0 && this.BestIndividuals.Last() != _population[0])
+            if (this.BestIndividuals.Any())
             {
-                this.BestIndividuals.Add(_population[0]);
+                if (this.BestIndividuals.Last() != _population[0])
+                {
+                    this.BestIndividuals.Add(_population[0]);
+                    _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
+                }
+                
                 //Code Super unoptimised, slows entire program
 
                 //Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
+                
+            }
+            else
+            {
+                this.BestIndividuals.Add(_population[0]);
                 _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
             }
+            
             _file.WriteLine($"{this.Generation}, {evolveStopWatch.Elapsed}, {evaluationStopWatch.Elapsed}, {selectionStopWatch.Elapsed}, {crossoverStopWatch.Elapsed}, {mutationStopWatch.Elapsed}, {line}");
 
 
