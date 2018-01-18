@@ -58,7 +58,6 @@
     <Compile Include="TreeGenome\MutateWalkerTests.cs" />
     <Compile Include="TreeGenome\PredicateNodeTests.cs" />
     <Compile Include="TreeGenome\RandomBuilderTests.cs" />
-    <Compile Include="UtilityTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

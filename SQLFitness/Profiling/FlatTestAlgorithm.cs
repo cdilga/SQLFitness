@@ -11,9 +11,6 @@ namespace SQLFitness
     class FlatTestAlgorithm : LoggingAlgorithm
     {
         private Population _matingPool;
-
-        private StreamWriter _file;
-        private int _generation;
         private readonly IFitness _selector;
         private Func<List<string>, Func<string, List<object>>, FlatIndividual> _flatFactory;
         /// <summary>
@@ -25,7 +22,6 @@ namespace SQLFitness
         {
             //Setup params for most of the class here:
             _matingPool = new Population(_selector);
-            _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
             _flatFactory = (validColumn, validData) => new FlatIndividual(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter);
             _population = new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, _flatFactory);

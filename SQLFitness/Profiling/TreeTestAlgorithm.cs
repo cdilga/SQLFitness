@@ -11,7 +11,6 @@ namespace SQLFitness
     public class TreeTestAlgorithm : LoggingAlgorithm
     {
         private Population _matingPool;
-        private int _generation;
         private readonly IFitness _selector;
         private Func<List<string>, Func<string, List<object>>, TreeIndividual> _treeFactory;
 
@@ -24,7 +23,6 @@ namespace SQLFitness
             //Setup params for most of the class here:
             _population = new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, (validCols, validData) => new TreeIndividual(validCols, validData));
             _matingPool = new Population(_selector);
-            _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
             _treeFactory = (validColumn, validData) => new TreeIndividual(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter);
         }
