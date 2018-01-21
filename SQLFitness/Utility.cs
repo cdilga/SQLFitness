@@ -81,6 +81,8 @@ namespace SQLFitness
         public const int TreeChromosomeBranchSize = 5;
         public const int MaxTreeChromosomeProjectionSize = 5;
 
+        public const int Parallelism = 8;
+
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";
         public const int FitnessServerPort = 1506;
@@ -95,8 +97,15 @@ namespace SQLFitness
                 foreach (var matchItem in sublist)
                 {
                     Projection matchPredicate = (Projection)matchItem;
-                    if (predicateItem.Field == matchPredicate.Field) throw new ArgumentException("Invalid field, is duplicate");
-                    if (predicateItem.ToString() == matchPredicate.ToString()) throw new ArgumentException("Invalid field, is duplicate by string");
+                    if (predicateItem.Field == matchPredicate.Field)
+                    {
+                        throw new ArgumentException("Invalid field, is duplicate");
+                    }
+
+                    if (predicateItem.ToString() == matchPredicate.ToString())
+                    {
+                        throw new ArgumentException("Invalid field, is duplicate by string");
+                    }
                 }
             }
         }
