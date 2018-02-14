@@ -10,8 +10,12 @@ namespace SQLFitness
         static void Main(string[] args)
         {
             //Create a dbaccess
-            //var db = new DBAccess();
+#if !DEBUG
             var basicGA = new TreeTestAlgorithm(new PerformanceTestFitness());
+#else
+            var db = new DBAccess();
+            var basicGA = new TreeSelectionAlgorithm(db, new ClientFitness());
+#endif
             for (var i = 0; i < 10000; i++)
             {
                 basicGA.Evolve();

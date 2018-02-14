@@ -19,7 +19,6 @@ namespace SQLFitness.TreeGenome.Tests
             _builder = buildFactory(1);
             //If it can cast the base node to a PredicateNode, we've succeeded
             var temp = (PredicateNode)_builder.Build();
-            Assert.Pass();
         }
 
         [TestCase(1)]

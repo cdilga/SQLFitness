@@ -51,7 +51,7 @@
     <Compile Include="Profiling\PerformanceTester.cs" />
     <Compile Include="Profiling\PerformanceTestFitness.cs" />
     <Compile Include="Profiling\TreeTestAlgorithm.cs" />
-    <Compile Include="TreeGenome\ComponentRestrictionRepair.cs" />
+    <Compile Include="TreeGenome\ColumnRepair.cs" />
     <Compile Include="TreeSelectionAlgorithm.cs" />
     <Compile Include="LoggingAlgorithm.cs" />
     <Compile Include="FlatSelectionAlgorithm.cs" />

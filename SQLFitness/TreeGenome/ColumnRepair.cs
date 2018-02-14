@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SQLFitness
 {
-    public class ComponentRestrictionRepair : Visitor
+    public class ColumnRepair : Visitor
     {
         private readonly int _componentRestrictions;
         private int _position = 0;
@@ -15,7 +15,11 @@ namespace SQLFitness
         private bool _done = false;
         private Node _replaceMeNode;
         private Node _replaceWithNode;
-        private PredicateNode[] _nodeList;
+        private List<PredicateNode> _nodeList;
+
+        //The purpose of this data is to record the number of occurrences of each of the different column names.
+        //We need a way of mapping strings (columns) to a count. If the number is over a set number, delete that node.
+        private Dictionary<String, int> _columnCounter;
 
         private Boolean _isLeft = true;
         private Boolean _first = true;
@@ -26,8 +30,9 @@ namespace SQLFitness
         /// Will create a new tree mutating at point <paramref name="componentRestrictions"/>.
         /// </summary>
         /// <param name="componentRestrictions">Point at which the visited node tree is mutated</param>
-        public ComponentRestrictionRepair(int componentRestrictions = 3)
+        public ColumnRepair(int componentRestrictions = 3)
         {
+            
             _componentRestrictions = componentRestrictions;
         }
 
@@ -42,6 +47,7 @@ namespace SQLFitness
 
         public override void Visit(BinaryNode visitedNode)
         {
+
             Node left = visitedNode.Left;
             Node right = visitedNode.Right;
 
@@ -49,7 +55,9 @@ namespace SQLFitness
             {
                 //Almost like a construction step
                 _first = false;
-                _nodeList = new PredicateNode[visitedNode.BranchSize];
+                //Since we know the length the list needs to be we will specify early as possible. At least it won't need to grow past this.
+                //Additionally this will work for the case where every column is unique
+                _columnCounter = new Dictionary<string, int>((int)(visitedNode.BranchSize / 2) + 1);
                 _tree = visitedNode;
             }
             _position++;
@@ -63,7 +71,8 @@ namespace SQLFitness
             else if (visitedNode.Left == _replaceMeNode)
             {
                 _replaceMeNode = visitedNode;
-                //_replaceWithNode = new BinaryNode(_replaceWithNode, visitedNode.Right, visitedNode.NodeType);
+                _replaceWithNode = new BinaryNode(_replaceWithNode, visitedNode.Right, visitedNode.NodeType);
+                //What is left
                 left = _replaceWithNode;
             }
 
@@ -77,15 +86,14 @@ namespace SQLFitness
             else if (visitedNode.Right == _replaceMeNode)
             {
                 _replaceMeNode = visitedNode;
-                //_replaceWithNode = new BinaryNode(visitedNode.Left, _replaceWithNode, visitedNode.NodeType);
+                _replaceWithNode = new BinaryNode(visitedNode.Left, _replaceWithNode, visitedNode.NodeType);
                 right = _replaceWithNode;
             }
-            _replaceWithNode = new BinaryNode(left, right, visitedNode.NodeType);
 
             _tree = _replaceWithNode != null ? _replaceWithNode : _tree;
         }
 
-        private int _countOccurrences(PredicateNode p1, PredicateNode[] nodelist)
+        private int _countOccurrences(PredicateNode p1, List<PredicateNode> nodelist)
         {
             var count = 0;
             foreach (var node in nodelist)
@@ -101,14 +109,27 @@ namespace SQLFitness
 
         public override void Visit(PredicateNode visitedNode)
         {
-            _position++;
-            if (_countOccurrences(visitedNode, _nodeList) > _componentRestrictions)
+            if (_first)
             {
-                _deleteMeNode = visitedNode;
-                return;
+                //Almost like a construction step
+                _first = false;
+                _columnCounter = new Dictionary<string, int>(1);
+                _tree = visitedNode;
             }
-            
-            _nodeList[_position - 1] = visitedNode;
+            _position++;
+            if (_columnCounter.ContainsKey(visitedNode.Left))
+            {
+                if (_columnCounter[visitedNode.Left] >= _componentRestrictions)
+                {
+                    _deleteMeNode = visitedNode;
+                    return;
+                }
+                _columnCounter[visitedNode.Left]++;
+            }
+            else
+            {
+                _columnCounter[visitedNode.Left] = 1;
+            }
             
         }
 
