@@ -75,7 +75,7 @@ namespace SQLFitness
         }
         public override string ToSql()
         {
-            var sqlGenerator = new InterpretWalker();
+            var sqlGenerator = new SQLWalker();
             sqlGenerator.Visit(_selectionTree);
 
             var tempSelections = new List<string>();

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace SQLFitness
 {
-    public class InterpretWalker : Visitor
+    public class SQLWalker : Visitor
     {
         private readonly StringBuilder _sqlBuilder;
 
-        public InterpretWalker()
+        public SQLWalker()
         {
             _sqlBuilder = new StringBuilder("WHERE");
         }

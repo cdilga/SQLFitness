@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace SQLFitness.TreeGenome.Tests
 {
     [TestFixture()]
-    public class InterpretWalkerTests
+    public class SQLWalkerTests
     {
-        private InterpretWalker _interpreterWalker;
+        private SQLWalker _interpreterWalker;
         private PredicateNode _node3;
         private PredicateNode _node2;
         
@@ -20,7 +20,7 @@ namespace SQLFitness.TreeGenome.Tests
         {
             _node3 = new PredicateNode(new List<string> { "Column3" } , str => new List<object> { "Cell3" }, PredicateType.Equal);
             _node2 = new PredicateNode(new List<string> { "Column2" }, str => new List<object> { "Cell2" }, PredicateType.LessThanEqual);
-            _interpreterWalker = new InterpretWalker();
+            _interpreterWalker = new SQLWalker();
         }
         [Test]
         public void InterpretToSql()
