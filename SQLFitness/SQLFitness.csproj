@@ -73,12 +73,13 @@
     <Compile Include="TreeGenome\BinaryNode.cs" />
     <Compile Include="TreeGenome\BinaryNodeType.cs" />
     <Compile Include="TreeGenome\CrossWalker.cs" />
-    <Compile Include="TreeGenome\InterpretWalker.cs" />
+    <Compile Include="TreeGenome\SQLWalker.cs" />
     <Compile Include="TreeGenome\Node.cs" />
     <Compile Include="TreeGenome\PredicateNode.cs" />
     <Compile Include="TreeGenome\RandomBuilder.cs" />
     <Compile Include="TreeGenome\Visitor.cs" />
     <Compile Include="TreeIndividual.cs" />
+    <Compile Include="TreeGenome\TreeVisualiser.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>

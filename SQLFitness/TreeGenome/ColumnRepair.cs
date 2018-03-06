@@ -9,13 +9,11 @@ namespace SQLFitness
     public class ColumnRepair : Visitor
     {
         private readonly int _componentRestrictions;
-        private int _position = 0;
+        private int _position;
         private Node _tree;
-        private Node _mutateNode;
-        private bool _done = false;
         private Node _replaceMeNode;
+        //_replaceWithNode will always start as a predicate node, but as it propagates it will change to binarynode
         private Node _replaceWithNode;
-        private List<PredicateNode> _nodeList;
 
         //The purpose of this data is to record the number of occurrences of each of the different column names.
         //We need a way of mapping strings (columns) to a count. If the number is over a set number, delete that node.

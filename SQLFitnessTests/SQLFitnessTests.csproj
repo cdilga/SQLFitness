@@ -63,10 +63,11 @@
     <Compile Include="FlatGenome\TestPopulation.cs" />
     <Compile Include="TreeGenome\AddBranchBuilderTests.cs" />
     <Compile Include="TreeGenome\ColumnRepairTests.cs" />
-    <Compile Include="TreeGenome\InterpretWalkerTests.cs" />
+    <Compile Include="TreeGenome\SQLWalkerTests.cs" />
     <Compile Include="TreeGenome\MutateWalkerTests.cs" />
     <Compile Include="TreeGenome\PredicateNodeTests.cs" />
     <Compile Include="TreeGenome\RandomBuilderTests.cs" />
+    <Compile Include="TreeGenome\TreeVisualiserTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
