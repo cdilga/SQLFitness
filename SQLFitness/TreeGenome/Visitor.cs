@@ -8,6 +8,10 @@ namespace SQLFitness
 {
     public abstract class Visitor
     {
+        /// <summary>
+        /// Depth First Search tree traversal
+        /// </summary>
+        /// <param name="visitedNode">Takes a node which it will visit</param>
         virtual public void Visit(BinaryNode visitedNode)
         {
             Visit(visitedNode.Left);

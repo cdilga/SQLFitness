@@ -62,6 +62,8 @@
     <Compile Include="FlatGenome\TestFlatIndividual.cs" />
     <Compile Include="FlatGenome\TestPopulation.cs" />
     <Compile Include="TreeGenome\AddBranchBuilderTests.cs" />
+    <Compile Include="TreeGenome\DuplicateCounterTests.cs" />
+    <Compile Include="TreeGenome\StepwiseColumnRepairTests.cs" />
     <Compile Include="TreeGenome\ColumnRepairTests.cs" />
     <Compile Include="TreeGenome\SQLWalkerTests.cs" />
     <Compile Include="TreeGenome\MutateWalkerTests.cs" />
