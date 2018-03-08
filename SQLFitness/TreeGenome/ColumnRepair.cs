@@ -28,10 +28,10 @@ namespace SQLFitness
         /// Will create a new tree mutating at point <paramref name="componentRestrictions"/>.
         /// </summary>
         /// <param name="componentRestrictions">Point at which the visited node tree is mutated</param>
-        public ColumnRepair(int componentRestrictions = 3)
+        public ColumnRepair(Node tree, int componentRestrictions = 3)
         {
-            
             _componentRestrictions = componentRestrictions;
+            this.Visit(tree);
         }
 
         private BinaryNode _nodeDuplicator(BinaryNode oldNode) => new BinaryNode(oldNode.Left, oldNode.Right, oldNode.NodeType);
@@ -43,7 +43,7 @@ namespace SQLFitness
             throw new NotImplementedException();
         }
 
-        public override void Visit(BinaryNode visitedNode)
+        protected override void Visit(BinaryNode visitedNode)
         {
 
             Node left = visitedNode.Left;
@@ -105,7 +105,7 @@ namespace SQLFitness
             return count;
         }
 
-        public override void Visit(PredicateNode visitedNode)
+        protected override void Visit(PredicateNode visitedNode)
         {
             if (_first)
             {

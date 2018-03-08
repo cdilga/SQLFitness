@@ -17,9 +17,8 @@ namespace SQLFitness.Tests
         [Test()]
         public void VisitSingleNode()
         {
-            var repair = new StepwiseColumnRepair();
             var tree = predicateBuilder("Col1", "Cell1", PredicateType.LessThan);
-            repair.Visit(tree);
+            var repair = new StepwiseColumnRepair(tree);
             Assert.AreEqual(tree, repair.GetTree());
         }
 
@@ -27,9 +26,8 @@ namespace SQLFitness.Tests
         [Test]
         public void Visit3NodeTree()
         {
-            var repair = new StepwiseColumnRepair();
             var tree = new BinaryNode(predicateBuilder("Col1", "Cell1", PredicateType.LessThan), predicateBuilder("Col1", "Cell1", PredicateType.LessThan));
-            repair.Visit(tree);
+            var repair = new StepwiseColumnRepair(tree);
             var returnedTree = repair.GetTree();
             Assert.AreEqual(tree, returnedTree);
         }
@@ -38,13 +36,12 @@ namespace SQLFitness.Tests
         [Test]
         public void Visit7NodeTree()
         {
-            var repair = new StepwiseColumnRepair();
             var rightRight = predicateBuilder("Col1", "Cell1", PredicateType.LessThan);
             var left = new BinaryNode(predicateBuilder("Col1", "Cell1", PredicateType.LessThan), predicateBuilder("Col1", "Cell1", PredicateType.LessThan));
             var right = new BinaryNode(predicateBuilder("Col1", "Cell1", PredicateType.LessThan), rightRight);
             var testTree = new BinaryNode(left, right);
             var correctTree = new BinaryNode(left, rightRight);
-            repair.Visit(testTree);
+            var repair = new StepwiseColumnRepair(testTree);
             var returnedTree = repair.GetTree();
             
             Assert.AreEqual(correctTree.Left, ((BinaryNode)returnedTree).Left);
@@ -61,7 +58,6 @@ namespace SQLFitness.Tests
         [Test]
         public void VisitMultiNodeTree()
         {
-            var repair = new StepwiseColumnRepair();
             var right = predicateBuilder("Col1", "Cell1", PredicateType.LessThan);
             var node7 = predicateBuilder("Col1", "Cell1", PredicateType.LessThan);
             var node8 = predicateBuilder("Col2", "Cell2", PredicateType.Equal);
@@ -80,7 +76,7 @@ namespace SQLFitness.Tests
             var node1 = new BinaryNode(node2, node15);
 
             //Node 1 will be the original tree
-            repair.Visit(node1);
+            var repair = new StepwiseColumnRepair(node1);
 
             
             var correctTree = new BinaryNode(node3, node13);

@@ -8,13 +8,15 @@ namespace SQLFitness
 {
     public class StepwiseColumnRepair : Visitor
     {
-        
-        public StepwiseColumnRepair(int componentRestrictions = 3)
-        {
+        private bool _done;
+        private Node _tree;
 
+        public StepwiseColumnRepair(Node tree, int componentRestrictions = 3)
+        {
+            this.Visit(tree);
         }
 
-        public override void Visit(BinaryNode visitedNode)
+        protected override void Visit(BinaryNode visitedNode)
         {
 
 
@@ -22,10 +24,10 @@ namespace SQLFitness
 
         private int _countOccurrences(PredicateNode p1, List<PredicateNode> nodelist)
         {
-
+            return default;
         }
 
-        public override void Visit(PredicateNode visitedNode)
+        protected override void Visit(PredicateNode visitedNode)
         {
            
             

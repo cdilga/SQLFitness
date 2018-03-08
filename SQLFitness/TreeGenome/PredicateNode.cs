@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SQLFitness
 {
-    public class PredicateNode: Node
+    public class PredicateNode : Node
     {
         public override int BranchSize => 1;
         private List<string> ValidData { get; }

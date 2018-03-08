@@ -13,11 +13,9 @@ namespace SQLFitness.TreeGenome.Tests
     {
         private PredicateNode predicateBuilder(string col, string cell, PredicateType type) => new PredicateNode(new List<string> { col }, x => new List<object> { cell }, type);
 
-        DuplicateCounter counter;
         [SetUp()]
         public void Setup()
         {
-            counter = new DuplicateCounter();
         }
         [Test()]
         public void VisitTest()
@@ -27,14 +25,8 @@ namespace SQLFitness.TreeGenome.Tests
             var right = new BinaryNode(predicateBuilder("Col1", "Cell1", PredicateType.LessThan), rightRight);
             var testTree = new BinaryNode(left, right);
             var correctTree = new BinaryNode(left, rightRight);
-            counter.Visit(testTree);
-            Assert.AreEqual(new Dictionary<Node, int>(), counter.RemoveItemsList());
-        }
-
-        [Test()]
-        public void VisitTest1()
-        {
-            Assert.Fail();
+            var counter = new DuplicateCounter(testTree);
+            Assert.AreEqual(new Dictionary<Node, int>(), counter.RemoveItemsList);
         }
     }
 }

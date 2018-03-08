@@ -14,14 +14,15 @@ namespace SQLFitness.TreeGenome
 
         //Dictionary mapping nodes to counts
         private Dictionary<Node, int> _duplicateCounter;
-        public DuplicateCounter(int cutoff = 3)
+        public DuplicateCounter(Node tree, int cutoff = 3)
         {
             _cutoff = cutoff;
             _duplicateCounter = new Dictionary<Node, int>();
             _first = true;
+            Visit(tree);
         }
 
-        public override void Visit(BinaryNode visitedNode)
+        protected override void Visit(BinaryNode visitedNode)
         {
             if (_first)
             {
@@ -31,7 +32,7 @@ namespace SQLFitness.TreeGenome
             Visit(visitedNode.Right);
         }
 
-        public override void Visit(PredicateNode visitedNode)
+        protected override void Visit(PredicateNode visitedNode)
         {
             if (_first)
             {

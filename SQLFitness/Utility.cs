@@ -31,6 +31,12 @@ namespace SQLFitness
         public static List<Projection> DistinctChromosomes(this List<Projection> list) => list.GroupBy(o => o.Field).Select(c => c.First()).ToList();
         public static Projection[] DistinctChromosomes(this Projection[] list) => list.ToList().GroupBy(o => o.Field).Select(c => c.First()).ToArray();
 
+        public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> keyValuePair, out TKey key, out TValue value)
+        {
+            key = keyValuePair.Key;
+            value = keyValuePair.Value;
+        }
+
         public static string ToSQL(this PredicateType condition)
         {
             switch (condition)

@@ -20,16 +20,17 @@ namespace SQLFitness
         /// Will create a new tree mutating at point <paramref name="mutatePoint"/>.
         /// </summary>
         /// <param name="mutatePoint">Point at which the visited node tree is mutated</param>
-        public MutateWalker(int mutatePoint)
+        public MutateWalker(Node tree, int mutatePoint)
         {
             _mutatePoint = mutatePoint;
+            this.Visit(tree);
         }
 
         private BinaryNode _nodeDuplicator(BinaryNode oldNode) => new BinaryNode(oldNode.Left, oldNode.Right, oldNode.NodeType);
         private PredicateNode _nodeDuplicator(PredicateNode oldNode) => new PredicateNode(new List<string> { oldNode.Left }, x => new List<object> { oldNode.Right }, oldNode.Condition);
 
 
-        public override void Visit(BinaryNode visitedNode)
+        protected override void Visit(BinaryNode visitedNode)
         {
             if (_mutatePoint <= 1)
             {
@@ -83,7 +84,7 @@ namespace SQLFitness
             _tree = _replaceWithNode ?? _tree;
         }
 
-        public override void Visit(PredicateNode visitedNode)
+        protected override void Visit(PredicateNode visitedNode)
         {
             if (_mutatePoint <= 1)
             {
