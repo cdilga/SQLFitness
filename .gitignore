@@ -274,3 +274,5 @@ SQLFitness/catenated-source\.txt
 *.dump
 
 *.xlsx
+
+/.axoCover/runs/*
