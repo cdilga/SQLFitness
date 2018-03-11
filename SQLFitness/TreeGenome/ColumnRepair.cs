@@ -19,9 +19,6 @@ namespace SQLFitness
         //We need a way of mapping strings (columns) to a count. If the number is over a set number, delete that node.
         private Dictionary<String, int> _columnCounter;
 
-        private Boolean _isLeft = true;
-        private Boolean _first = true;
-
         private Node _deleteMeNode;
 
         /// <summary>
@@ -31,7 +28,22 @@ namespace SQLFitness
         public ColumnRepair(Node tree, int componentRestrictions = 3)
         {
             _componentRestrictions = componentRestrictions;
+            _columnCounter = GenerateDictionary(tree);
+
+            _tree = tree;
             this.Visit(tree);
+        }
+
+        private Dictionary<string, int> GenerateDictionary(Node tree)
+        {
+            switch(tree)
+            {
+                case BinaryNode node:
+                    return new Dictionary<string, int>((int)(tree.BranchSize / 2) + 1);
+                case PredicateNode node:
+                default:
+                    return new Dictionary<string, int>(1);
+            }
         }
 
         private BinaryNode _nodeDuplicator(BinaryNode oldNode) => new BinaryNode(oldNode.Left, oldNode.Right, oldNode.NodeType);
@@ -45,19 +57,10 @@ namespace SQLFitness
 
         protected override void Visit(BinaryNode visitedNode)
         {
+            //Probably like a "replace me" left and right, because what if you overwrote the replace me twice in one visit?
 
             Node left = visitedNode.Left;
             Node right = visitedNode.Right;
-
-            if (_first)
-            {
-                //Almost like a construction step
-                _first = false;
-                //Since we know the length the list needs to be we will specify early as possible. At least it won't need to grow past this.
-                //Additionally this will work for the case where every column is unique
-                _columnCounter = new Dictionary<string, int>((int)(visitedNode.BranchSize / 2) + 1);
-                _tree = visitedNode;
-            }
             _position++;
 
             Visit(visitedNode.Left);
@@ -68,10 +71,10 @@ namespace SQLFitness
             }
             else if (visitedNode.Left == _replaceMeNode)
             {
-                _replaceMeNode = visitedNode;
                 _replaceWithNode = new BinaryNode(_replaceWithNode, visitedNode.Right, visitedNode.NodeType);
+                //_replaceMeNode = visitedNode;
                 //What is left
-                left = _replaceWithNode;
+                //left = _replaceWithNode;
             }
 
             Visit(visitedNode.Right);
@@ -88,7 +91,7 @@ namespace SQLFitness
                 right = _replaceWithNode;
             }
 
-            _tree = _replaceWithNode != null ? _replaceWithNode : _tree;
+            _tree = _replaceWithNode ?? _tree;
         }
 
         private int _countOccurrences(PredicateNode p1, List<PredicateNode> nodelist)
@@ -107,13 +110,6 @@ namespace SQLFitness
 
         protected override void Visit(PredicateNode visitedNode)
         {
-            if (_first)
-            {
-                //Almost like a construction step
-                _first = false;
-                _columnCounter = new Dictionary<string, int>(1);
-                _tree = visitedNode;
-            }
             _position++;
             if (_columnCounter.ContainsKey(visitedNode.Left))
             {
