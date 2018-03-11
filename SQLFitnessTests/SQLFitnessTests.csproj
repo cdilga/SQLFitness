@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLFitnessTests</RootNamespace>
     <AssemblyName>SQLFitnessTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +44,7 @@
     <Reference Include="FluentAssertions.Core, Version=4.19.4.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentAssertions.4.19.4\lib\net45\FluentAssertions.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
@@ -74,6 +76,7 @@
     <Compile Include="TreeGenome\MutateWalkerTests.cs" />
     <Compile Include="TreeGenome\PredicateNodeTests.cs" />
     <Compile Include="TreeGenome\RandomBuilderTests.cs" />
+    <Compile Include="TreeGenome\TreeDuplicateRemovalTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -82,6 +85,10 @@
     <ProjectReference Include="..\SQLFitness\SQLFitness.csproj">
       <Project>{8EDF4429-251A-416D-BB68-93F227191BCF}</Project>
       <Name>SQLFitness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TreeDebugVisualizer\TreeDebugVisualizer.csproj">
+      <Project>{A6AA9769-CB3A-4659-89FA-A8ED32D597CE}</Project>
+      <Name>TreeDebugVisualizer</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

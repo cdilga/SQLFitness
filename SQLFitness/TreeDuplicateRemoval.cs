@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TreeAlgorithms
+namespace SQLFitness
 {
     public class TreeDuplicateRemoval : Visitor<Node>
     {
@@ -14,14 +14,14 @@ namespace TreeAlgorithms
         private readonly int maxDuplication;
 
         Dictionary<string, int> columnCounts = new Dictionary<string, int>();
-        protected TreeDuplicateRemoval(Node tree, int maxDuplication) : base(tree)
+        public TreeDuplicateRemoval(Node tree, int maxDuplication = 3) : base(tree)
         {
             this.maxDuplication = maxDuplication;
         }
 
         protected override Node Visit(PredicateNode node)
         {
-            var columnName = node.Column;
+            var columnName = node.Left;
             columnCounts.TryGetValue(columnName, out int count);
             columnCounts[columnName] = ++count;
             if (count > maxDuplication)
@@ -30,7 +30,7 @@ namespace TreeAlgorithms
             }
             else
             {
-                columnCounts[columnName] = count++;
+                columnCounts[columnName] = ++count;
                 return node;
             }
         }
@@ -47,7 +47,7 @@ namespace TreeAlgorithms
                 }
                 else
                 {
-                    return new BinaryNode(left, right, node.BinaryNodeKind);
+                    return new BinaryNode(left, right, node.NodeType);
                 }
             }
             else
@@ -60,7 +60,7 @@ namespace TreeAlgorithms
     public abstract class Visitor<T>
     {
         private readonly Lazy<T> _Output;
-        protected T Output => _Output.Value;
+        public T Output => _Output.Value;
         protected Visitor(Node tree)
         {
             //use lazy instead of calling Visit here so that derived constructors
@@ -82,4 +82,4 @@ namespace TreeAlgorithms
         protected abstract T Visit(BinaryNode node);
         protected abstract T Visit(PredicateNode node);
     }
-}
+} 

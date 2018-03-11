@@ -6,11 +6,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using TreeDebugVisualizer;
 
 namespace SQLFitness.Tests
 {
     [TestFixture()]
-    public class ColumnRepairTests
+    public class TreeDuplicateRemovalTests
     {
         private PredicateNode predicateBuilder(string col, string cell, PredicateType type) => new PredicateNode(new List<string> { col }, x => new List<object> { cell }, type);
 
@@ -19,8 +20,8 @@ namespace SQLFitness.Tests
         public void VisitSingleNode()
         {
             var tree = predicateBuilder("Col1", "Cell1", PredicateType.LessThan);
-            var repair = new ColumnRepair(tree);
-            Assert.AreEqual(tree, repair.GetTree());
+            var repair = new TreeDuplicateRemoval(tree);
+            Assert.AreEqual(tree, repair.Output);
         }
 
         //Must take 3 node tree all with the same columns and return it fine too
@@ -28,8 +29,8 @@ namespace SQLFitness.Tests
         public void Visit3NodeTree()
         {
             var tree = new BinaryNode(predicateBuilder("Col1", "Cell1", PredicateType.LessThan), predicateBuilder("Col1", "Cell1", PredicateType.LessThan));
-            var repair = new ColumnRepair(tree);
-            var returnedTree = repair.GetTree();
+            var repair = new TreeDuplicateRemoval(tree);
+            var returnedTree = repair.Output;
             Assert.AreEqual(tree, returnedTree);
         }
 
@@ -42,9 +43,10 @@ namespace SQLFitness.Tests
             var right = new BinaryNode(predicateBuilder("Col1", "Cell1", PredicateType.LessThan), rightRight, BinaryNodeType.AND);
             var testTree = new BinaryNode(left, right, BinaryNodeType.AND);
             var correctTree = new BinaryNode(left, rightRight, BinaryNodeType.AND);
-            var repair = new ColumnRepair(testTree);
-            var returnedTree = repair.GetTree();
-            
+            var repair = new TreeDuplicateRemoval(testTree);
+            var returnedTree = repair.Output;
+            NodeTreeVisualizer.TestShowVisualizer(returnedTree.ToDebuggableNode());
+
             //TODO override reference equality
             Assert.AreEqual(correctTree.Left, ((BinaryNode)returnedTree).Left);
             Assert.AreEqual(correctTree.BranchSize, returnedTree.BranchSize);
@@ -78,11 +80,11 @@ namespace SQLFitness.Tests
             var node1 = new BinaryNode(node2, node15);
 
             //Node 1 will be the original tree
-            var repair = new ColumnRepair(node1);
+            var repair = new TreeDuplicateRemoval(node1);
 
 
             var correctTree = new BinaryNode(node3, node13, BinaryNodeType.AND);
-            var resultTree = repair.GetTree();
+            var resultTree = repair.Output;
 
 
 
@@ -91,41 +93,11 @@ namespace SQLFitness.Tests
             //var node1XMIND = node1.ToXMindTree(nameof(node1));
 
 
-            //var XmindTest = new TestCaseXMindVisualiser(node1, correctTree, resultTree).CreateJoinedXMindGraph();
+            var XmindTest = new TestCaseXMindVisualiser(node1, correctTree, resultTree).CreateJoinedXMindGraph();
 
             Assert.AreEqual(correctTree.BranchSize, resultTree.BranchSize);
         }
 
        
     }
-
-    internal class TestCaseXMindVisualiser
-    {
-        private readonly Dictionary<string, Node> _debuggingNodes;
-        public TestCaseXMindVisualiser(Node testTree, Node expectedTree, Node actualTree, [CallerMemberName] string testCase = "")
-        {
-            _debuggingNodes = new Dictionary<string, Node>
-            {
-                {nameof(testTree).ToUpper(), testTree },
-                {nameof(expectedTree).ToUpper(), expectedTree },
-                {nameof(actualTree).ToUpper(), actualTree}
-            };
-            this.TestCase = testCase;
-        }
-
-        public string TestCase { get; }
-
-        public string CreateJoinedXMindGraph()
-        {
-            var joinedTree = new StringBuilder(TestCase).AppendLine();
-
-            foreach (var (nodeName, node) in _debuggingNodes)
-            {
-                var tree = node.ToXMindTree(nodeName);
-                joinedTree.Append("\t").Append(tree.Trim('\n').Replace("\n", "\n\t"));
-            }
-            return joinedTree.ToString();
-        }
-    }
-
 }

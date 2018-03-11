@@ -10,10 +10,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLFitness</RootNamespace>
     <AssemblyName>SQLFitness</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,6 +57,7 @@
     <Compile Include="Profiling\PerformanceTester.cs" />
     <Compile Include="Profiling\PerformanceTestFitness.cs" />
     <Compile Include="Profiling\TreeTestAlgorithm.cs" />
+    <Compile Include="TreeDuplicateRemoval.cs" />
     <Compile Include="TreeGenome\XMindVisualiser.cs" />
     <Compile Include="TreeGenome\StepwiseColumnRepair.cs" />
     <Compile Include="TreeGenome\ColumnRepair.cs" />
@@ -100,6 +102,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TreeDebugVisualizer\TreeDebugVisualizer.csproj">
+      <Project>{a6aa9769-cb3a-4659-89fa-a8ed32d597ce}</Project>
+      <Name>TreeDebugVisualizer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
