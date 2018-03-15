@@ -23,7 +23,7 @@ namespace SQLFitness
         /// </summary>
         /// <param name="cutPoint">Point at which the <paramref name="subtree"/> is added</param>
         /// <param name="subtree">Tree added to the walked tree with <see cref="Visit(BinaryNode)"/></param>
-        public AddBranchWalker(int cutPoint, Node subtree)
+        public AddBranchWalker(Node tree, int cutPoint, Node subtree)
         {
             _cutPoint = cutPoint;
             _addTree = subtree ?? throw new ArgumentNullException(nameof(subtree));
@@ -32,12 +32,13 @@ namespace SQLFitness
                 _done = true;
                 _tree = _addTree;
             }
+            this.Visit(tree);
         }
 
         private BinaryNode _nodeDuplicator(BinaryNode oldNode) => new BinaryNode(oldNode.Left, oldNode.Right, oldNode.NodeType);
         private PredicateNode _nodeDuplicator(PredicateNode oldNode) => new PredicateNode(new List<string> { oldNode.Left }, x => new List<object> { oldNode.Right }, oldNode.Condition);
 
-        public override void Visit(BinaryNode visitedNode)
+        protected override void Visit(BinaryNode visitedNode)
         {
             _position++;
 
@@ -90,7 +91,7 @@ namespace SQLFitness
             _tree = _replaceWithNode != null ? _replaceWithNode: _tree;
         }
 
-        public override void Visit(PredicateNode visitedNode)
+        protected override void Visit(PredicateNode visitedNode)
         {
             _position++;
             if (_position == _cutPoint)

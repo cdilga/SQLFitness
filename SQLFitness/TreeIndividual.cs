@@ -20,7 +20,9 @@ namespace SQLFitness
             _projectionGenome = new Projection[Math.Min(Utility.MaxTreeChromosomeProjectionSize, validColumns.Count)];
             //Create new tree
             var treeBuilder = new RandomBuilder(validColumns, validDataGetter, Utility.TreeChromosomeBranchSize);
-            _selectionTree = treeBuilder.Build();
+            var tree = treeBuilder.Build();
+
+            _selectionTree = TreeDuplicateRemoval.RemoveDuplicates(tree);
 
             //Create new predicates
             for (var i = 0; i < _projectionGenome.Length; i++)
@@ -56,8 +58,7 @@ namespace SQLFitness
         {
             if (Utility.GetRandomNum(2) == 1)
             {
-                var mutator = new MutateWalker(Utility.GetRandomNum(_selectionTree.BranchSize + 1));
-                mutator.Visit(_selectionTree);
+                var mutator = new MutateWalker(_selectionTree, mutatePoint: Utility.GetRandomNum(_selectionTree.BranchSize + 1));
                 _selectionTree = mutator.GetTree();
             }
             else
@@ -66,11 +67,12 @@ namespace SQLFitness
             }
             this.Fitness = null;
             _projectionGenome = _projectionGenome.DistinctChromosomes();
+
+            _selectionTree = TreeDuplicateRemoval.RemoveDuplicates(_selectionTree, maxDuplication:3 );
         }
         public override string ToSql()
         {
-            var sqlGenerator = new InterpretWalker();
-            sqlGenerator.Visit(_selectionTree);
+            var sqlGenerator = new SQLWalker(_selectionTree);
 
             var tempSelections = new List<string>();
 
@@ -85,10 +87,8 @@ namespace SQLFitness
         {
             //Randomly select a point to cross on the tree
             var tempSpouse = (TreeIndividual)spouse;
-            var crossCutter = new CrossWalker(Utility.GetRandomNum(tempSpouse._branchSize + 1));
-            crossCutter.Visit(tempSpouse._selectionTree);
-            var addBranchAt = new AddBranchWalker(Utility.GetRandomNum(_selectionTree.BranchSize + 1), crossCutter.GetGenomeSubTree());
-            addBranchAt.Visit(_selectionTree);
+            var crossCutter = new CrossWalker(tempSpouse._selectionTree, cutPoint: Utility.GetRandomNum(tempSpouse._branchSize + 1));
+            var addBranchAt = new AddBranchWalker(_selectionTree, cutPoint: Utility.GetRandomNum(_selectionTree.BranchSize + 1), subtree: crossCutter.GetGenomeSubTree());
             //Randomly select a point to cross on the projections
             var newChromosome = new List<Projection>();
             for (var i = 0; i < Utility.GetRandomNum(_projectionGenome.Length); i++)
@@ -100,7 +100,7 @@ namespace SQLFitness
                 newChromosome.Add(tempSpouse._projectionGenome[i]);
             }
             var distinct = newChromosome.DistinctChromosomes().ToArray();
-            return new TreeIndividual(_validColumns, _validDataGetter, addBranchAt.GetTree(), distinct);
+            return new TreeIndividual(_validColumns, _validDataGetter, TreeDuplicateRemoval.RemoveDuplicates(addBranchAt.GetTree(), maxDuplication: 3), distinct);
         }
     }
 }

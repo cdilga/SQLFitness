@@ -31,6 +31,12 @@ namespace SQLFitness
         public static List<Projection> DistinctChromosomes(this List<Projection> list) => list.GroupBy(o => o.Field).Select(c => c.First()).ToList();
         public static Projection[] DistinctChromosomes(this Projection[] list) => list.ToList().GroupBy(o => o.Field).Select(c => c.First()).ToArray();
 
+        public static void Deconstruct<TKey, TValue>(this KeyValuePair<TKey, TValue> keyValuePair, out TKey key, out TValue value)
+        {
+            key = keyValuePair.Key;
+            value = keyValuePair.Value;
+        }
+
         public static string ToSQL(this PredicateType condition)
         {
             switch (condition)
@@ -63,7 +69,7 @@ namespace SQLFitness
 
 
         //Note that const fields are always static
-        public const string ConnString = "server=localhost;user=root;password=farhad;database=species;port=3306;sslmode=none";
+        public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3306;sslmode=none";
         public const string TableName = "insectdiscoveries";
 
         //public const string ConnString = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
@@ -81,9 +87,14 @@ namespace SQLFitness
         public const int TreeChromosomeBranchSize = 5;
         public const int MaxTreeChromosomeProjectionSize = 5;
 
+        public const int Parallelism = 8;
+
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";
         public const int FitnessServerPort = 1506;
+
+        //Iterations
+        public const int MaxIterations = 8000;
 
         public static void TestDuplicates(List<Projection> list)
         {
@@ -95,8 +106,15 @@ namespace SQLFitness
                 foreach (var matchItem in sublist)
                 {
                     Projection matchPredicate = (Projection)matchItem;
-                    if (predicateItem.Field == matchPredicate.Field) throw new ArgumentException("Invalid field, is duplicate");
-                    if (predicateItem.ToString() == matchPredicate.ToString()) throw new ArgumentException("Invalid field, is duplicate by string");
+                    if (predicateItem.Field == matchPredicate.Field)
+                    {
+                        throw new ArgumentException("Invalid field, is duplicate");
+                    }
+
+                    if (predicateItem.ToString() == matchPredicate.ToString())
+                    {
+                        throw new ArgumentException("Invalid field, is duplicate by string");
+                    }
                 }
             }
         }

@@ -13,9 +13,6 @@ namespace SQLFitness
         private Population _matingPool;
 
         private DBAccess _db;
-
-        private StreamWriter _file;
-        private int _generation;
         private readonly IFitness _selector;
         private Func<List<string>, Func<string, List<object>>, FlatIndividual> _flatFactory;
         /// <summary>
@@ -28,7 +25,6 @@ namespace SQLFitness
             //Setup params for most of the class here:
             _matingPool = new Population(_selector);
             _db = db;
-            _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
             _flatFactory = (validColumn, validData) => new FlatIndividual(db.ValidColumnGetter(), db.ValidDataGetter);
             _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector, _flatFactory);
@@ -75,14 +71,15 @@ namespace SQLFitness
 
         protected override void _evaluation()
         {
-            Parallel.ForEach(_population, new ParallelOptions { MaxDegreeOfParallelism = 1 }, (x) =>
+            Parallel.ForEach(_population, new ParallelOptions { MaxDegreeOfParallelism = 8 }, (x) =>
             {
                 if (x.Fitness == null)
                 {
                     //This is a good example of using OO to prevent things from happening by using objects and our custom type
                     //Example of encapsulation - information hiding
-                    x.Fitness = new Fitness(((IFitness)Activator.CreateInstance(_selector.GetType())).Evaluate(x)[0]);
-                    Console.WriteLine("Processing {0} on thread {1}", x.Fitness.Value, Thread.CurrentThread.ManagedThreadId);
+                    //TODO fix reflection in high performance code
+                    x.Fitness = _selector.Evaluate(x)[0];
+                    Console.WriteLine("Returned {0} on thread {1}", x.Fitness, Thread.CurrentThread.ManagedThreadId);
                 }
                 else
                 {

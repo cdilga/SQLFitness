@@ -8,7 +8,7 @@ namespace SQLFitness
     public abstract class StubIndividual
     {
         
-        public Fitness Fitness { get; set; }
+        public double? Fitness { get; set; }
         //protected List<String> _validColumns;
         //protected Func<string, List<object>> _validDataGetter;
 

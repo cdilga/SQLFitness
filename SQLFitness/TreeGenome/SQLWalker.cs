@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace SQLFitness
 {
-    public class InterpretWalker : Visitor
+    public class SQLWalker : Visitor
     {
         private readonly StringBuilder _sqlBuilder;
 
-        public InterpretWalker()
+        public SQLWalker(Node node)
         {
             _sqlBuilder = new StringBuilder("WHERE");
+            this.Visit(node);
         }
 
-        public override void Visit(PredicateNode visitedNode)
+        protected override void Visit(PredicateNode visitedNode)
         {
             //get left and right and make a stringy lookup of the enum and put that in the middle
             _sqlBuilder.Append($"`{visitedNode.Left}` ");
@@ -23,7 +24,7 @@ namespace SQLFitness
             _sqlBuilder.Append($"'{visitedNode.Right}'");
         }
 
-        public override void Visit(BinaryNode visitedNode)
+        protected override void Visit(BinaryNode visitedNode)
         {
             _sqlBuilder.Append(" (");
             Visit(visitedNode.Left);

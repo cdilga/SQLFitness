@@ -11,9 +11,6 @@ namespace SQLFitness
     class FlatTestAlgorithm : LoggingAlgorithm
     {
         private Population _matingPool;
-
-        private StreamWriter _file;
-        private int _generation;
         private readonly IFitness _selector;
         private Func<List<string>, Func<string, List<object>>, FlatIndividual> _flatFactory;
         /// <summary>
@@ -25,7 +22,6 @@ namespace SQLFitness
         {
             //Setup params for most of the class here:
             _matingPool = new Population(_selector);
-            _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
             _flatFactory = (validColumn, validData) => new FlatIndividual(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter);
             _population = new Population(PerformanceTester.ValidColumnGetter(), PerformanceTester.ValidDataGetter, _selector, _flatFactory);
@@ -76,9 +72,8 @@ namespace SQLFitness
             {
                 if (x.Fitness == null)
                 {
-                    //This is a good example of using OO to prevent things from happening by using objects and our custom type
-                    //Example of encapsulation - information hiding
-                    x.Fitness = new Fitness(((IFitness)Activator.CreateInstance(_selector.GetType())).Evaluate(x)[0]);
+                    //#TODO Add object with Coverage and Fitness
+                    x.Fitness = _selector.Evaluate(x)[0];
                     Console.WriteLine("Processing {0} on thread {1}", x.Fitness.Value, Thread.CurrentThread.ManagedThreadId);
                 }
                 else

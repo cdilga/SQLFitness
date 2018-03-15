@@ -14,8 +14,6 @@ namespace SQLFitness
 
         private DBAccess _db;
 
-        private StreamWriter _file;
-        private int _generation;
         private readonly IFitness _selector;
         private Func<List<string>, Func<string, List<object>>, TreeIndividual> _treeFactory;
 
@@ -30,7 +28,6 @@ namespace SQLFitness
             _population = new Population(db.ValidColumnGetter(), db.ValidDataGetter, _selector, (validCols, validData) => new TreeIndividual(validCols, validData));
             _matingPool = new Population(_selector);
             _db = db;
-            _generation = 1;
             _selector = selector ?? throw new ArgumentNullException(nameof(selector));
             _treeFactory = (validColumn, validData) => new TreeIndividual(db.ValidColumnGetter(), db.ValidDataGetter);
         }
@@ -80,14 +77,7 @@ namespace SQLFitness
             {
                 if (x.Fitness == null)
                 {
-                    //This is a good example of using OO to prevent things from happening by using objects and our custom type
-                    //Example of encapsulation - information hiding
-                    x.Fitness = new Fitness(((IFitness)Activator.CreateInstance(_selector.GetType())).Evaluate(x)[0]);
-                    //Console.WriteLine("Processing {0} on thread {1}", x.Fitness.Value, Thread.CurrentThread.ManagedThreadId);
-                }
-                else
-                {
-                    //Console.WriteLine("Already Set!");
+                    x.Fitness = _selector.Evaluate(x)[0];
                 }
             });
         }

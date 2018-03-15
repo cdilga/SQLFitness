@@ -34,8 +34,7 @@ namespace SQLFitness.TreeGenome.Tests
         {
             var predicateNode = predicateBuilder("ReplacedMeNode", "ReplaceMeCell");
             var replacementNode = predicateBuilder("Replaced", "ReplacedCell");
-            var branchAdder = new AddBranchWalker(1, replacementNode);
-            branchAdder.Visit(predicateNode);
+            var branchAdder = new AddBranchWalker(predicateNode, 1, replacementNode);
             Assert.AreEqual(replacementNode, branchAdder.GetTree());
         }
 
@@ -50,15 +49,13 @@ namespace SQLFitness.TreeGenome.Tests
 
             var replacementNode = predicateBuilder("Replaced", "ReplacedColumn");
 
-            var branchAdder = new AddBranchWalker(1, replacementNode);
-            branchAdder.Visit(binaryNode2);
+            var branchAdder = new AddBranchWalker(binaryNode2, 1, replacementNode);
             Assert.AreEqual(replacementNode, branchAdder.GetTree());
         }
 
         [Test]
         public void AddBranchBuilderPosition2() {
-            var branchAdder = new AddBranchWalker(2, _replacementNode);
-            branchAdder.Visit(_baseNode);
+            var branchAdder = new AddBranchWalker(_baseNode, cutPoint: 2, subtree: _replacementNode);
 
             var resultNode = branchAdder.GetTree();
             Assert.AreEqual(_replacementNode, ((BinaryNode)resultNode).Left);
@@ -69,8 +66,7 @@ namespace SQLFitness.TreeGenome.Tests
         [Test]
         public void AddBranchBuilderAtLeaf()
         {
-            var branchAdder = new AddBranchWalker(3, _replacementNode);
-            branchAdder.Visit(_baseNode);
+            var branchAdder = new AddBranchWalker(_baseNode, 3, _replacementNode);
 
             var resultNode = branchAdder.GetTree();
             Assert.AreEqual(_replacementNode, ((BinaryNode)((BinaryNode)resultNode).Left).Left);
@@ -82,8 +78,7 @@ namespace SQLFitness.TreeGenome.Tests
         [Test]
         public void AddBranchBuilderFullTreeLast()
         {
-            var branchAdder = new AddBranchWalker(_baseNode.BranchSize, _replaceBinaryNode);
-            branchAdder.Visit(_baseNode);
+            var branchAdder = new AddBranchWalker(_baseNode, _baseNode.BranchSize, _replaceBinaryNode);
 
             var resultNode = branchAdder.GetTree();
             Assert.AreEqual(_replaceBinaryNode, ((BinaryNode)resultNode).Right);

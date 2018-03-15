@@ -12,19 +12,19 @@ namespace SQLFitness
     {
         private static List<double> _fitness = new List<double> { 0.2, 1.45, 2.67, 2.66 };
         private static int index = 0;
-        private class fit: IFitness
-        {
-            public double Evaluate(StubIndividual individual)
-            {
-                index++;
-                return _fitness[index];
-            }
-        }
+        //private class fit: IFitness
+        //{
+        //    public double Evaluate(StubIndividual individual)
+        //    {
+        //        index++;
+        //        return _fitness[index];
+        //    }
+        //}
 
         private static StubIndividual individualFactory(double fitness, List<string> validColumns, Func<string, List<object>> validDataGetter)
         {
             var individual1 = new FlatIndividual(validColumns, validDataGetter);
-            individual1.Fitness = new Fitness(fitness);
+            individual1.Fitness = fitness;
             return individual1;
         }
         private Population _population;
@@ -33,7 +33,7 @@ namespace SQLFitness
         {
             var validColumns = new List<string> { "Column 1", "Column 2" };
             Func<string, List<object>> validDataGetter = (string x) => new List<object> { "Data 1", "Data 2" };
-            _population = new Population(new fit());
+            _population = new Population();
             foreach (var x in _fitness)
             {
                 _population.Add(new FlatIndividual(validColumns, validDataGetter));
@@ -43,7 +43,7 @@ namespace SQLFitness
         public void TestSort()
         {
             // TODO: Add your test code here
-            _population = new Population(new fit());
+            _population = new Population();
             var individual1 = new TestIndividual(10.0);
             var individual2 = new TestIndividual(4.1);
             var individual3 = new TestIndividual(4.2);
@@ -61,7 +61,7 @@ namespace SQLFitness
         {
             public TestIndividual(double fitness) : base(new List<string> { "" }, (x) => new List<object> { "" })
             {
-                this.Fitness = new Fitness(fitness);
+                this.Fitness = fitness;
             }
         }
     }

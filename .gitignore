@@ -271,8 +271,8 @@ data/
 
 SQLFitness/catenated-source\.txt
 
-*.sql
-
 *.dump
 
 *.xlsx
+
+/.axoCover/runs/*

@@ -13,6 +13,6 @@ services:
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         ports:
-            - 8000:80
+            - 8010:80
 volumes:
     sql-persist:

@@ -33,16 +33,14 @@ namespace SQLFitness.TreeGenome.Tests
         [Test]
         public void MutateBinaryPos1()
         {
-            var mutator = new MutateWalker(1);
-            mutator.Visit(_baseNode);
+            var mutator = new MutateWalker(_baseNode, 1);
             Assert.AreNotEqual(_baseNode, _position2Node);
         }
 
         [Test]
         public void MutateWalkerTest()
         {
-            var mutator = new MutateWalker(2);
-            mutator.Visit(_baseNode);
+            var mutator = new MutateWalker(_baseNode, 2);
             Assert.AreNotEqual(_position2Node, ((BinaryNode)mutator.GetTree()).Left);
         }
 
@@ -52,8 +50,7 @@ namespace SQLFitness.TreeGenome.Tests
             var leftPredicate = predicateBuilder("left", "left cell");
             var rightPredicate = predicateBuilder("right", "right cell");
             var base3Node = new BinaryNode(leftPredicate, rightPredicate);
-            var mutator = new MutateWalker(base3Node.BranchSize);
-            mutator.Visit(base3Node);
+            var mutator = new MutateWalker(base3Node, mutatePoint: base3Node.BranchSize);
             Assert.AreNotEqual(_endPredicateNode, ((BinaryNode)mutator.GetTree()).Right);
         }
 
@@ -64,8 +61,7 @@ namespace SQLFitness.TreeGenome.Tests
             var leftPredicate = predicateBuilder("left", "left cell");
             var rightPredicate = predicateBuilder("right", "right cell");
             var base3Node = new BinaryNode(leftPredicate, rightPredicate, initialType);
-            var mutator = new MutateWalker(1);
-            mutator.Visit(base3Node);
+            var mutator = new MutateWalker(base3Node, 1);
             Assert.AreEqual(initialType, ((BinaryNode)mutator.GetTree()).NodeType);
         }
     }

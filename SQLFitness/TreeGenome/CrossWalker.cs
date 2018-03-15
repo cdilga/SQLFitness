@@ -12,13 +12,13 @@ namespace SQLFitness
         private Node _crossNode = null;
         private readonly int _cutPoint;
 
-        public CrossWalker(int cutPoint)
+        public CrossWalker(Node tree, int cutPoint)
         {
             _cutPoint = cutPoint;
-            
+            Visit(tree);
         }
 
-        public override void Visit(BinaryNode visitedNode)
+        protected override void Visit(BinaryNode visitedNode)
         {
             if (visitedNode == null)
             {
@@ -51,7 +51,7 @@ namespace SQLFitness
 
         }
 
-        public override void Visit(PredicateNode visitedNode)
+        protected override void Visit(PredicateNode visitedNode)
         {
             if (visitedNode == null)
             {

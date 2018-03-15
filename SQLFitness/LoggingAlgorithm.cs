@@ -21,8 +21,6 @@ namespace SQLFitness
         /// <summary>
         /// Most of the rules for a GA implementation need to be here. Most of the other parts should be relatively loosely coupled to a specific implementation or set of parameters
         /// </summary>
-        /// <param name="db">Database which the algorithm is going to be run on</param>
-        /// <param name="selector"></param>
         protected LoggingAlgorithm()
         {
             //Setup params for most of the class here:
@@ -65,20 +63,27 @@ namespace SQLFitness
             selectionStopWatch.Stop();
             var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
 
-            if (this.BestIndividuals.Count == 0)
-            {
-                this.BestIndividuals.Add(_population[0]);
-            }
+            
 
-            if (this.BestIndividuals.Count > 0 && this.BestIndividuals.Last() != _population[0])
+            if (this.BestIndividuals.Any())
             {
-                this.BestIndividuals.Add(_population[0]);
+                if (this.BestIndividuals.Last() != _population[0])
+                {
+                    this.BestIndividuals.Add(_population[0]);
+                    _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
+                }
+                
                 //Code Super unoptimised, slows entire program
 
                 //Console.WriteLine($"Best Individuals:\n {String.Join("\n ", this.BestIndividuals.Select( x=> $"{x.ToSql()}, {x.Fitness.Value}"))}\n");
-                String temp = "\"" + this.BestIndividuals.Last().ToSql().Replace("\n","") + "\"" + "," + "\"" + this.BestIndividuals.Last().Fitness.Value + "\"";
-                _bestIndividuals.WriteLine(temp);
+                
             }
+            else
+            {
+                this.BestIndividuals.Add(_population[0]);
+                _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
+            }
+            
             _file.WriteLine($"{this.Generation}, {evolveStopWatch.Elapsed}, {evaluationStopWatch.Elapsed}, {selectionStopWatch.Elapsed}, {crossoverStopWatch.Elapsed}, {mutationStopWatch.Elapsed}, {line}");
 
 

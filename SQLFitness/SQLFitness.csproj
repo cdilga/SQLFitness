@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\NUnit3TestAdapter.3.8.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.8.0\build\net35\NUnit3TestAdapter.props')" />
+  <Import Project="..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -10,10 +10,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SQLFitness</RootNamespace>
     <AssemblyName>SQLFitness</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,38 +33,45 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>SQLFitness.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.10.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.10\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.9.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.9.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fitness\IFitness.cs" />
     <Compile Include="Profiling\FlatTestAlgorithm.cs" />
     <Compile Include="Profiling\PerformanceTester.cs" />
     <Compile Include="Profiling\PerformanceTestFitness.cs" />
     <Compile Include="Profiling\TreeTestAlgorithm.cs" />
-    <Compile Include="Flat2TestAlgorithm.cs" />
+    <Compile Include="TreeDuplicateRemoval.cs" />
+    <Compile Include="TreeGenome\XMindVisualiser.cs" />
+    <Compile Include="TreeGenome\StepwiseColumnRepair.cs" />
+    <Compile Include="TreeGenome\ColumnRepair.cs" />
+    <Compile Include="TreeGenome\TreeDuplicatorCounter.cs" />
     <Compile Include="TreeSelectionAlgorithm.cs" />
     <Compile Include="LoggingAlgorithm.cs" />
     <Compile Include="FlatSelectionAlgorithm.cs" />
     <Compile Include="Chromosome.cs" />
     <Compile Include="DBAccess.cs" />
     <Compile Include="Fitness\DBSelector.cs" />
-    <Compile Include="Fitness\Fitness.cs" />
     <Compile Include="TreeGenome\PredicateType.cs" />
     <Compile Include="StubIndividual.cs" />
     <Compile Include="FlatIndividual.cs" />
     <Compile Include="Interpreter.cs" />
-    <Compile Include="Fitness\IFitness.cs" />
     <Compile Include="Population.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projection.cs" />
@@ -74,7 +83,7 @@
     <Compile Include="TreeGenome\BinaryNode.cs" />
     <Compile Include="TreeGenome\BinaryNodeType.cs" />
     <Compile Include="TreeGenome\CrossWalker.cs" />
-    <Compile Include="TreeGenome\InterpretWalker.cs" />
+    <Compile Include="TreeGenome\SQLWalker.cs" />
     <Compile Include="TreeGenome\Node.cs" />
     <Compile Include="TreeGenome\PredicateNode.cs" />
     <Compile Include="TreeGenome\RandomBuilder.cs" />
@@ -94,12 +103,22 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\StandaloneTreeVisualizer\StandaloneTreeVisualizer.csproj">
+      <Project>{cf5aa874-13a2-49f5-a141-46809ae3b821}</Project>
+      <Name>StandaloneTreeVisualizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TreeDebugVisualizer\TreeDebugVisualizer.csproj">
+      <Project>{a6aa9769-cb3a-4659-89fa-a8ed32d597ce}</Project>
+      <Name>TreeDebugVisualizer</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.8.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.8.0\build\net35\NUnit3TestAdapter.props'))" />
+    <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.9.0\build\net35\NUnit3TestAdapter.props'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
