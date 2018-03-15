@@ -21,8 +21,8 @@ namespace SQLFitness
             //Create new tree
             var treeBuilder = new RandomBuilder(validColumns, validDataGetter, Utility.TreeChromosomeBranchSize);
             var tree = treeBuilder.Build();
-            var repairFunction = new ColumnRepair(tree, 3);
-            _selectionTree = repairFunction.GetTree();
+
+            _selectionTree = TreeDuplicateRemoval.RemoveDuplicates(tree);
 
             //Create new predicates
             for (var i = 0; i < _projectionGenome.Length; i++)
@@ -67,8 +67,8 @@ namespace SQLFitness
             }
             this.Fitness = null;
             _projectionGenome = _projectionGenome.DistinctChromosomes();
-            var thing = new ColumnRepair(_selectionTree, componentRestrictions: 3);
-            _selectionTree = thing.GetTree();
+
+            _selectionTree = TreeDuplicateRemoval.RemoveDuplicates(_selectionTree, maxDuplication:3 );
         }
         public override string ToSql()
         {
@@ -100,8 +100,7 @@ namespace SQLFitness
                 newChromosome.Add(tempSpouse._projectionGenome[i]);
             }
             var distinct = newChromosome.DistinctChromosomes().ToArray();
-            var thing = new ColumnRepair(addBranchAt.GetTree(), 3);
-            return new TreeIndividual(_validColumns, _validDataGetter, thing.GetTree(), distinct);
+            return new TreeIndividual(_validColumns, _validDataGetter, TreeDuplicateRemoval.RemoveDuplicates(addBranchAt.GetTree(), maxDuplication: 3), distinct);
         }
     }
 }

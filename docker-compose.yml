@@ -7,7 +7,7 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: example
         ports:
-            - 3307:3306
+            - 3306:3306
         volumes:
             - sql-persist:/var/lib/mysql
     phpmyadmin:

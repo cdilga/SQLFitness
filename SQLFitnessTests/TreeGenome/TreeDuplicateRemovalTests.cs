@@ -20,8 +20,8 @@ namespace SQLFitness.Tests
         public void VisitSingleNode()
         {
             var tree = predicateBuilder("Col1", "Cell1", PredicateType.LessThan);
-            var repair = new TreeDuplicateRemoval(tree);
-            Assert.AreEqual(tree, repair.Output);
+            var repair = TreeDuplicateRemoval.RemoveDuplicates(tree);
+            Assert.AreEqual(tree, repair);
         }
 
         //Must take 3 node tree all with the same columns and return it fine too
@@ -29,8 +29,7 @@ namespace SQLFitness.Tests
         public void Visit3NodeTree()
         {
             var tree = new BinaryNode(predicateBuilder("Col1", "Cell1", PredicateType.LessThan), predicateBuilder("Col1", "Cell1", PredicateType.LessThan));
-            var repair = new TreeDuplicateRemoval(tree);
-            var returnedTree = repair.Output;
+            var returnedTree = TreeDuplicateRemoval.RemoveDuplicates(tree);
             Assert.AreEqual(tree, returnedTree);
         }
 
@@ -43,9 +42,7 @@ namespace SQLFitness.Tests
             var right = new BinaryNode(predicateBuilder("Col1", "Cell1", PredicateType.LessThan), rightRight, BinaryNodeType.AND);
             var testTree = new BinaryNode(left, right, BinaryNodeType.AND);
             var correctTree = new BinaryNode(left, rightRight, BinaryNodeType.AND);
-            var repair = new TreeDuplicateRemoval(testTree);
-            var returnedTree = repair.Output;
-            NodeTreeVisualizer.TestShowVisualizer(returnedTree.ToDebuggableNode());
+            var returnedTree = TreeDuplicateRemoval.RemoveDuplicates(testTree);
 
             //TODO override reference equality
             Assert.AreEqual(correctTree.Left, ((BinaryNode)returnedTree).Left);
@@ -80,11 +77,10 @@ namespace SQLFitness.Tests
             var node1 = new BinaryNode(node2, node15);
 
             //Node 1 will be the original tree
-            var repair = new TreeDuplicateRemoval(node1);
 
 
             var correctTree = new BinaryNode(node3, node13, BinaryNodeType.AND);
-            var resultTree = repair.Output;
+            var resultTree = TreeDuplicateRemoval.RemoveDuplicates(node1);
 
 
 

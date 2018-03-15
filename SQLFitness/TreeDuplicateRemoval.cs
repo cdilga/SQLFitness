@@ -8,13 +8,13 @@ namespace SQLFitness
 {
     public class TreeDuplicateRemoval : Visitor<Node>
     {
-        public static Node RemoveDuplicates(Node tree, int maxDuplication)
+        public static Node RemoveDuplicates(Node tree, int maxDuplication = 3)
             => new TreeDuplicateRemoval(tree, maxDuplication).Output;
 
         private readonly int maxDuplication;
 
         Dictionary<string, int> columnCounts = new Dictionary<string, int>();
-        public TreeDuplicateRemoval(Node tree, int maxDuplication = 3) : base(tree)
+        protected TreeDuplicateRemoval(Node tree, int maxDuplication = 3) : base(tree)
         {
             this.maxDuplication = maxDuplication;
         }
@@ -30,7 +30,6 @@ namespace SQLFitness
             }
             else
             {
-                columnCounts[columnName] = ++count;
                 return node;
             }
         }
@@ -60,7 +59,7 @@ namespace SQLFitness
     public abstract class Visitor<T>
     {
         private readonly Lazy<T> _Output;
-        public T Output => _Output.Value;
+        protected T Output => _Output.Value;
         protected Visitor(Node tree)
         {
             //use lazy instead of calling Visit here so that derived constructors

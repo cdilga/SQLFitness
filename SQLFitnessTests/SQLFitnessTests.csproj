@@ -48,6 +48,9 @@
     <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Shouldly, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shouldly.3.0.0\lib\net451\Shouldly.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
@@ -85,6 +88,10 @@
     <ProjectReference Include="..\SQLFitness\SQLFitness.csproj">
       <Project>{8EDF4429-251A-416D-BB68-93F227191BCF}</Project>
       <Name>SQLFitness</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StandaloneTreeVisualizer\StandaloneTreeVisualizer.csproj">
+      <Project>{CF5AA874-13A2-49F5-A141-46809AE3B821}</Project>
+      <Name>StandaloneTreeVisualizer</Name>
     </ProjectReference>
     <ProjectReference Include="..\TreeDebugVisualizer\TreeDebugVisualizer.csproj">
       <Project>{A6AA9769-CB3A-4659-89FA-A8ED32D597CE}</Project>

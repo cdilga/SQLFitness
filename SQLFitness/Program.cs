@@ -16,7 +16,7 @@ namespace SQLFitness
             var db = new DBAccess();
             var basicGA = new TreeSelectionAlgorithm(db, new ClientFitness());
 #endif
-            for (var i = 0; i < 10000; i++)
+            for (var i = 0; i < Utility.MaxIterations; i++)
             {
                 basicGA.Evolve();
                 Console.WriteLine($"{i}");

@@ -69,7 +69,7 @@ namespace SQLFitness
 
 
         //Note that const fields are always static
-        public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3307;sslmode=none";
+        public const string ConnString = "server=localhost;user=root;password=example;database=species;port=3306;sslmode=none";
         public const string TableName = "insectdiscoveries";
 
         //public const string ConnString = "server=localhost;user=root;password=example;database=world;port=3306;sslmode=none";
@@ -92,6 +92,9 @@ namespace SQLFitness
         //Fitness server settings
         public const string FitnessServerAddress = "127.0.0.1";
         public const int FitnessServerPort = 1506;
+
+        //Iterations
+        public const int MaxIterations = 8000;
 
         public static void TestDuplicates(List<Projection> list)
         {

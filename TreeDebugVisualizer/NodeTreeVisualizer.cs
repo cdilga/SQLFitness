@@ -1,7 +1,12 @@
 ﻿using Microsoft.VisualStudio.DebuggerVisualizers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -34,12 +39,23 @@ namespace TreeDebugVisualizer
             object data = (object)objectProvider.GetObject();
             if (data is IVisualizableNode visNode)
             {
-                using (var view = new TreeView())
+                //using (var view = new TreeView())
+                //{
+                //    view.Text = "Node debug view";
+                //    view.RootNode = visNode;
+                //    windowService.ShowDialog(view);
+                //}
+                var obj = visNode.ToDebuggableNode();
+                var fileTmpPath = Path.GetTempFileName();
+                using (var serializedStream = SerializeToStream(obj))
                 {
-                    view.Text = "Node debug view";
-                    view.RootNode = visNode;
-                    windowService.ShowDialog(view);
+                    using (var fs = File.Create(fileTmpPath))
+                    {
+                        serializedStream.WriteTo(fs);
+                    }
                 }
+                
+                Process.Start(StandaloneTreeVisualizer.Program.ExeFileName, fileTmpPath);
             }
             else
             {
@@ -60,6 +76,14 @@ namespace TreeDebugVisualizer
         {
             VisualizerDevelopmentHost visualizerHost = new VisualizerDevelopmentHost(objectToVisualize, typeof(NodeTreeVisualizer));
             visualizerHost.ShowVisualizer();
+        }
+
+        public static MemoryStream SerializeToStream(object o)
+        {
+            var stream = new MemoryStream();
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(stream, o);
+            return stream;
         }
     }
 }

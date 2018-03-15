@@ -104,6 +104,10 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\StandaloneTreeVisualizer\StandaloneTreeVisualizer.csproj">
+      <Project>{cf5aa874-13a2-49f5-a141-46809ae3b821}</Project>
+      <Name>StandaloneTreeVisualizer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TreeDebugVisualizer\TreeDebugVisualizer.csproj">
       <Project>{a6aa9769-cb3a-4659-89fa-a8ed32d597ce}</Project>
       <Name>TreeDebugVisualizer</Name>

@@ -22,12 +22,6 @@ namespace TreeDebugVisualizer
         public IReadOnlyCollection<IVisualizableNode> ChildNodes { get; }
     }
 
-    public interface IVisualizableNode
-    {
-        string NodeText { get; }
-        IReadOnlyCollection<IVisualizableNode> ChildNodes { get; }
-    }
-
     public static class Ext
     {
         public static DebuggableNode ToDebuggableNode(this IVisualizableNode visNode)

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SQLFitnessTests", "SQLFitne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TreeDebugVisualizer", "TreeDebugVisualizer\TreeDebugVisualizer.csproj", "{A6AA9769-CB3A-4659-89FA-A8ED32D597CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandaloneTreeVisualizer", "StandaloneTreeVisualizer\StandaloneTreeVisualizer.csproj", "{CF5AA874-13A2-49F5-A141-46809AE3B821}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A6AA9769-CB3A-4659-89FA-A8ED32D597CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6AA9769-CB3A-4659-89FA-A8ED32D597CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6AA9769-CB3A-4659-89FA-A8ED32D597CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF5AA874-13A2-49F5-A141-46809AE3B821}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5AA874-13A2-49F5-A141-46809AE3B821}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5AA874-13A2-49F5-A141-46809AE3B821}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF5AA874-13A2-49F5-A141-46809AE3B821}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
