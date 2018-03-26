@@ -7,7 +7,7 @@ namespace SQLFitness
 {
     public static class Utility
     {
-        private static Random _randomGenerator = new Random(4); //4 is guarenteed to be random - picked from random.org
+        private static Random _randomGenerator = new Random(new System.DateTime().Millisecond); //Random as the milliseconds are
 
         /// <summary>
         /// Gets a random number between <paramref name="min"/> and <paramref name="max"/>
