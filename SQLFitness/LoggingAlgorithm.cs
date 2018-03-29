@@ -46,6 +46,7 @@ namespace SQLFitness
         //Talk through this design
         public void Evolve()
         {
+#if TIMING
             var evolveStopWatch = new Stopwatch();
             evolveStopWatch.Start();
             var evaluationStopWatch = new Stopwatch();
@@ -61,6 +62,10 @@ namespace SQLFitness
             //Console.WriteLine(nameof(_selection));
             _selection();
             selectionStopWatch.Stop();
+#else
+            _evaluation();
+            _selection();
+#endif
             var line = String.Join(",", _population.Select(x => x.Fitness.Value.ToString()).ToArray());
 
             
@@ -83,9 +88,8 @@ namespace SQLFitness
                 this.BestIndividuals.Add(_population[0]);
                 _bestIndividuals.WriteLine($"{this.BestIndividuals.Last().ToSql()}\t {this.BestIndividuals.Last().Fitness.Value}");
             }
-            
+#if TIMING
             _file.WriteLine($"{this.Generation}, {evolveStopWatch.Elapsed}, {evaluationStopWatch.Elapsed}, {selectionStopWatch.Elapsed}, {crossoverStopWatch.Elapsed}, {mutationStopWatch.Elapsed}, {line}");
-
 
             crossoverStopWatch.Start();
             //Console.WriteLine(nameof(_crossover));
@@ -97,6 +101,13 @@ namespace SQLFitness
             mutationStopWatch.Stop();
             this.Generation++;
             evolveStopWatch.Stop();
+#else
+            _file.WriteLine($"{this.Generation}, {line}");
+
+            _crossover();
+            _mutation();
+            this.Generation++;
+#endif
 
         }
     }
