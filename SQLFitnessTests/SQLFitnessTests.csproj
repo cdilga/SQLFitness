@@ -82,6 +82,7 @@
     <Compile Include="TreeGenome\TreeDuplicateRemovalTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +119,13 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+if not exist "$(TargetDir)bin32" md "$(TargetDir)bin32"
+xcopy /s /y "$(SolutionDir)packages\HDF.PInvoke.1.8.16.11\lib\native\bin32\*.*" "$(TargetDir)bin32"
+if not exist "$(TargetDir)bin64" md "$(TargetDir)bin64"
+xcopy /s /y "$(SolutionDir)packages\HDF.PInvoke.1.8.16.11\lib\native\bin64\*.*" "$(TargetDir)bin64"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
