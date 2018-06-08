@@ -14,6 +14,13 @@ namespace SQLFitness
 {
     static class Program
     {
+        const int tickNum = 100;
+        private static ProgressBar loadingBarFactory(string description, int numTicks)
+        {
+            var barOptions = new ProgressBarOptions() { ForegroundColor = ConsoleColor.DarkMagenta, ForegroundColorDone = ConsoleColor.Green, DisplayTimeInRealTime = false, CollapseWhenFinished = true, ProgressCharacter = '─' };
+
+            return new ProgressBar(numTicks, "Parsing numberbatch file", barOptions);
+        }
         public static IDictionary<string, float[]> ReadFromNumberbatchText(string path)
         {
             Console.WriteLine("Loading numberbatch text file");
@@ -25,7 +32,10 @@ namespace SQLFitness
             var matrixSize = lines[0].Split(' ').Select(Int32.Parse).ToArray();
             var numWords = matrixSize[0];
 
+            int numTicks = Math.Min(tickNum, numWords);
             ConcurrentDictionary<string, float[]> numberbatch;
+            using (var bar = loadingBarFactory("Parsing numberbatch file", numTicks))
+            {
                 numberbatch = new ConcurrentDictionary<string, float[]>(Environment.ProcessorCount, numWords);
                 Parallel.For(1, numWords + 1, i =>
                 {
@@ -37,6 +47,10 @@ namespace SQLFitness
                     }
                     var vector = line.Skip(1).Select(Single.Parse).ToArray();
                     numberbatch.TryAdd(line[0], vector);
+                    if (i % (numWords / numTicks) == 0)
+                    {
+                        bar.Tick();
+                    }
                 });
             }
             return numberbatch;
@@ -44,10 +58,13 @@ namespace SQLFitness
 
         public static void WriteToNmbFile(string path, IDictionary<string, float[]> dict)
         {
+            int numTicks = Math.Min(tickNum, dict.Count);
+            using (var bar = loadingBarFactory("Writing to cache nmb file", numTicks))
             using (var stream = File.OpenWrite(path))
             using (var writer = new BinaryWriter(stream))
             {
                 writer.Write(dict.Count);
+                var c = 0;
                 foreach (var key in dict.Keys)
                 {
                     writer.Write(key);
@@ -56,6 +73,10 @@ namespace SQLFitness
                     for (int i = 0; i < val.Length; ++i)
                     {
                         writer.Write(val[i]);
+                    }
+                    if (c++ % (dict.Count / numTicks) == 0)
+                    {
+                        bar.Tick();
                     }
                 }
             }
@@ -67,19 +88,28 @@ namespace SQLFitness
             using (var reader = new BinaryReader(stream))
             {
                 int numWords = reader.ReadInt32();
-                Dictionary<string, float[]> dict = new Dictionary<string, float[]>(numWords);
-                for(int i = 0; i < numWords; i++)
+                int numTicks = Math.Min(tickNum, numWords);
+
+                using (var bar = loadingBarFactory("Read from nmb file", numTicks))
                 {
-                    var key = reader.ReadString();
-                    var len = reader.ReadInt32();
-                    float[] vals = new float[len];
-                    for(int j = 0; j < len; j++)
+                    Dictionary<string, float[]> dict = new Dictionary<string, float[]>(numWords);
+                    for (int i = 0; i < numWords; i++)
                     {
-                        vals[j] = reader.ReadSingle();
+                        var key = reader.ReadString();
+                        var len = reader.ReadInt32();
+                        float[] vals = new float[len];
+                        for (int j = 0; j < len; j++)
+                        {
+                            vals[j] = reader.ReadSingle();
+                        }
+                        dict.Add(key, vals);
+                        if (i % (numWords / numTicks) == 0)
+                        {
+                           bar.Tick();
+                        }
                     }
-                    dict.Add(key, vals);
+                    return dict;
                 }
-                return dict;
             }
         }
 
@@ -90,13 +120,14 @@ namespace SQLFitness
                 throw new FileNotFoundException("Could not find numberbatch file");
             }
 
-            if(string.Equals(Path.GetExtension(path), ".nmb", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(Path.GetExtension(path), ".nmb", StringComparison.OrdinalIgnoreCase))
             {
                 return ReadFromNmbFile(path);
             }
-            else if(string.Equals(Path.GetExtension(path), ".txt", StringComparison.OrdinalIgnoreCase)) {
+            else if (string.Equals(Path.GetExtension(path), ".txt", StringComparison.OrdinalIgnoreCase))
+            {
                 var nmbCache = Path.ChangeExtension(path, ".nmb");
-                if(File.Exists(nmbCache))
+                if (File.Exists(nmbCache))
                 {
                     return ReadFromNmbFile(nmbCache);
                 }
@@ -115,7 +146,8 @@ namespace SQLFitness
 
         static void Main(string[] args)
         {
-            if(!(args.Length >= 1 && File.Exists(args[0]))) {
+            if (!(args.Length >= 1 && File.Exists(args[0])))
+            {
                 Console.WriteLine("Please provide numberbatch file as either .txt or .nmb");
                 return;
             }
