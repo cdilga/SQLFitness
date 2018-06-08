@@ -1,6 +1,10 @@
-﻿using System;
+﻿using ShellProgressBar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 
 namespace SQLFitness
@@ -117,6 +121,23 @@ namespace SQLFitness
                     }
                 }
             }
+        }
+
+        public static IObserver<int> ThrottleProgress(this ProgressBarBase bar, TimeSpan? interval = null) {
+            var s = new Subject<int>();
+            var tillMax = s.TakeWhile(x => x < bar.MaxTicks);
+            tillMax.Sample(interval ?? TimeSpan.FromMilliseconds(100)).Subscribe(val => bar.Tick(val)); //sample values based on interval
+            tillMax.Subscribe(_ => { },                               //synchronous completion
+                e => bar.Message = "Error: " + e.Message,
+                () => bar.Tick(bar.MaxTicks));
+            return s.AsObserver();
+        }
+
+        public static IObserver<Unit> ThrottleTicks(this ProgressBarBase bar, TimeSpan? interval = null) {
+            var observer = ThrottleProgress(bar, interval);
+            var ticks = new Subject<Unit>();
+            ticks.Scan(bar.CurrentTick, (count, _) => count + 1).Subscribe(observer);
+            return ticks.AsObserver();
         }
     }
 }
