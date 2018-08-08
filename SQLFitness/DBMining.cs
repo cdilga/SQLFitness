@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static edu.stanford.nlp.ling.CoreAnnotations;
 
@@ -83,20 +84,20 @@ namespace SQLFitness
             ResultSet result = dbb.getResultSet("SELECT * FROM species.insectdiscoveries;");
             ResultSetMetaData rsmd = result.getMetaData();
             while(result.next()) {
-                string ID = result.getstring(1);
+                string ID = result.getString(1);
                 for(int i = 1; i <= rsmd.getColumnCount(); i++) {
                     string name = rsmd.getColumnName(i);
-                    ALL.put(ID, name, result.getstring(name));
+                    ALL.put(ID, name, result.getString(name));
                 }
             }
             //=========================================================================================
             result = dbb.getResultSet(groundTruthQuery);
             rsmd = result.getMetaData();
             while(result.next()) {
-                string ID = result.getstring(1);
+                string ID = result.getString(1);
                 for(int i = 1; i <= rsmd.getColumnCount(); i++) {
                     string name = rsmd.getColumnName(i);
-                    GT.put(ID, name, result.getstring(name));
+                    GT.put(ID, name, result.getString(name));
                 }
             }
             //=========================================================================================
@@ -108,7 +109,7 @@ namespace SQLFitness
             for(int i = 0; i < threads; i++) {
                 db[i] = new DBMining();
                 t[i] = new Thread(db[i]);
-                t[i].start();
+                t[i].Start();
             }
             //-----------------------------------------------------------------------------------------
         }
@@ -124,17 +125,17 @@ namespace SQLFitness
         }
 
         public static double getQueryCoverage(string groundTruthQuery, string query) {
-            query = query.replaceAll("SELECT ", "SELECT `ID`,");
+            query = query.Replace("SELECT ", "SELECT `ID`,");
             //=========================================================================================
             var ALL = new Dictionary<string, Dictionary<string, string>>();
             DBMining db = new DBMining();
             ResultSet result = db.getResultSet("SELECT * FROM species.insectdiscoveries;");
             ResultSetMetaData rsmd = result.getMetaData();
             while(result.next()) {
-                string ID = result.getstring(1);
+                string ID = result.getString(1);
                 for(int i = 1; i <= rsmd.getColumnCount(); i++) {
                     string name = rsmd.getColumnName(i);
-                    ALL.put(ID, name, result.getstring(name));
+                    ALL.put(ID, name, result.getString(name));
                 }
             }
             //=========================================================================================
@@ -142,10 +143,10 @@ namespace SQLFitness
             result = db.getResultSet(groundTruthQuery);
             rsmd = result.getMetaData();
             while(result.next()) {
-                string ID = result.getstring(1);
+                string ID = result.getString(1);
                 for(int i = 1; i <= rsmd.getColumnCount(); i++) {
                     string name = rsmd.getColumnName(i);
-                    GT.put(ID, name, result.getstring(name));
+                    GT.put(ID, name, result.getString(name));
                 }
             }
             //=========================================================================================
@@ -153,10 +154,10 @@ namespace SQLFitness
             result = db.getResultSet(query);
             rsmd = result.getMetaData();
             while(result.next()) {
-                string ID = result.getstring(1);
+                string ID = result.getString(1);
                 for(int i = 1; i <= rsmd.getColumnCount(); i++) {
                     string name = rsmd.getColumnName(i);
-                    Q.put(ID, name, result.getstring(name));
+                    Q.put(ID, name, result.getString(name));
                 }
             }
             //=========================================================================================
@@ -233,35 +234,34 @@ namespace SQLFitness
                 while(true) {
                     Socket mySocket = MyService.accept();
                     Console.WriteLine("Connected");
-                    DataInputStream input = new DataInputStream(mySocket.getInputStream());
-                    BufferedReader r = new BufferedReader(new InputStreamReader(input));
+                    var input = new java.io.DataInputStream(mySocket.getInputStream());
+                    var r = new java.io.BufferedReader(new java.io.InputStreamReader(input));
                     string st = r.readLine();
                     Console.WriteLine(st);
-                    if(st.equals("DIE")) {
+                    if(String.Equals(st, "DIE", StringComparison.InvariantCultureIgnoreCase)) {
                         break;
                     }
                     this.setQuery(st);
                     string response = "0\n";
                     double fitness = 0;
 
-                    query = query.replaceAll("SELECT ", "SELECT `ID`,");
+                    query = query.Replace("SELECT ", "SELECT `ID`,");
                     double coverage = this.getQueryCoverage();
                     Console.WriteLine("Fitness : " + fitness + "---" + "Coverage: " + coverage);
-                    if(!testedQueries.containsKey(this.query)) {
-                        synchronized(this) {
-                            bw.write("\"" + this.query + "\",\"" + fitness + "\",\"" + coverage + "\"\n");
-                            bw.flush();
+                    if(!testedQueries.ContainsKey(query)) {
+                        lock(this) {
+                            bw.WriteLine("\"" + query + "\",\"" + fitness + "\",\"" + coverage + "\"");
                         }
                     }
-                    testedQueries.put(this.query, true);
+                    testedQueries.Add(query, true);
 
                     try {
-                        fitness = this.getFitness();
-                        response = double.tostring(fitness) + "\n" + coverage + "\n";
+                        fitness = getFitness();
+                        response = fitness + "\n" + coverage + "\n";
                     }
-                    catch(Exception ex) {
-                        Console.WriteLine(ex.getStackTrace().tostring());
+                    catch(Exception e) {
                         Console.WriteLine("Query was not valid. Using zero fitness instead!");
+                        Console.WriteLine(e.ToString());
                         //System.in.read();
                     }
 
@@ -310,9 +310,9 @@ namespace SQLFitness
                 Console.WriteLine("Result set is null.");
             }
             while(result.next()) {
-                List<relevance> temp = new List<relevance>();
-                string[] t = new string[QueryWords.size()];
-                for(int i = 1; i <= QueryWords.size(); i++) {
+                var temp = new List<relevance>();
+                string[] t = new string[QueryWords.Count];
+                for(int i = 1; i <= QueryWords.Count; i++) {
                     relevance rel = new relevance();
                     rel.word = result.getstring(i + 1);
                     rel.value = cellRelevanceScore(rel.word);
@@ -329,24 +329,24 @@ namespace SQLFitness
         }
 
         public List<relevance> getColumnsRelevance() {
-            ArrayList<DescriptiveStatistics> desc = new ArrayList<DescriptiveStatistics>();
-            for(int j = 0; j < QueryWords.size(); j++) {
-                DescriptiveStatistics temp = new DescriptiveStatistics();
-                for(int i = 0; i < QuestionWords.size(); i++) {
+            var desc = new List<DescriptiveStatistics>();
+            for(int j = 0; j < QueryWords.Count; j++) {
+                var temp = new DescriptiveStatistics();
+                for(int i = 0; i < QuestionWords.Count; i++) {
                     double sim = cosineSimilarity(QuestionWords.get(i), QueryWords.get(j));
                     //Console.WriteLine(Question.get(i) + "," + Query.get(j) + " : " + sim);
                     temp.addValue(sim);
                 }
                 desc.add(temp);
             }
-            ArrayList<relevance> str = new ArrayList<>();
-            string[] t = new string[QueryWords.size()];
-            for(int j = 0; j < QueryWords.size(); j++) {
+            var str = new List<relevance>();
+            string[] t = new string[QueryWords.Count];
+            for(int j = 0; j < QueryWords.Count; j++) {
                 relevance rel = new relevance();
-                rel.word = QueryWords.get(j);
+                rel.word = QueryWords[j];
                 rel.value = desc.get(j).getMean();
                 t[j] = rel.word + ":" + rel.value;
-                str.add(rel);
+                str.Add(rel);
             }
             if(storeRelevanceScores) {
                 SQL.add(createInsertQuery(t));
@@ -357,28 +357,28 @@ namespace SQLFitness
         public string createInsertQuery(string[] t) {
             string sql = "Insert into " + "species.insectdiscoveriesrel";
             sql += "( "
-                    + "`" + QueryWords.get(0) + "`" + ","
-                    + "`" + QueryWords.get(1) + "`" + ","
-                    + "`" + QueryWords.get(2) + "`" + ","
-                    + "`" + QueryWords.get(3) + "`" + ","
-                    + "`" + QueryWords.get(4) + "`" + ","
-                    + "`" + QueryWords.get(5) + "`" + ","
-                    + "`" + QueryWords.get(6) + "`" + ","
-                    + "`" + QueryWords.get(7) + "`" + ","
-                    + "`" + QueryWords.get(8) + "`" + ","
-                    + "`" + QueryWords.get(9) + "`" + ","
-                    + "`" + QueryWords.get(10) + "`" + ","
-                    + "`" + QueryWords.get(11) + "`" + ","
-                    + "`" + QueryWords.get(12) + "`" + ","
-                    + "`" + QueryWords.get(13) + "`" + ","
-                    + "`" + QueryWords.get(14) + "`" + ","
-                    + "`" + QueryWords.get(15) + "`" + ","
-                    + "`" + QueryWords.get(16) + "`" + ","
-                    + "`" + QueryWords.get(17) + "`" + ","
-                    + "`" + QueryWords.get(18) + "`" + ","
-                    + "`" + QueryWords.get(19) + "`" + ","
-                    + "`" + QueryWords.get(20) + "`" + ","
-                    + "`" + QueryWords.get(21) + "`"
+                    + "`" + QueryWords[0] + "`" + ","
+                    + "`" + QueryWords[1] + "`" + ","
+                    + "`" + QueryWords[2] + "`" + ","
+                    + "`" + QueryWords[3] + "`" + ","
+                    + "`" + QueryWords[4] + "`" + ","
+                    + "`" + QueryWords[5] + "`" + ","
+                    + "`" + QueryWords[6] + "`" + ","
+                    + "`" + QueryWords[7] + "`" + ","
+                    + "`" + QueryWords[8] + "`" + ","
+                    + "`" + QueryWords[9] + "`" + ","
+                    + "`" + QueryWords[10] + "`" + ","
+                    + "`" + QueryWords[11] + "`" + ","
+                    + "`" + QueryWords[12] + "`" + ","
+                    + "`" + QueryWords[13] + "`" + ","
+                    + "`" + QueryWords[14] + "`" + ","
+                    + "`" + QueryWords[15] + "`" + ","
+                    + "`" + QueryWords[16] + "`" + ","
+                    + "`" + QueryWords[17] + "`" + ","
+                    + "`" + QueryWords[18] + "`" + ","
+                    + "`" + QueryWords[19] + "`" + ","
+                    + "`" + QueryWords[20] + "`" + ","
+                    + "`" + QueryWords[21] + "`"
                     + " )"
                     + "Values ( "
                     + " '" + t[0] + "', "
@@ -410,18 +410,18 @@ namespace SQLFitness
         public class relevance
         {
 
-            string word;
-            double value;
+            public string word;
+            public double value;
         }
 
         public double cellRelevanceScore(string cell) {
-            DescriptiveStatistics temp = new DescriptiveStatistics();
-            for(int i = 0; i < QuestionWords.size(); i++) {
+            var temp = new DescriptiveStatistics();
+            foreach(var questionWord in QuestionWords) {
                 double sim = 0;
                 try {
-                    sim = cosineSimilarity(QuestionWords.get(i), cell);
+                    sim = cosineSimilarity(questionWord, cell);
                 }
-                catch(Exception Ex) {
+                catch(Exception) {
                     Console.WriteLine("calculating sim failed.");
                 }
                 temp.addValue(sim);
@@ -444,13 +444,13 @@ namespace SQLFitness
             }
 
             public void setcellRelevanceScore() {
-                DescriptiveStatistics temp = new DescriptiveStatistics();
-                for(int i = 0; i < QuestionWords.size(); i++) {
+                var temp = new DescriptiveStatistics();
+                foreach(string questionWord in QuestionWords) {
                     double sim = 0;
                     try {
-                        sim = cosineSimilarity(QuestionWords.get(i), this.Value);
+                        sim = cosineSimilarity(questionWord, Value);
                     }
-                    catch(Exception Ex) {
+                    catch(Exception) {
                         Console.WriteLine("calculating sim failed.");
                     }
                     temp.addValue(sim);
@@ -461,26 +461,18 @@ namespace SQLFitness
 
         //================================================================================================
         public static List<string> extractQuestionWords() {
-            Dictionary<string, string> QuestionColumns;
-            var QuestionColumnsList = new List<string>();
-
-            QuestionColumns = parseText(question);
-            Iterator it = QuestionColumns.keySet().iterator();
-            while(it.hasNext()) {
-                QuestionColumnsList.add((string)it.next());
-            }
-            ArrayList<string> temp = new ArrayList<>();
-            for(int i = 0; i < QuestionColumnsList.size(); i++) {
-                string tag = QuestionColumns.get(QuestionColumnsList.get(i));
-                Console.WriteLine(QuestionColumnsList.get(i) + " " + tag);
-                if(tag.contains("CD")) {
-                    int num = Integer.parseInt(QuestionColumnsList.get(i));
+            var QuestionColumns = parseText(question);
+            var temp = new List<string>();
+            foreach(var (column, tag) in QuestionColumns) {
+                Console.WriteLine(column + " " + tag);
+                if(tag.Contains("CD")) {
+                    int num = Int32.Parse(column);
                     if(num >= 1700 && num <= 2020) {
-                        temp.add(Integer.tostring(num));
+                        temp.Add(column);
                     }
                 }
-                else if(tag.contains("NN")) {
-                    temp.add(QuestionColumnsList.get(i));
+                else if(tag.Contains("NN")) {
+                    temp.Add(column);
                 }
             }
             return temp;
@@ -490,36 +482,38 @@ namespace SQLFitness
             //Console.WriteLine(colrel);
             List<List<relevance>> rowsrel = getRowsRelevance();
             //Console.WriteLine(rowsrel);
-            DescriptiveStatistics stat = new DescriptiveStatistics();
-            for(int i = 0; i < rowsrel.size(); i++) {
+            var stat = new DescriptiveStatistics();
+            foreach(var rowrel in rowsrel) {
                 double temp = 0;
-                ArrayList<relevance> rowrel = rowsrel.get(i);
-                for(int j = 0; j < colrel.size(); j++) {
-                    double d1 = colrel.get(j).value;
-                    double d2 = rowrel.get(j).value;
+                for(int j = 0; j < colrel.Count; j++) {
+                    double d1 = colrel[j].value;
+                    double d2 = rowrel[j].value;
                     temp += d1 + d2;
                 }
                 stat.addValue(temp);
             }
-            double out = (double)stat.getSum();
-            return out.isNaN() ? 0.0 : out;
+            double output = (double)stat.getSum();
+            return Double.IsNaN(output) ? 0.0 : output;
         }
 
-        public ArrayList<string> extractQueryColumns(string query) {
+        public List<string> extractQueryColumns(string query) {
             ResultSet result = getResultSet(query);
             Console.WriteLine("Result set ready.");
-            ArrayList<string> ResultsColumns = new ArrayList<>();
+            var ResultsColumns = new List<string>();
             ResultSetMetaData rsmd = result.getMetaData();
             for(int i = 2; i <= rsmd.getColumnCount(); i++) {
                 string name = rsmd.getColumnName(i);
                 //Console.WriteLine(name);
-                ResultsColumns.add(name);
+                ResultsColumns.Add(name);
             }
             return ResultsColumns;
         }
 
-        public synchronized ResultSet getResultSet(string query) {
-            return stmt.executeQuery(query);
+
+        public ResultSet getResultSet(string query) {
+            lock(stmt) {
+                return stmt.executeQuery(query);
+            }
         }
 
 
@@ -596,7 +590,7 @@ namespace SQLFitness
 
         //================================================================================================
 
-        public double cosineSimilarity(string word1, string word2) {
+        public static double cosineSimilarity(string word1, string word2) {
             word1 = word1?.ToLower() ?? throw new ArgumentNullException(nameof(word1));
             word2 = word2?.ToLower() ?? throw new ArgumentNullException(nameof(word2));
 
@@ -629,7 +623,7 @@ namespace SQLFitness
             return -1;
         }
 
-        public double cosineSimilarity(float[] vec1, float[] vec2) {
+        public static double cosineSimilarity(float[] vec1, float[] vec2) {
 
             double dotProduct = 0;
             double norm1 = 0;
@@ -644,7 +638,7 @@ namespace SQLFitness
             return dotProduct / (Math.Sqrt(norm1) * Math.Sqrt(norm2));
         }
 
-        public double euclideanSimilarity(string word1, string word2) {
+        public static double euclideanSimilarity(string word1, string word2) {
             word1 = word1?.ToLower() ?? throw new ArgumentNullException(nameof(word1));
             word2 = word2?.ToLower() ?? throw new ArgumentNullException(nameof(word2));
 
@@ -657,7 +651,7 @@ namespace SQLFitness
             }
         }
 
-        public double euclideanSimilarity(float[] vec1, float[] vec2) {
+        public static double euclideanSimilarity(float[] vec1, float[] vec2) {
             double diff_square_sum = 0.0;
             for(int i = 0; i < vec1.Length; i++) {
                 float diff = vec1[i] - vec2[i];
