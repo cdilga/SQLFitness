@@ -1,18 +1,9 @@
 package jar;
 
-import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.pipeline.*;
 import java.util.*;
 import edu.stanford.nlp.ling.*;
-import edu.stanford.nlp.ie.util.*;
-import edu.stanford.nlp.pipeline.*;
-import edu.stanford.nlp.semgraph.*;
-import edu.stanford.nlp.trees.*;
 import edu.stanford.nlp.util.CoreMap;
-
-import java.util.*;
-
-
 
 public class App {
 
@@ -20,7 +11,7 @@ public class App {
 
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
         // read some text in the text variable
@@ -30,9 +21,11 @@ public class App {
         Annotation document = new Annotation(text);
 
         // run all Annotators on this text
-        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-        
         pipeline.annotate(document);
+
+        // these are all the sentences in this document
+        // a CoreMap is essentially a Map that uses class objects as keys and has values with custom types
+        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
 
         for(CoreMap sentence: sentences) {
             // traversing the words in the current sentence
@@ -47,13 +40,6 @@ public class App {
 
                 System.out.println(String.format("Print  word: [%s] pos: [%s] ne: [%s]", word, pos, ne));
             }
-
-            // this is the parse tree of the current sentence
-            Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-
-            // this is the Stanford dependency graph of the current sentence
-            SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
         }
     }
-
 }
