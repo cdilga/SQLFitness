@@ -8,6 +8,8 @@ import edu.stanford.nlp.ie.util.*;
 import edu.stanford.nlp.pipeline.*;
 import edu.stanford.nlp.semgraph.*;
 import edu.stanford.nlp.trees.*;
+import edu.stanford.nlp.util.CoreMap;
+
 import java.util.*;
 
 
@@ -28,10 +30,30 @@ public class App {
         Annotation document = new Annotation(text);
 
         // run all Annotators on this text
-        List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+        List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
         
         pipeline.annotate(document);
-        System.out.println(document.sentences().get(0).posTags());
+
+        for(CoreMap sentence: sentences) {
+            // traversing the words in the current sentence
+            // a CoreLabel is a CoreMap with additional token-specific methods
+            for (CoreLabel token: sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+                // this is the text of the token
+                String word = token.get(CoreAnnotations.TextAnnotation.class);
+                // this is the POS tag of the token
+                String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
+                // this is the NER label of the token
+                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+
+                System.out.println(String.format("Print  word: [%s] pos: [%s] ne: [%s]", word, pos, ne));
+            }
+
+            // this is the parse tree of the current sentence
+            Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
+
+            // this is the Stanford dependency graph of the current sentence
+            SemanticGraph dependencies = sentence.get(SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation.class);
+        }
     }
 
 }
