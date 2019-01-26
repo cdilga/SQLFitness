@@ -5,17 +5,22 @@ import java.util.*;
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.util.CoreMap;
 
-public class App {
 
-    public static void main(String[] args) {
+public class QuestionParser {
+    //The question parser will both be responsible for all of the NLP, and for caching the result
+    //A question parser will be an object that is used only once
 
+    ArrayList<String> parse;
+
+
+    public QuestionParser (String question) {
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
         // read some text in the text variable
-        String text = "John saved the cat today";
+        String text = question;
 
         // create an empty Annotation just with the given text
         Annotation document = new Annotation(text);
@@ -38,8 +43,14 @@ public class App {
                 // this is the NER label of the token
                 String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
 
+                this.parse.add(pos);
                 System.out.println(String.format("Print  word: [%s] pos: [%s] ne: [%s]", word, pos, ne));
             }
         }
+
+    }
+
+    public ArrayList keywords() {
+        return parse;
     }
 }
