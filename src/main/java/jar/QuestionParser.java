@@ -1,19 +1,34 @@
 package jar;
 
 import edu.stanford.nlp.pipeline.*;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import edu.stanford.nlp.ling.*;
 import edu.stanford.nlp.util.CoreMap;
+
+import javax.xml.bind.DatatypeConverter;
 
 
 public class QuestionParser {
     //The question parser will both be responsible for all of the NLP, and for caching the result
     //A question parser will be an object that is used only once
 
-    ArrayList<String> parse;
+    ArrayList<String> parse = new ArrayList<String>();
 
+    private Boolean WriteCache(ArrayList parsed) throws Exception {
+        throw new Exception("Not Implemented");
+    }
 
-    public QuestionParser (String question) {
+    private Boolean ReadCache(ArrayList parsed) throws Exception {
+        throw new Exception("Not Implemented");
+    }
+
+    private void NLPParse(String question) {
         // creates a StanfordCoreNLP object, with POS tagging, lemmatization, NER, parsing, and coreference resolution
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse");
@@ -40,13 +55,64 @@ public class QuestionParser {
                 String word = token.get(CoreAnnotations.TextAnnotation.class);
                 // this is the POS tag of the token
                 String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-                // this is the NER label of the token
-                String ne = token.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+                //extract the nouns
 
-                this.parse.add(pos);
-                System.out.println(String.format("Print  word: [%s] pos: [%s] ne: [%s]", word, pos, ne));
+                if (pos.equals("NN") || pos.equals("NNP") || pos.equals("NNS") || pos.equals("NNPS")) {
+                    parse.add(word);
+                }
             }
         }
+
+    }
+
+    private String GenerateHash(String str) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        md.update(str.getBytes());
+        byte[] digest = md.digest();
+        String myHash = DatatypeConverter
+                .printHexBinary(digest).toUpperCase();
+        return myHash;
+    }
+
+    public QuestionParser (String question) {
+        //Test if a file exists
+        String pathString = "C:\\Users\\Chris\\Documents\\dev\\SQLFitness\\cache\\" + GenerateHash(question) + ".q";
+        //Path path = (pathString);
+        File cacheQuestion = new File(pathString);
+        if (cacheQuestion.exists()){
+            try {
+                Scanner cacheReader = new Scanner(cacheQuestion);
+                while (cacheReader.hasNextLine()) {
+                    parse.add(cacheReader.nextLine());
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            NLPParse(question);
+            //Write to cache
+
+            try {
+                FileWriter cacheWriter = new FileWriter(cacheQuestion);
+                for(int i =0; i < parse.size(); i++) {
+                    cacheWriter.write(parse.get(i) + "\n");
+                }
+                cacheWriter.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        //Read from cache
+        //Else do the parse then
+
+
 
     }
 
