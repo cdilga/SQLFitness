@@ -1,5 +1,6 @@
 package jar;
 
+import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.datavec.api.util.ClassPathResource;
 import org.deeplearning4j.models.word2vec.Word2Vec;
@@ -19,6 +20,6 @@ public class NumberBatch {
     public NumberBatch() {
         File gModel = new File("/Developer/Vector Models/GoogleNews-vectors-negative300.bin.gz");
         Word2Vec vec = WordVectorSerializer.readWord2VecModel(gModel);
-        FileWriter
+
     }
 }

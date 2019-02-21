@@ -10,7 +10,6 @@ public class SQLFitness {
         {
             question.append(args[i] + ' ');
         }
-        ;
         QuestionParser parser = new QuestionParser(question.toString());
         ArrayList keywords = parser.keywords();
         System.out.println(keywords);
