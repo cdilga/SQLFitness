@@ -168,6 +168,39 @@
             <artifactId>jcommon</artifactId>
             <version>${jcommon.version}</version>
         </dependency>
+        
+        <!-- Stanford's CoreNLP -->
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.9.2</version>
+            <classifier>models</classifier>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.9.2</version>
+            <classifier>models-english</classifier>
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.nlp</groupId>
+            <artifactId>stanford-corenlp</artifactId>
+            <version>3.9.2</version>
+            <classifier>models-english-kbp</classifier>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.4.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <!-- Used for downloading data in some of the examples -->
         <dependency>
