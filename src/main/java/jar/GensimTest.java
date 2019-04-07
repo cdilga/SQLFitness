@@ -1,63 +1,43 @@
 package jar;
 
-import java.util.function.Function;
-
 import io.jenetics.BitChromosome;
 import io.jenetics.BitGene;
 import io.jenetics.Genotype;
-import io.jenetics.engine.Codec;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
-import io.jenetics.engine.Problem;
-import io.jenetics.util.ISeq;
+import io.jenetics.util.Factory;
 
-/**
- * Full Ones-Counting example.
- *
- * @author <a href="mailto:franz.wilhelmstoetter@gmail.com">Franz Wilhelmstötter</a>
- * @version 3.6
- * @since 3.5
- */
-public class GensimTest implements Problem<ISeq<BitGene>, BitGene, Integer> {
-
-    private final int _length;
-    private final double _onesProbability;
-
-    /**
-     * Create a new Ones-Counting example with the given parameters.
-     *
-     * @param length the length of the ones-vector
-     * @param onesProbability the probability of ones in the created vector
-     */
-    public GensimTest(final int length, final double onesProbability) {
-        _length = length;
-        _onesProbability = onesProbability;
+public class GensimTest {
+    // 2.) Definition of the fitness function.
+    private static int eval(Genotype<BitGene> gt) {
+        return gt.getChromosome()
+                .as(BitChromosome.class)
+                .bitCount();
     }
+    //Broadly we need to take a bunch of column names and use them to select columns
+    //The fitness function will need something like: column names - question???
+    //The fitness function needs to be damn lightweight. Probably also needs to be threadsafe and stuff like this
+    //the fitness function needs access to the word vectors in memory
+    //This class will then import from the other classes...
 
-    @Override
-    public Function<ISeq<BitGene>, Integer> fitness() {
-        return genes -> (int)genes.stream().filter(BitGene::getBit).count();
+    String cols = "AFD_higher_taxon,Order,Genus,Subgenus,Species,Subspecies,Name_type,Rank,Orig_combination,Author,Year,Full_author_name,No_auths,A_in_B,Pub_ID,Citation,Pub_type,Pub_country,Pub_ento,J_title,A_publr_class,A_publr";
+    public static void main(String[] args) {
+        // 1.) Define the genotype (factory) suitable
+        //     for the problem.
+        Factory<Genotype<BitGene>> gtf =
+                Genotype.of(BitChromosome.of(10, 0.5));
+
+        // 3.) Create the execution environment.
+        Engine<BitGene, Integer> engine = Engine
+                .builder(GensimTest::eval, gtf)
+                .build();
+
+        // 4.) Start the execution (evolution) and
+        //     collect the result.
+        Genotype<BitGene> result = engine.stream()
+                .limit(100)
+                .collect(EvolutionResult.toBestGenotype());
+
+        System.out.println("Hello World:\n" + result);
     }
-
-    @Override
-    public Codec<ISeq<BitGene>, BitGene> codec() {
-        return Codec.of(
-                Genotype.of(BitChromosome.of(_length, _onesProbability)),
-                gt -> gt.getChromosome().toSeq()
-        );
-    }
-
-    public static void main(final String[] args) {
-        final GensimTest problem = new GensimTest(15, 0.13);
-        final Engine<BitGene, Integer> engine = Engine.builder(problem).build();
-
-        final ISeq<BitGene> result = problem.codec().decoder().apply(
-                engine.stream()
-                        .limit(10)
-                        .collect(EvolutionResult.toBestGenotype())
-        );
-
-        System.out.println(result);
-    }
-
 }

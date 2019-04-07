@@ -81,7 +81,7 @@ public class QuestionParser {
 
     public QuestionParser (String question) {
         //Test if a file exists
-        String pathString = "C:\\Users\\cdilg\\Documents\\dev\\SQLFitness\\cache\\" + GenerateHash(question) + ".q";
+        String pathString = "C:\\Users\\Chris\\Documents\\dev\\SQLFitness\\cache\\" + GenerateHash(question) + ".q";
         //Path path = (pathString);
         File cacheQuestion = new File(pathString);
         if (cacheQuestion.exists()){
