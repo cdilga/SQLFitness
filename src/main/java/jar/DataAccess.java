@@ -1,10 +1,9 @@
-package database;
+package jar;
 
 import java.sql.*;
 import java.util.TimeZone;
 
-import scores.Utils;
-import exceptions.DatabaseException;
+import sun.plugin.com.Utils;
 
 public class DataAccess 
 {
@@ -15,15 +14,13 @@ public class DataAccess
      */
     private Connection connection;
    // private String url = "jdbc:mysql://50.62.209.12:3306/archery";
-    private static String url = "jdbc:mysql://"+Utils.properties.getProperty("database_host")+"/"+
-	    Utils.properties.getProperty("database_name")+"?useLegacyDatetimeCode=false&serverTimezone="
-	    +TimeZone.getDefault().getID();
+    private static String url = "jdbc:mysql://"+ "database_host"+"/";
     private static String dbPassword = null;
 
     
     protected DataAccess(){};
 
-    public Connection getConnection() throws DatabaseException  
+    public Connection getConnection() throws Exception
     {
 	try
 	{
@@ -34,27 +31,27 @@ public class DataAccess
 	    }
 	}catch (SQLException e)
 	{
-	    throw new DatabaseException("Connection problems: "+e.getMessage());
+	    throw new Exception("Connection problems: "+e.getMessage());
 	} 
 	return connection;
     }
 
 
-    protected Connection makeConnection() throws DatabaseException
+    protected Connection makeConnection() throws Exception
     {
 	Connection connection = null;
 	
 	try
 	{
 	    Class.forName("com.mysql.jdbc.Driver");
-	    connection = DriverManager.getConnection( url, Utils.properties.getProperty("db_user_name"), 
+	    connection = DriverManager.getConnection( url, "db_user_name",
 		dbPassword);
 	} catch (ClassNotFoundException e)
 	{
-	    throw new DatabaseException("No suitable jdbc driver found: "+e.getMessage());
+	    throw new Exception("No suitable jdbc driver found: "+e.getMessage());
 	}catch (SQLException e)
 	{
-	    throw new DatabaseException("Connection failed: "+e.getMessage());
+	    throw new Exception("Connection failed: "+e.getMessage());
 	}
 	return connection;
 
@@ -68,19 +65,19 @@ public class DataAccess
 	return singleton;
     }
     
-    public static void setDbPassword(String pwd) throws DatabaseException
+    public static void setDbPassword(String pwd) throws Exception
     {
 	Connection conn;
 	try
 	{
-	    conn = DriverManager.getConnection( url, Utils.properties.getProperty("db_user_name"), 
+	    conn = DriverManager.getConnection( url, "db_user_name",
 		    pwd);
 	    if(!conn.isValid(10))
-		throw new DatabaseException("Password is wrong");
+		throw new Exception("Password is wrong");
 	    dbPassword = pwd;
 	} catch (SQLException e)
 	{
-	    throw new DatabaseException(e.getMessage());
+	    throw new Exception(e.getMessage());
 	}
 
 		

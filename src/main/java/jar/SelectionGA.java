@@ -15,6 +15,7 @@ import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import static java.lang.Math.abs;
 
@@ -56,9 +57,19 @@ public class SelectionGA {
 
     /*
     TODO Write a java.util.function.supplier factory which takes the sql operator
-     which will give column names in the first field, and then  
+     which will give column names in the first field, and then the acceptable values
+     in the constraint (right hand side)
      */
 
+
+    final static Supplier<String> supplierFactory() {
+        return Supplier<String>() {
+            @Override
+            public String get() {
+                return null;
+            }
+        }
+    }
 
     final static Op<String> greaterThan = EphemeralConst.of(v -> v[0] + " > " + v[1]);
     final static Op<String> lessThan = EphemeralConst.of(v -> v[0] + " < " + v[1]);
