@@ -61,20 +61,15 @@ public class SelectionGA {
      in the constraint (right hand side)
      */
 
+    //We know there are specific rules about which is able to go on the left and the right here
+    // perhaps there is a more general way to capture this in an AST?
+    // Can fix with a "Fix" step for the ga?
 
-    final static Supplier<String> supplierFactory() {
-        return Supplier<String>() {
-            @Override
-            public String get() {
-                return null;
-            }
-        }
-    }
 
-    final static Op<String> greaterThan = EphemeralConst.of(v -> v[0] + " > " + v[1]);
-    final static Op<String> lessThan = EphemeralConst.of(v -> v[0] + " < " + v[1]);
-    final static Op<String> equalTo = EphemeralConst.of( v -> v[0] + " = " + v[1]);
-    final static Op<String> notEqual = EphemeralConst.of(v -> v[0] + " <> " + v[1]);
+    final static Op<String> greaterThan = Var.of(v -> v[0] + " > " + v[1]);
+    final static Op<String> lessThan = Var.of(v -> v[0] + " < " + v[1]);
+    final static Op<String> equalTo = Var.of( v -> v[0] + " = " + v[1]);
+    final static Op<String> notEqual = Var.of(v -> v[0] + " <> " + v[1]);
     final static ISeq<Const<String>> terminals = ISeq.of(greaterThan, lessThan, equalTo, notEqual);
 
     final int depth = 5;
