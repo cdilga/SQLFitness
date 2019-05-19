@@ -13,6 +13,7 @@ import io.jenetics.prog.op.EphemeralConst;
 import io.jenetics.prog.op.Op;
 import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
+import scala.sys.process.ProcessBuilderImpl;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -63,14 +64,12 @@ public class SelectionGA {
 
     //We know there are specific rules about which is able to go on the left and the right here
     // perhaps there is a more general way to capture this in an AST?
-    // Can fix with a "Fix" step for the ga?
+    // Can fix with a "Fix" step for the ga
+            final static String[] cols = {"Col1", "Col2", "Col3"};
+            final static String[][] data = {{""}};
 
-
-    final static Op<String> greaterThan = Var.of(v -> v[0] + " > " + v[1]);
-    final static Op<String> lessThan = Var.of(v -> v[0] + " < " + v[1]);
-    final static Op<String> equalTo = Var.of( v -> v[0] + " = " + v[1]);
-    final static Op<String> notEqual = Var.of(v -> v[0] + " <> " + v[1]);
-    final static ISeq<Const<String>> terminals = ISeq.of(greaterThan, lessThan, equalTo, notEqual);
+    final static Supplier TestStringSupplier<String> = () -> coldataStringMaker.make();
+    final static ISeq<Const<String>> terminals = ISeq.of(EphemeralConst.of());
 
     final int depth = 5;
 
