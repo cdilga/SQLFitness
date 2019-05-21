@@ -1,9 +1,14 @@
 package jar;
 
 import java.util.Random;
-
-//Lets chuck all of the db logic and everything that needs to access the db in here, and just let everything access it
-//See what happens
+import java.util.function.Supplier;
+import jar.DBAccess;
+/**
+ * Data Getter is responsible for the generation of individuals
+ *
+ * It is in the data getter which we access data from a DBAccess class and perform the random permutations along the
+ *
+ */
 public class DataGetter {
     private static Random rand = new Random();
     private static String[][] data = new String[][]{
@@ -16,16 +21,20 @@ public class DataGetter {
 
     private static String[] columns = new String[]{"lat","lon","Country","Sex","Author","Length","Symbol"};
 
-    private static String makeCol() {
-        return "col";
+    private static String makeCol(int column) {
+
+        return columns[column];
     }
-    private static String makeData (int column) {
-        return "data";
+    private static String makeData (int column, int row) {
+        return data[column][row];
     }
-    private static String
+    private static String makeComparator() { return ">"; }
 
     public static String makePredicate() {
-
-        return
+        int col = 1;
+        int row = 1;
+        return makeCol(col) + makeComparator() + makeData(col, row);
     }
+
+    public static Supplier predicateSupplier = () -> makePredicate();
 }

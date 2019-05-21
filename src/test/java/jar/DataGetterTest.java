@@ -6,12 +6,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DummyEphemeralConstSupplierTest {
-    private String[][] data;
-    private String[] columns;
+public class DataGetterTest {
+    private static String[][] data;
+    private static String[] columns;
 
     @BeforeClass
-    public void setUp() {
+    public static void setUp() {
         data = new String[][]{
                 {"-25.676187","134.051234","Australia" ,"M","James L Hamburger","2","Star"},
                 {"-43.225193","170.588218","New Zealand ","F","Jonothan P. Prince","34","Hash"},
@@ -23,10 +23,23 @@ public class DummyEphemeralConstSupplierTest {
     }
 
     @Test
-    public void getColumnns() {
-        DummyEphemeralConstSupplier dum = new DummyEphemeralConstSupplier(columns, data);
+    public void isPredicate() {
+        String pred = DataGetter.makePredicate();
 
-        String[] result = dum.get().split("[<>]|(!=)|(==)|(<>)");
+        String[] result = pred.split("[<>]|(!=)|(==)|(<>)");
+        assertEquals(2, result.length);
+    }
+
+    /**
+     * Tests that there is indeed a column within the range of the data returned
+     *
+     * Equates to left hand side of the expression
+     */
+    @Test
+    public void getColumnns() {
+        String pred = DataGetter.makePredicate();
+
+        String[] result = pred.split("[<>]|(!=)|(==)|(<>)");
         Boolean contained = false;
         for (int i = 0; i < columns.length; i++) {
             if (columns[i] == result[0]) {
@@ -38,16 +51,28 @@ public class DummyEphemeralConstSupplierTest {
         assertTrue(contained);
     }
 
+
+    /**
+     * Tests the data is returned from somewhere in the data source
+     *
+     * Equates to testing the right hand side of the expression
+     */
     @Test
     public void getData() {
-        DummyEphemeralConstSupplier dum = new DummyEphemeralConstSupplier(columns, data);
-        String[] result = dum.get().split("[<>]|(!=)|(==)|(<>)");
+        String pred = DataGetter.makePredicate();
+        String[] result = pred.split("[<>]|(!=)|(==)|(<>)");
         assertTrue(result.length == 2);
+
+        Boolean contained = false;
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
-                assertTrue(false);
+                if (data[i][j] == result[1]) {
+                    contained = true;
+                    break;
+                }
             }
         }
+        assertTrue(contained);
     }
 
 }

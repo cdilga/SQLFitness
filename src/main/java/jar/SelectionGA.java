@@ -15,6 +15,7 @@ import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
 import scala.sys.process.ProcessBuilderImpl;
 
+import jar.DataGetter;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
@@ -56,8 +57,8 @@ public class SelectionGA {
      * have the 'Operations' which combine these.
      */
 
-    /*
-    TODO Write a java.util.function.supplier factory which takes the sql operator
+     /*
+     TODO Write a java.util.function.supplier factory which takes the sql operator
      which will give column names in the first field, and then the acceptable values
      in the constraint (right hand side)
      */
@@ -68,8 +69,8 @@ public class SelectionGA {
             final static String[] cols = {"Col1", "Col2", "Col3"};
             final static String[][] data = {{""}};
 
-    final static Supplier TestStringSupplier<String> = () -> coldataStringMaker.make();
-    final static ISeq<Const<String>> terminals = ISeq.of(EphemeralConst.of());
+    final static Supplier TestStringSupplier = () -> DataGetter.makePredicate();
+    final static ISeq<EphemeralConst<String>> terminals = ISeq.of(EphemeralConst.of(DataGetter.predicateSupplier));
 
     final int depth = 5;
 
