@@ -10,7 +10,7 @@ import static org.junit.Assert.assertTrue;
 public class SQLFitnessTest
 {
     /**
-     * Rigorous Test :-)
+     * Testing the testing framework
      */
     @Test
     public void shouldAnswerWithTrue()

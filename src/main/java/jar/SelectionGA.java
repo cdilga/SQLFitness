@@ -18,6 +18,7 @@ import scala.sys.process.ProcessBuilderImpl;
 import jar.DataGetter;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
@@ -25,19 +26,10 @@ import static java.lang.Math.abs;
 
 public class SelectionGA {
 
-    /**
-     * Runs test of tree chromosomes using the Jenetics interface Op
-     */
-    static final String[][] SAMPLES = new String[][] {
-            {"test", "test"},
-            {"test", "test"}
-    };
-
     static double fitness(final ProgramGene<String> program) {
         //TODO Replace random fitness function with real fitness function
         return (double) RandomRegistry.getRandom().nextInt(1);
     }
-
 
     /**
      * Defines the logic required to concatenate statements. These are the 'Operations'
@@ -49,8 +41,6 @@ public class SelectionGA {
     final static Op<String> OR = Op.of("OR", 2, v -> " (" + v[0] + " OR " + v[1] + ") ");
     final static ISeq<Op<String>> operations = ISeq.of(AND, OR);
 
-    //TODO: What are these .of methods?
-
     /**
      * Definition of all terminal operations
      *
@@ -59,27 +49,6 @@ public class SelectionGA {
      * have the 'Operations' which combine these.
      */
 
-     /*
-     TODO Write a java.util.function.supplier factory which takes the sql operator
-     which will give column names in the first field, and then the acceptable values
-     in the constraint (right hand side)
-     */
-
-    //We know there are specific rules about which is able to go on the left and the right here
-    // perhaps there is a more general way to capture this in an AST?
-    // Can fix with a "Fix" step for the ga
-            final static String[] cols = {"Col1", "Col2", "Col3"};
-            final static String[][] data = {{""}};
-
-    final static Supplier TestStringSupplier = () -> {
-        try {
-            return DataGetter.makePredicate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } return null;
-    };
     final static ISeq<EphemeralConst<String>> terminals = ISeq.of(EphemeralConst.of(DataGetter.predicateSupplier));
 
     final int depth = 5;
@@ -98,7 +67,24 @@ public class SelectionGA {
             );
 
     public static void main(String[] args) {
+        //Parse the question possibly passed as an argument into it's constituent form
+        StringBuilder question = new StringBuilder();
+        for (int i = 0;i<args.length;i++)
+        {
+            question.append(args[i] + ' ');
+        }
+        //Use the apache downloader which downloads stuff from the DL4J examples to download the github release for
+        //conceptnet automagically. Potentially should download when it's built with maven....
+        //
 
+        QuestionParser parser = new QuestionParser(question.toString());
+        ArrayList keywords = parser.keywords();
+        System.out.println("Keywords extracted: " + keywords);
+
+        System.out.println("Loaded numberbatch");
+        //Load in numberbatch for the fitness function
+
+        //Run the GA
 
         final Engine<ProgramGene<String>, Double> engine = Engine
                 .builder(SelectionGA::fitness, CODEC)
@@ -113,7 +99,6 @@ public class SelectionGA {
                 .collect(EvolutionResult.toBestGenotype())
                 .getGene();
         final String result = prog.eval();
-
+        System.out.println(result);
     }
-
 }

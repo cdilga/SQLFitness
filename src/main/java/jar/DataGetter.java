@@ -34,8 +34,6 @@ public class DataGetter {
                 for (int i = 0; i < cols; i++) {
                     columns[i] = rsmd.getColumnName(i+1);
                 }
-
-
             } catch (SQLException e) {
                 e.printStackTrace();
 
@@ -104,7 +102,7 @@ public class DataGetter {
         int col = rand.nextInt(getNumCols() - 1) + 1;
         int row = rand.nextInt(getNumRows() - 1) + 1;
         String colName = makeCol(col);
-        return  colName + makeComparator() + makeData(colName, row);
+        return "'" + colName + "'" + makeComparator() + "'" + makeData(colName, row) + "'";
 
     }
 

@@ -43,9 +43,6 @@ public class DataGetterTest {
             e.printStackTrace();
             assertTrue(false);
         }
-
-
-
     }
 
     /**
@@ -67,12 +64,11 @@ public class DataGetterTest {
         String[] result = pred.split("[<>]|(!=)|(==)|(<>)");
         Boolean contained = false;
         for (int i = 0; i < columns.length; i++) {
-            if (columns[i].equals(result[0])) {
+            if (result[0].equals("'" + columns[i] + "'")) {
                 contained = true;
                 break;
             }
         }
-
         assertTrue(contained);
     }
 
@@ -95,12 +91,12 @@ public class DataGetterTest {
 
         //Note that the order of this regex is rather important
         String[] result = pred.split("(!=)|(==)|[<>]");
-        assertTrue(result.length == 2);
+        assertEquals(2, result.length);
 
         Boolean contained = false;
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
-                if (data[i][j].equals(result[1])) {
+                if (result[1].equals("'" + data[i][j] + "'")) {
                     contained = true;
                     break;
                 }
