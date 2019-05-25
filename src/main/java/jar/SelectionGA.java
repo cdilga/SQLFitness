@@ -16,6 +16,8 @@ import io.jenetics.util.RandomRegistry;
 import scala.sys.process.ProcessBuilderImpl;
 
 import jar.DataGetter;
+
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
@@ -69,7 +71,15 @@ public class SelectionGA {
             final static String[] cols = {"Col1", "Col2", "Col3"};
             final static String[][] data = {{""}};
 
-    final static Supplier TestStringSupplier = () -> DataGetter.makePredicate();
+    final static Supplier TestStringSupplier = () -> {
+        try {
+            return DataGetter.makePredicate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } return null;
+    };
     final static ISeq<EphemeralConst<String>> terminals = ISeq.of(EphemeralConst.of(DataGetter.predicateSupplier));
 
     final int depth = 5;

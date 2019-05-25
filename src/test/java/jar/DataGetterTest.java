@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.sql.SQLException;
+
 import static org.junit.Assert.*;
 
 public class DataGetterTest {
@@ -22,12 +24,28 @@ public class DataGetterTest {
         columns = new String[]{"lat","lon","Country","Sex","Author","Length","Symbol"};
     }
 
+    /**
+     * Tests the format of predicate is indeed valid
+     *
+     * Primitive and doesn't check for special chars or other encoding issues that may arise
+     */
     @Test
     public void isPredicate() {
-        String pred = DataGetter.makePredicate();
+        String pred;
+        try {
+            pred = DataGetter.makePredicate();
+            String[] result = pred.split("[<>]|(!=)|(==)|(<>)");
+            assertEquals(2, result.length);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
 
-        String[] result = pred.split("[<>]|(!=)|(==)|(<>)");
-        assertEquals(2, result.length);
+
+
     }
 
     /**
@@ -37,12 +55,19 @@ public class DataGetterTest {
      */
     @Test
     public void getColumnns() {
-        String pred = DataGetter.makePredicate();
+        String pred = null;
+        try {
+            pred = DataGetter.makePredicate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         String[] result = pred.split("[<>]|(!=)|(==)|(<>)");
         Boolean contained = false;
         for (int i = 0; i < columns.length; i++) {
-            if (columns[i] == result[0]) {
+            if (columns[i].equals(result[0])) {
                 contained = true;
                 break;
             }
@@ -59,14 +84,23 @@ public class DataGetterTest {
      */
     @Test
     public void getData() {
-        String pred = DataGetter.makePredicate();
-        String[] result = pred.split("[<>]|(!=)|(==)|(<>)");
+        String pred = null;
+        try {
+            pred = DataGetter.makePredicate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //Note that the order of this regex is rather important
+        String[] result = pred.split("(!=)|(==)|[<>]");
         assertTrue(result.length == 2);
 
         Boolean contained = false;
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[i].length; j++) {
-                if (data[i][j] == result[1]) {
+                if (data[i][j].equals(result[1])) {
                     contained = true;
                     break;
                 }
