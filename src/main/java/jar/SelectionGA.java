@@ -23,13 +23,9 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 import static java.lang.Math.abs;
+import jar.FitnessFunction;
 
 public class SelectionGA {
-
-    static double fitness(final ProgramGene<String> program) {
-        //TODO Replace random fitness function with real fitness function
-        return (double) RandomRegistry.getRandom().nextInt(1);
-    }
 
     /**
      * Defines the logic required to concatenate statements. These are the 'Operations'
@@ -73,9 +69,9 @@ public class SelectionGA {
         {
             question.append(args[i] + ' ');
         }
-        //Use the apache downloader which downloads stuff from the DL4J examples to download the github release for
+        //TODO: Use the apache downloader which downloads stuff from the DL4J examples to download the github release for
         //conceptnet automagically. Potentially should download when it's built with maven....
-        //
+
 
         QuestionParser parser = new QuestionParser(question.toString());
         ArrayList keywords = parser.keywords();
@@ -85,9 +81,9 @@ public class SelectionGA {
         //Load in numberbatch for the fitness function
 
         //Run the GA
-
+        FitnessFunction fitter = new FitnessFunction(keywords);
         final Engine<ProgramGene<String>, Double> engine = Engine
-                .builder(SelectionGA::fitness, CODEC)
+                .builder(fitter.fitness, CODEC)
                 .minimizing()
                 .alterers(
                         new SingleNodeCrossover<>(),
@@ -95,7 +91,7 @@ public class SelectionGA {
                 )
                 .build();
         final ProgramGene<String> prog = engine.stream()
-                .limit(300)
+                .limit(10)
                 .collect(EvolutionResult.toBestGenotype())
                 .getGene();
         final String result = prog.eval();

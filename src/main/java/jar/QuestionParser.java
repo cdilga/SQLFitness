@@ -100,7 +100,7 @@ public class QuestionParser {
 
             try {
                 FileWriter cacheWriter = new FileWriter(cacheQuestion);
-                for(int i =0; i < parse.size(); i++) {
+                for(int i = 0; i < parse.size(); i++) {
                     cacheWriter.write(parse.get(i) + "\n");
                 }
                 cacheWriter.close();

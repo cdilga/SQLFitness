@@ -103,7 +103,6 @@ public class DataGetter {
         int row = rand.nextInt(getNumRows() - 1) + 1;
         String colName = makeCol(col);
         return "'" + colName + "'" + makeComparator() + "'" + makeData(colName, row) + "'";
-
     }
 
     public static Supplier predicateSupplier = () -> {
