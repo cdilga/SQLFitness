@@ -237,9 +237,7 @@
     <Compile Include="Profiling\TreeTestAlgorithm.cs" />
     <Compile Include="TreeDuplicateRemoval.cs" />
     <Compile Include="TreeGenome\XMindVisualiser.cs" />
-    <Compile Include="TreeGenome\StepwiseColumnRepair.cs" />
     <Compile Include="TreeGenome\ColumnRepair.cs" />
-    <Compile Include="TreeGenome\TreeDuplicatorCounter.cs" />
     <Compile Include="TreeSelectionAlgorithm.cs" />
     <Compile Include="LoggingAlgorithm.cs" />
     <Compile Include="FlatSelectionAlgorithm.cs" />
