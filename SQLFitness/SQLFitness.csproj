@@ -40,7 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ejml-0.23, Version=0.23.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.1.0\lib\ejml-0.23.dll</HintPath>
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\ejml-0.23.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.AWT.WinForms, Version=8.1.5717.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.AWT.WinForms.dll</HintPath>
@@ -127,10 +127,13 @@
       <HintPath>..\packages\IKVM.8.1.5717.0\lib\IKVM.Runtime.JNI.dll</HintPath>
     </Reference>
     <Reference Include="javax.json, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.1.0\lib\javax.json.dll</HintPath>
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\javax.json.dll</HintPath>
+    </Reference>
+    <Reference Include="joda-time, Version=2.9.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\joda-time.dll</HintPath>
     </Reference>
     <Reference Include="jollyday, Version=0.4.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.1.0\lib\jollyday.dll</HintPath>
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\jollyday.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Primitives.4.3.0\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
@@ -142,19 +145,19 @@
       <HintPath>..\packages\NUnit.3.9.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="protobuf, Version=2.6.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.1.0\lib\protobuf.dll</HintPath>
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\protobuf.dll</HintPath>
     </Reference>
     <Reference Include="ShellProgressBar, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ShellProgressBar.4.0.0\lib\netstandard1.3\ShellProgressBar.dll</HintPath>
     </Reference>
     <Reference Include="slf4j-api, Version=1.7.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.1.0\lib\slf4j-api.dll</HintPath>
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\slf4j-api.dll</HintPath>
     </Reference>
     <Reference Include="slf4j-simple, Version=1.7.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.1.0\lib\slf4j-simple.dll</HintPath>
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\slf4j-simple.dll</HintPath>
     </Reference>
-    <Reference Include="stanford-corenlp-3.9.1, Version=3.9.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.1.0\lib\stanford-corenlp-3.9.1.dll</HintPath>
+    <Reference Include="stanford-corenlp-3.9.2, Version=3.9.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\stanford-corenlp-3.9.2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -224,10 +227,11 @@
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="xom, Version=1.2.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.1.0\lib\xom.dll</HintPath>
+      <HintPath>..\packages\Stanford.NLP.CoreNLP.3.9.2.0\lib\xom.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QuestionParser.cs" />
     <Compile Include="DBMining.cs" />
     <Compile Include="Fitness\IFitness.cs" />
     <Compile Include="NumberBatch.cs" />

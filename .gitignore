@@ -276,3 +276,5 @@ SQLFitness/catenated-source\.txt
 *.xlsx
 
 /.axoCover/runs/*
+
+stanford-corenlp-full-2016-10-31/

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -20,16 +20,20 @@ namespace SQLFitness
         static void Main(string[] args) {
             if(!(args.Length >= 1 && File.Exists(args[0]))) {
                 Console.WriteLine("Please provide numberbatch file as either .txt or .nmb");
+                Console.ReadKey();
                 return;
             }
 
-            var dict = NumberBatch.ReadNumberbatchFileOrCache(args[0]);
+            //var dict = NumberBatch.ReadNumberbatchFileOrCache(args[0]);
 
             Console.WriteLine($"Finished loading numberbatch. Memory usage: {System.Diagnostics.Process.GetCurrentProcess().VirtualMemorySize64 / 1024 / 1024 }Mb");
+
+
+            //Load in Stanford Corenlp to do some question parsing
+            var question = "John had a cat";
+
+            Console.WriteLine(String.Join(", ", QuestionParser.ParseWithCache(question)));
             Console.ReadKey();
-
-
-
             return;
             //Create a dbaccess
 #if !DEBUG
