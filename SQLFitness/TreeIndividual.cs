@@ -16,7 +16,7 @@ namespace SQLFitness
 
         public TreeIndividual(List<String> validColumns, Func<string, List<object>> validDataGetter)
         {
-            
+
             _projectionGenome = new Projection[Math.Min(Utility.MaxTreeChromosomeProjectionSize, validColumns.Count)];
             //Create new tree
             var treeBuilder = new RandomBuilder(validColumns, validDataGetter, Utility.TreeChromosomeBranchSize);
@@ -63,12 +63,12 @@ namespace SQLFitness
             }
             else
             {
-                _projectionGenome[Utility.GetRandomNum(_projectionGenome.Length)] = new Projection(_validColumns.Distinct().ToList()); 
+                _projectionGenome[Utility.GetRandomNum(_projectionGenome.Length)] = new Projection(_validColumns.Distinct().ToList());
             }
             this.Fitness = null;
             _projectionGenome = _projectionGenome.DistinctChromosomes();
 
-            _selectionTree = TreeDuplicateRemoval.RemoveDuplicates(_selectionTree, maxDuplication:3 );
+            _selectionTree = TreeDuplicateRemoval.RemoveDuplicates(_selectionTree, maxDuplication: 3);
         }
         public override string ToSql()
         {
@@ -102,5 +102,7 @@ namespace SQLFitness
             var distinct = newChromosome.DistinctChromosomes().ToArray();
             return new TreeIndividual(_validColumns, _validDataGetter, TreeDuplicateRemoval.RemoveDuplicates(addBranchAt.GetTree(), maxDuplication: 3), distinct);
         }
+
+        public override IEnumerable<string> GetColumns() => _projectionGenome.Select(x => x.Field);
     }
 }

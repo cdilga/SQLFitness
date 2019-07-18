@@ -46,5 +46,6 @@ namespace SQLFitness
 
         public abstract void Mutate();
         public abstract string ToSql();
+        public abstract IEnumerable<string> GetColumns();
     }
 }

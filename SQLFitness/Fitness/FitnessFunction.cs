@@ -8,15 +8,16 @@ namespace SQLFitness
 {
     class FitnessFunction : IFitness
     {
-
+        private readonly DBAccess db;
 
         public Dictionary<string, string> KeywordsTags { get; }
         public Dictionary<string, float[]> Word2Vec { get; }
 
-        public FitnessFunction(Dictionary<string, string> keywordsTags, Dictionary<string, float[]> word2vec)
+        public FitnessFunction(Dictionary<string, string> keywordsTags, Dictionary<string, float[]> word2vec, DBAccess db)
         {
-            KeywordsTags = keywordsTags;
-            Word2Vec = word2vec;
+            KeywordsTags = keywordsTags ?? throw new ArgumentNullException(nameof(keywordsTags));
+            Word2Vec = word2vec ?? throw new ArgumentNullException(nameof(word2vec));
+            this.db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
 
@@ -104,6 +105,67 @@ namespace SQLFitness
             Console.WriteLine($"The word \"{word1}\" or \"{word2}\" is not in conceptnet.");
             return -1;
         }
+
+        private double calculateQueryFitness(StubIndividual individual)
+        {
+            var cols = individual.GetColumns();
+            var similarities =
+                from field in cols
+                from keyword in KeywordsTags.Keys
+                select cosineSimilarity(Word2Vec[field], Word2Vec[keyword]);
+
+            return similarities.Average();
+        }
+
+        private double calculateQueryCoverage(StubIndividual individual) {
+            return 0;
+            //individual.Columns
+            //var QUERY = new Dictionary<string, Dictionary<string, string>>();
+            //var result = db.ExecuteSql(sqlQuery);
+            //result.
+            //        ResultSetMetaData rsmd = result.getMetaData();
+            //            while (result.next())
+            //            {
+            //                string ID = result.getstring(1);
+            //                for (int i = 1; i <= rsmd.getColumnCount(); i++)
+            //                {
+            //                    string name = rsmd.getColumnName(i);
+            //        QUERY.put(ID, name, result.getstring(name));
+            //                }
+            //}
+            ////=========================================================================================
+            //Iterator it = ALL.cellSet().iterator();
+            //double FP = 0;
+            //double FN = 0;
+            //double N = ALL.size();
+            //            while (it.hasNext())
+            //            {
+            //                Cell<string, string, string> c = (Cell)it.next();
+            //string rowKey = c.getRowKey();
+            //string colKey = c.getColumnKey();
+            //                if (GT.contains(rowKey, colKey) && QUERY.contains(rowKey, colKey))
+            //                {
+            //                }
+            //                else if (!GT.contains(rowKey, colKey) && QUERY.contains(rowKey, colKey))
+            //                {
+            //                    FP++;
+            //                }
+            //                else if (GT.contains(rowKey, colKey) && !QUERY.contains(rowKey, colKey))
+            //                {
+            //                    FN++;
+            //                }
+            //                else if (!GT.contains(rowKey, colKey) && !QUERY.contains(rowKey, colKey))
+            //                {
+            //                }
+            //}
+            ////=========================================================================================
+            //return 1 - ((double) FP / N) - (2 * (double) FN / N);
+
+
+
+
+    }
+
 
         public double[] Evaluate(StubIndividual individual)
         {

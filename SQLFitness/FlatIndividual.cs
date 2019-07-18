@@ -77,5 +77,7 @@ namespace SQLFitness
             //Initialise it
             //return the new instance
         }
+
+        public override IEnumerable<string> GetColumns() => _genome.OfType<Selection>().Select(x => x.Field);
     }
 }
