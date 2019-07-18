@@ -16,7 +16,6 @@ namespace SQLFitness
     static class Program
     {
 
-
         static void Main(string[] args) {
             if(!(args.Length >= 1 && File.Exists(args[0]))) {
                 Console.WriteLine("Please provide numberbatch file as either .txt or .nmb");
@@ -24,7 +23,7 @@ namespace SQLFitness
                 return;
             }
 
-            //var dict = NumberBatch.ReadNumberbatchFileOrCache(args[0]);
+            var dict = NumberBatch.ReadNumberbatchFileOrCache(args[0]);
 
             Console.WriteLine($"Finished loading numberbatch. Memory usage: {System.Diagnostics.Process.GetCurrentProcess().VirtualMemorySize64 / 1024 / 1024 }Mb");
 
@@ -34,7 +33,6 @@ namespace SQLFitness
 
             Console.WriteLine(String.Join(", ", QuestionParser.ParseWithCache(question)));
             Console.ReadKey();
-            return;
             //Create a dbaccess
 #if !DEBUG
             var basicGA = new TreeTestAlgorithm(new PerformanceTestFitness());
@@ -49,6 +47,7 @@ namespace SQLFitness
             //db.Close();
             Console.WriteLine("Done");
             Console.ReadLine();
+            return;
         }
 
         public static MemoryStream SerializeToStream(object o) {

@@ -14,6 +14,7 @@ namespace SQLFitness
     {
         public static List<string> ParseWithCache(string question) => parseQuestion(question);
 
+        private const string cachePath = @"..\..\..\cache\";
         readonly static java.lang.Class sentencesAnnotationClass =
             new SentencesAnnotation().getClass();
         readonly static java.lang.Class tokensAnnotationClass =
@@ -77,7 +78,8 @@ namespace SQLFitness
 
         private static List<string> parseQuestion(string question)
         {
-            string pathString = @"..\..\..\cache\" + question.GetHashCode() + ".q";
+            string pathString = cachePath + question.GetHashCode() + ".q";
+            Directory.CreateDirectory(cachePath);
             if (File.Exists(pathString))
             {
                 return File.ReadAllLines(pathString).ToList();

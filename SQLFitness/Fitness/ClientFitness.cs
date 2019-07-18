@@ -29,7 +29,7 @@ namespace SQLFitness
             }
             
             var interpreter = new Interpreter();
-            String sql = interpreter.Parse(individual);
+            string sql = interpreter.Parse(individual);
 
             NetworkStream serverStream = tcpClient.GetStream();
             byte[] bytesToSend = Encoding.UTF8.GetBytes(sql);
@@ -44,8 +44,9 @@ namespace SQLFitness
             tcpClient.Close();
             Debug.WriteLine("Received : " + result);
             //Console.WriteLine(result.Split('\n')[0]);
-            output[0] = Convert.ToDouble(result.Split('\n')[0]);
-            output[1] = Convert.ToDouble(result.Split('\n')[1]);
+            var splitResult = result.Split('\n');
+            output[0] = Convert.ToDouble(splitResult[0]);
+            output[1] = Convert.ToDouble(splitResult[1]);
             return output;
         }
     }
