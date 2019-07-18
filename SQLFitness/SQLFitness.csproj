@@ -231,6 +231,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fitness\FitnessFunction.cs" />
     <Compile Include="QuestionParser.cs" />
     <Compile Include="DBMining.cs" />
     <Compile Include="Fitness\IFitness.cs" />
