@@ -104,7 +104,7 @@ namespace SQLFitness
 
         }
 
-        public object ExecuteSql(string sql)
+        public IEnumerable<string> GetRowValues(string sql)
         {
             //performance gains to be had here - consider keeping connection between multiple evaluations - also async
             try
@@ -115,21 +115,17 @@ namespace SQLFitness
                 //Iterate through all of the rows and pick a row number and a type
                 MySqlDataReader reader = command.ExecuteReader();
 
-                for (var i = 0; i < reader.FieldCount; i++)
+                foreach(var res in reader)
                 {
-                    _columnList.Add(reader.GetName(i));
+                    yield return res.ToString();
                 }
+
                 reader.Close();
-
-
-
-
             }
             finally
             {
                 Conn.Close();
             }
-
         }
     }
 }

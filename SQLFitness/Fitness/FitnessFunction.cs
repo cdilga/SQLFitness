@@ -31,25 +31,6 @@ namespace SQLFitness
             return terms;
         }
 
-        public double getRowsRelevance()
-        {
-            //                DescriptiveStatistics rowRelevance = new DescriptiveStatistics();
-            //        if (result == null) {
-            //            System.out.println("Result set is null.");
-            //        }
-            //        while (result.next()) {
-            //            for (int i = 0; i<questionWords.size(); i++) {
-
-            //                string word = result.getString(i + 1);
-            //    double value = vec.similarity(word.toLowerCase(), questionWords.get(i));
-            //        rowRelevance.addValue(value);
-
-            //    }
-            //}
-            //        return rowRelevance.getMean();
-            return default;
-        }
-
         public static double cosineSimilarity(float[] vec1, float[] vec2)
         {
 
@@ -106,7 +87,7 @@ namespace SQLFitness
             return -1;
         }
 
-        private double calculateQueryFitness(StubIndividual individual)
+        private double calculateColumnRelevance(StubIndividual individual)
         {
             var cols = individual.GetColumns();
             var similarities =
@@ -115,6 +96,25 @@ namespace SQLFitness
                 select cosineSimilarity(Word2Vec[field], Word2Vec[keyword]);
 
             return similarities.Average();
+        }
+
+        private double calculateRowRelevance(StubIndividual individual)
+        {
+            var sql = individual.ToSql();
+
+            var vals = db.GetRowValues(sql);
+            var similarities =
+                from val in vals
+                from keyword in KeywordsTags.Keys
+                select cosineSimilarity(Word2Vec[val], Word2Vec[keyword]);
+
+            return similarities.Average();
+        }
+
+        private double calculateQueryFitness(StubIndividual individual)
+        {
+
+            return calculateColumnRelevance(individual) * calculateRowRelevance(individual);
         }
 
         private double calculateQueryCoverage(StubIndividual individual) {
