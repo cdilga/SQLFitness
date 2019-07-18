@@ -1,4 +1,4 @@
-using edu.stanford.nlp.ling;
+﻿using edu.stanford.nlp.ling;
 using edu.stanford.nlp.pipeline;
 using edu.stanford.nlp.util;
 using java.util;
@@ -77,7 +77,7 @@ namespace SQLFitness
 
         private static List<string> parseQuestion(string question)
         {
-            String pathString = "C:\\Users\\Chris\\Documents\\dev\\SQLFitness\\cache\\" + question.GetHashCode() + ".q";
+            string pathString = @"..\..\..\cache\" + question.GetHashCode() + ".q";
             if (File.Exists(pathString))
             {
                 return File.ReadAllLines(pathString).ToList();
